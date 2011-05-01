@@ -5,5 +5,5 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:ModuleLoader url="Registration.swf" />
+	<mx:ModuleLoader url="Login.swf" />
 </s:Application>

@@ -16,7 +16,8 @@
     <application path="FlexGallery.mxml"/>
   </applications>
   <modules>
-    <module application="src/FlexGallery.mxml" destPath="Registration.swf" optimize="true" sourcePath="src/Registration.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="Registration.swf" optimize="false" sourcePath="src/Registration.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="Login.swf" optimize="true" sourcePath="src/Login.mxml"/>
   </modules>
   <buildCSSFiles/>
 </actionScriptProperties>

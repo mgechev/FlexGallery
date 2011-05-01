@@ -1,50 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
-		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute" width="400" height="300"
-		   creationComplete="initEvents()">
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute"
+		   creationComplete="initEvents()" layout.error="horizontal" width="955" height="600">
+	
+	<mx:states>
+		<mx:State name="error" />
+		<mx:State name="success" />
+	</mx:states>
+	
 	<fx:Declarations>
-		<s:HTTPService id="registerService" url="register.php" showBusyCursor="true" method="POST">
+		<s:Fade target="{registrationPanel}" duration="10" startDelay="0" alphaTo="0.0" id="fadePanel" />
+		<s:Fade target="{registrationPanel}" duration="500" startDelay="500" alphaTo="1" id="unFadePanel" />
+		
+	
+		<s:HTTPService id="registerService" url="./scripts/index.php?page=register"
+					   showBusyCursor="true" method="POST" result="registerRequestSent(event)">
 			<s:request xmlns="">
-				<username>
-					{username.text}
-				</username>
-				<password>
-					{password.text}
-				</password>
-				<email>
-					{email.text}
-				</email>
+				<username>{username.text}</username>
+				<password>{password.text}</password>
+				<email>{email.text}</email>
 			</s:request>	
 		</s:HTTPService>
+		
+		<s:HorizontalLayout>			
+		</s:HorizontalLayout>
+		
 	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.controls.Alert;
+			import mx.rpc.events.ResultEvent;
 			
-			public function registerUser(event:Event):void
+			//Getting the request result
+			public function registerRequestSent(event:ResultEvent):void
 			{
-				if (password.text !== password2.text)
+				if (event.result.success)
 				{
-					errorMessages.text = "Passwords doesn't match!";
+					notify(event.result.success, false);
+					fadePanel.play();
+					unFadePanel.play();
 				}
+				else
+				{
+					notify(event.result.error, true);
+				}				
 			}
 			
+			//Executing the Http service
+			public function registerButtonPressed(event:Event):void
+			{
+				currentState = "error";
+				info.text = "";
+				registerService.send();
+			}
+			
+			//Adding event listeners
 			public function initEvents():void
 			{
-				register.addEventListener(MouseEvent.CLICK, registerUser);
+				registerButton.addEventListener(MouseEvent.CLICK, registerButtonPressed);
+			}
+			
+			//Displaying the result fro the request
+			public function notify(message:String, error:Boolean):void
+			{
+				if (error)
+				{
+					currentState = "error";
+				}
+				else
+				{
+					currentState = "success";
+				}
+				info.text = message;
 			}
 		]]>
 	</fx:Script>
 
-	<s:Label id="errorMessages" color="red" x="170" y="215" />
-	<s:TextInput x="169" y="82" id="username"/>
-	<s:TextInput x="169" y="117" id="password" displayAsPassword="true"/>
-	<s:TextInput x="169" y="152" id="password2" displayAsPassword="true"/>
-	<s:TextInput x="169" y="186" id="email"/>
-	<s:Label x="100" y="88" text="Username:"/>
-	<s:Label x="100" y="123" text="Password:"/>
-	<s:Label x="41" y="158" text="Repeat the password:"/>
-	<s:Label x="123" y="192" text="Email:"/>
-	<s:Button x="171" y="237" label="Register" id="register"/>
+	
+	<s:Panel title="Registration" horizontalCenter="true" width="450" height="350" id="registrationPanel">	
+		
+		<s:TextInput x="169" y="82" id="username" enabled.error="true" visible.success="false"/>
+		<s:TextInput x="169" y="117" id="password" displayAsPassword="true" enabled.error="true" visible.success="false"/>
+		<s:TextInput x="169" y="152" id="password2" displayAsPassword="true" enabled.error="true" visible.success="false"/>
+		<s:TextInput x="169" y="186" id="email" enabled.error="true" visible.success="false"/>
+		<s:Label x="100" y="88" text="Username:" visible.success="false"/>
+		<s:Label x="100" y="123" text="Password:" visible.success="false"/>
+		<s:Label x="41" y="158" text="Repeat the password:" visible.success="false"/>
+		<s:Label x="123" y="192" text="Email:" visible.success="false"/>
+		<s:Button label="Register" id="registerButton" x="171" y="213" visible.success="false"/>
+		
+		<s:Label id="info" color.error="red" color.success="green" height="35" x="140" y="40" visible.success="true"/>
+		
+	</s:Panel>
 </mx:Module>
