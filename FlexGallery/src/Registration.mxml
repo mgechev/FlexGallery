@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute" width="400" height="300"
+		   creationComplete="initEvents()">
+	<fx:Declarations>
+		<s:HTTPService id="registerService" url="register.php" showBusyCursor="true" method="POST">
+			<s:request xmlns="">
+				<username>
+					{username.text}
+				</username>
+				<password>
+					{password.text}
+				</password>
+				<email>
+					{email.text}
+				</email>
+			</s:request>	
+		</s:HTTPService>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			public function registerUser(event:Event):void
+			{
+				if (password.text !== password2.text)
+				{
+					errorMessages.text = "Passwords doesn't match!";
+				}
+			}
+			
+			public function initEvents():void
+			{
+				register.addEventListener(MouseEvent.CLICK, registerUser);
+			}
+		]]>
+	</fx:Script>
+
+	<s:Label id="errorMessages" color="red" x="170" y="215" />
+	<s:TextInput x="169" y="82" id="username"/>
+	<s:TextInput x="169" y="117" id="password" displayAsPassword="true"/>
+	<s:TextInput x="169" y="152" id="password2" displayAsPassword="true"/>
+	<s:TextInput x="169" y="186" id="email"/>
+	<s:Label x="100" y="88" text="Username:"/>
+	<s:Label x="100" y="123" text="Password:"/>
+	<s:Label x="41" y="158" text="Repeat the password:"/>
+	<s:Label x="123" y="192" text="Email:"/>
+	<s:Button x="171" y="237" label="Register" id="register"/>
+</mx:Module>
