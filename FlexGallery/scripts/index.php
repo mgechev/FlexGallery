@@ -1,9 +1,11 @@
 <?php
 
 //Adding needed functions
+require_once './includes/config.php';
 require_once './includes/data/en.language.php';
 require_once './includes/functions/db.functions.php';
 require_once './includes/functions/login.functions.php';
+require_once './includes/functions/gallery.functions.php';
 
 //Connecting to the database
 dbConnect('localhost', 'flexgallery', 'root', '');
@@ -25,6 +27,10 @@ switch ($page) {
 
 	case 'login':
 		include './pages/login.php';
+		break;
+		
+	case 'upload':
+		include './pages/upload.php';
 		break;
 		
 }

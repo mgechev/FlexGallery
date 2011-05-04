@@ -61,7 +61,7 @@ function dbOutputFilter($string, $isFromEditor = false)
 //Insert any information to the database
 function dbInsert($sql, $errorCode)
 {
-	$resource = mysql_query($sql);
+	$resource = mysql_query($sql) or die(mysql_error());
 	if ($resource) {
 		if (mysql_affected_rows() > 0) {
 			return mysql_insert_id();

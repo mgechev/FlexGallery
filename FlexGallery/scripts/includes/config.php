@@ -7,6 +7,10 @@ define('DB_SCHEMA', 'flexgallery');
 define('DB_USER',   'root');
 define('DB_PASS',   '');
 
+define('UPLOAD_DIR', '../upload/');
+define('THUMB1_DIR', '../upload/bigger/');
+define('THUMB2_DIR', '../upload/smallest/');
+
 define('USER_SESSION_TIME', 3600);
 
 if (DEBUG_MODE) {
