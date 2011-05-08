@@ -28,7 +28,7 @@ function isUserLogged()
 {
 	$time = time();
 	
-	if (!isset($_SESSION['code']) || empty($_SESSION['code']) || is_null($_SESSION['code'])) {
+	if (!isset($_SESSION['id']) || empty($_SESSION['id']) || is_null($_SESSION['id'])) {
 		return false;
 	} elseif ($_SESSION['time'] < ($time - USER_SESSION_TIME)) {
 		logout();
@@ -41,9 +41,10 @@ function isUserLogged()
 	}
 }
 
-function loginUser($code)
+function loginUser($array)
 {
-	$_SESSION['code'] = $code;
+	$_SESSION['id'] = $array['user_id'];
+	$_SESSION['username'] = $array['username'];
 	$_SESSION['ip'] = get_user_ip();
 	$_SESSION['time'] = time();
 

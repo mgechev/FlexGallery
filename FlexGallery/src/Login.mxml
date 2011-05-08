@@ -52,6 +52,8 @@
 				if (event.result.error)
 				{
 					loginFail();
+					username.text = event.result.error;
+					password.text = event.result.success;
 				}
 				else
 				{

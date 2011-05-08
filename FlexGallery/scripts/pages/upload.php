@@ -29,6 +29,7 @@ if (!empty($_FILES['Filedata'])) {
 		$newName = number_format($microTime, 4,'','');
 		
 		$fileName = $newName . '.' . $extension;
+		//$thumbId = dbInsert("INSERT INTO photos (title, users_user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
 
 		//Uploading and resizing the image. Creating thumbs
 		$uploaded = false;
@@ -56,18 +57,17 @@ if (!empty($_FILES['Filedata'])) {
 
 			$array = array();
 			$array['filename'] = $fileName;
-			$array['comment'] = $newTitle;
 			
 			//Adding information to the database
-			$thumbId = dbInsert("INSERT INTO photos (title, comment, users_user_id) VALUES ('$fileName', '', '$userId')",  7040);
-			$_SESSION['messages']['infos'][] = $value . 'have been successfully uploaded!';
+			$thumbId = dbInsert("INSERT INTO photos (title, users_user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
+			echo '<success>' . $value . 'have been successfully uploaded!' . '</error>';
 
 		} else {
-			$_SESSION['messages']['errors'][] = $value . ' ' . $language['admin']['notUploaded'];
+			echo '<error>' . $value . ' ' . $language['admin']['notUploaded'] . '</error>';
 		}
 
 	} else {
-		$_SESSION['messages']['errors'][] = $value . ' ' . $language['admin']['notWantedFormat'];
+		echo '<error>' . $value . ' ' . $language['admin']['notWantedFormat'] . '</error>';
 	}
 }
 ?>

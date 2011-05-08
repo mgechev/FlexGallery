@@ -3,7 +3,52 @@
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<mx:ModuleLoader url="UploadPictures.swf" />
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.modules.ModuleManager;
+	
+			//private var moduleLoader:IModuleInfo;
+			
+			private function changeModule(module:String):void
+			{
+				currentModule.url = module;
+				
+			}
+			
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				changeModule("Login.swf");
+			}
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				changeModule("UploadPictures.swf");
+			}
+			protected function button3_clickHandler(event:MouseEvent):void
+			{
+				changeModule("Registration.swf");
+			}
+			protected function button4_clickHandler(event:MouseEvent):void
+			{
+				changeModule("UserPictures.swf");
+			}
+			
+			protected function button5_clickHandler(event:MouseEvent):void
+			{
+				changeModule("EditProfile.swf");
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:Button label="Login" click="button1_clickHandler(event)"  x="45" y="415"/>
+	<s:Button label="Upload" click="button2_clickHandler(event)"  x="201" y="415"/>
+	<s:Button label="Register" click="button3_clickHandler(event)"  x="279" y="415"/>
+	<s:Button label="Pictures" click="button4_clickHandler(event)"  x="123" y="415"/>
+	<s:Button label="Edit Profile" click="button5_clickHandler(event)"  x="357" y="415"/>
+
+	<mx:ModuleLoader url="UploadPictures.swf" id="currentModule"  x="10" y="42"/>
+
 </s:Application>

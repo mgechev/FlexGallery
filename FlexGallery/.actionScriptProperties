@@ -19,6 +19,8 @@
     <module application="src/FlexGallery.mxml" destPath="UploadPictures.swf" optimize="true" sourcePath="src/UploadPictures.mxml"/>
     <module application="src/FlexGallery.mxml" destPath="Registration.swf" optimize="false" sourcePath="src/Registration.mxml"/>
     <module application="src/FlexGallery.mxml" destPath="Login.swf" optimize="true" sourcePath="src/Login.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="UserPictures.swf" optimize="true" sourcePath="src/UserPictures.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="EditProfile.swf" optimize="true" sourcePath="src/EditProfile.mxml"/>
   </modules>
   <buildCSSFiles/>
 </actionScriptProperties>

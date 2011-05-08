@@ -13,15 +13,14 @@
 
 	<fx:Declarations>
 		<s:Fade target="{photosList}" id="showPhotoList" alphaTo="1" duration="500" />
-		<s:Fade target="{messageLabel}" id="showMessageLabel" alphaTo="1" duration="500" />
 		
 		<s:Fade target="{photosList}" id="hidePhotoList" alphaTo="0" duration="500" />
-		<s:Fade target="{messageLabel}" id="hideMessageLabel" alphaTo="0" duration="500" />
 	</fx:Declarations>
 	
 		<fx:Script>
 			<![CDATA[		
 				import model.Photo;
+				
 				import mx.collections.ArrayCollection;
 				import mx.controls.List;
 				import mx.effects.effectClasses.HideShowEffectTargetFilter;
@@ -36,6 +35,7 @@
 				[Bindable]
 				private var fileReferenceList:FileReferenceList;
 				
+				//Initializing the page
 				private function init():void 
 				{
 					notes = new ArrayCollection();
@@ -46,58 +46,85 @@
 					fileReferenceList.addEventListener(Event.SELECT, addFile);
 				}
 				
+				//Browsing for files
 				private function selectFile():void 
 				{
-					currentState = "chooseFiles";
-					
-					showPhotoList.play();
-					hideMessageLabel.play();
+					changeState("chooseFiles");
 					
 					fileReferenceList.browse();
-					notes.removeAll();
 					
-					uploadedPhotosCount = 0;
 				}
 				
+				//Adding selected files to the datagrid
 				private function addFile(event:Event):void
 				{
 					var fileReference:FileReference;
 					var fileReferenceList:FileReferenceList = FileReferenceList(event.target);
 					
 					for (var i:Number = 0; i < fileReferenceList.fileList.length; i++) {
+						
 						fileReference = fileReferenceList.fileList[i] as FileReference;
 						var photo:Photo = new Photo();
 						photo.name = fileReference.name;
 						photo.creator = fileReference.creator;
 						photo.size = fileReference.size;
 						notes.addItem(photo);
+			
 					}
 					uploadButton.enabled = true;
 				}
 				
-				private function fileSelectedHandler(event:Event):void 
+				//Changing states and making changing which depends on the current state
+				private function changeState(state:String):void
 				{
-					uploadButton.enabled = false;
-					currentState = "uploading";
-					
-					hidePhotoList.play();
-					showMessageLabel.play();
+					currentState = state;
+					switch (state)
+					{
+						case 'uploading':
+							progressBar.setProgress(0, progressBar.maximum);
+							hidePhotoList.play();
+							uploadButton.enabled = false;
+							break;
+						case 'uploaded':						
+							break;
+						case 'chooseFiles':
+							showPhotoList.play();
+							notes.removeAll();
+							uploadedPhotosCount = 0;
+							break;
+					}
+				}
+				
+				//Uploading the files
+				private function fileSelectedHandler(event:Event):void 
+				{								
+					changeState("uploading");
 					
 					for (var i:Number = 0; i < fileReferenceList.fileList.length; i++) {
 						(fileReferenceList.fileList[i] as FileReference).addEventListener(Event.COMPLETE, uploadCompleteHandler);
-						(fileReferenceList.fileList[i] as FileReference).upload(urlRequest);
+						(fileReferenceList.fileList[i] as FileReference).upload(urlRequest);						
 					}
 					
 				}
 				
+				//Calculating the upload progress and updating the progress bar
 				private function uploadCompleteHandler(event:Event):void
 				{
 					uploadedPhotosCount++;
+					progressBar.setProgress((uploadedPhotosCount * 100) / fileReferenceList.fileList.length,
+						progressBar.maximum);
+					
 					if (uploadedPhotosCount == fileReferenceList.fileList.length)
 					{
-						currentState = "uploaded";
+						changeState("uploaded");
 					}					
-				}			
+				}	
+
+				protected function restorePage(event:MouseEvent):void
+				{
+					changeState("chooseFiles");
+				}
+				
 			]]>
 		</fx:Script>
 	<fx:Declarations>
@@ -114,9 +141,10 @@
 		<mx:Button click="selectFile();" label="Select Files" x="48" y="235"
 				   enabled.chooseFiles="true" enabled.uploaded="false"
 				   enabled.uploading="false" />
+	
 		<mx:Button label="Upload" x="277" y="235" id="uploadButton" enabled="false" />
-		<s:Label x="178" y="135" text="" id="messageLabel" visible.chooseFiles="false"
-				 visible.uploading="true" visible.uploaded="true" color.uploaded="green"
-				 text.uploading="Uploading...Please wait." text.uploaded="All photos are uploaded!"/>
+	
+		<mx:ProgressBar includeIn="uploading, uploaded" x="105" y="134" id="progressBar" 
+						mode="manual" maximum="100" minimum="0" click.uploaded="restorePage(event);"/>
 		
 </mx:Module>

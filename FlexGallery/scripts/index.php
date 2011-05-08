@@ -1,5 +1,8 @@
 <?php
 
+//Starting the session
+session_start();
+
 //Adding needed functions
 require_once './includes/config.php';
 require_once './includes/data/en.language.php';
@@ -31,6 +34,14 @@ switch ($page) {
 		
 	case 'upload':
 		include './pages/upload.php';
+		break;
+		
+	case 'picture_list':
+		include './pages/picture_list.php';
+		break;
+		
+	case 'edit_profile':
+		include './pages/edit_profile.php';
 		break;
 		
 }

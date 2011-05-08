@@ -1,7 +1,7 @@
 <?php
 
 //Checking if the POST values are empty
-if (!empty($_POST['username']) && !empty($_POST['password'])) {
+if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged()) {
 
 	//Preparing the username and password for the database
 	$user = dbInputFilter($_POST['username']);
@@ -9,22 +9,27 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
 	
 	//Checking is the user logged
 	$isValidUser =
-	dbGetNumRows("SELECT 1 
-							  FROM users 
-							  WHERE username = '$user' && password = '$pass'", 5);
+	dbGetRow("SELECT user_id, username
+						FROM users 
+						WHERE username = '$user' && password = '$pass' LIMIT 1", 5);
 
 	//Printing the result
-	if ($isValidUser != 0) {
+	if (count($isValidUser) > 0) {
 	
-		loginUser(sha1(rand()));
+		loginUser($isValidUser);
 		
-		echo '<success>Welcome '. $user .'.</success>';
+		echo '<success>Welcome '. $isValidUser['username'] .'</success>';
 	
 	} else {
 	
 		echo '<error>Wrong username or password</error>';
 	
 	}	
+} else if (isUserLogged()) {
+
+	echo '<success> Welcome ' . $_SESSION['username']  . '</success>';
+	exit;
+	
 }
 
 ?>

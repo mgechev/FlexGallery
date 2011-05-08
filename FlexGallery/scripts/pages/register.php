@@ -41,12 +41,12 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['e
 	//Checking for duplicated username or email
 	$checkUsername = 
 	dbGetNumRows("SELECT 1 
-		      FROM users 
-		      WHERE username = '$user'", 5);
+							 FROM users 
+							 WHERE username = '$user'", 5);
 	$checkEmail =
 	dbGetNumRows("SELECT 1 
-		      FROM users 
-		      WHERE email = '$email'", 10);
+							 FROM users 
+							 WHERE email = '$email'", 10);
 							 
     //If there is already any user with that name or password printing an error
 	if ($checkEmail != 0 || $checkUsername != 0) {
@@ -59,8 +59,8 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['e
 	//Registrating the user (adding it to the database)
 	$request =
 	dbInsert("INSERT
-		 INTO users (username, password, email, registration_date, last_login)
-		 VALUES ('$user', '$pass', '$email', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", 15);
+				  INTO users (username, password, email, registration_date, last_login)
+				  VALUES ('$user', '$pass', '$email', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", 15);
 				  
 	//Printing the registration result
 	if ($request != false) {

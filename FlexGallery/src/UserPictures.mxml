@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute" width="700" height="700"
+		   creationComplete="initPage(event)">
+	<fx:Declarations>
+		<s:HTTPService id="getPictures" url="./scripts/index.php?page=picture_list"
+					   showBusyCursor="true" method="GET" result="getUserPictures(event)">
+			<s:request xmlns="">
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:Fade alphaFrom="0" alphaTo="1" target="{pictureBox}" duration="400" id="showPictureBox" />
+		<s:Fade alphaFrom="1" alphaTo="0" target="{pictureBox}" duration="400" id="hidePictureBox" />
+		<s:Fade duration="300" id="fadeThumb" />
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Button;
+			import mx.controls.Image;
+			import mx.core.UIComponent;
+			import mx.rpc.events.ResultEvent;
+			
+			protected var pictures:ArrayCollection;
+			protected const picturesPerPage:Number = 12;
+			protected var currentPage:Number;
+			
+			//Initializing the page
+			protected function initPage(event:Event):void
+			{
+				getPictures.send();
+				currentPage = 0;
+			}
+			
+			//Getting all pictures by any user
+			protected function getUserPictures(event:ResultEvent):void
+			{
+				pictures = event.result.picture;
+				addPageButtons();
+				clearPictures();
+				displayPictures();
+			}
+			
+			//Adding buttons used for changing the current page with pictures
+			protected function addPageButtons():void
+			{
+				var next:Button = new Button();
+				var back:Button = new Button();
+				
+				next.label = "Next";
+				back.label = "Back";
+				
+				next.x = 0;
+				back.x = 150;
+				
+				this.addChild(next);
+				this.addChild(back);
+				next.addEventListener(MouseEvent.CLICK, nextPage);
+				back.addEventListener(MouseEvent.CLICK, backPage);
+			}
+			
+			//When the back button is clicked
+			protected function backPage(event:MouseEvent):void
+			{
+				if (currentPage > 0)
+				{
+					currentPage--;
+					hidePictureBox.play();
+					clearPictures();
+					displayPictures();
+					showPictureBox.play();
+				}
+			}
+			
+			//When the next button is clicked
+			protected function nextPage(event:MouseEvent):void
+			{
+				if ((currentPage + 1) * picturesPerPage < pictures.length)
+				{
+					currentPage++;
+					hidePictureBox.play();
+					clearPictures();
+					displayPictures();
+					showPictureBox.play();
+				}
+			}
+			
+			//Clearing all pictures from the picturebox
+			protected function clearPictures():void
+			{
+				pictureBox.removeAllChildren();
+			}
+			
+			//Displaying pictures
+			protected function displayPictures():void
+			{
+				var columns:uint = 4;
+				var rowHeight:uint = 150;
+				var colWidth:uint = 150;
+				var x:uint = 0;
+				var y:uint = 0;				
+				for (var i:Number = currentPage * picturesPerPage; i < (currentPage + 1 ) * picturesPerPage; i++) {					
+					
+					if (i < pictures.length) {
+					
+						if (i != currentPage * picturesPerPage && i % columns == 0) {
+							
+							y += rowHeight;
+							x = 0;
+						}					
+						
+						var image:Image = new Image();
+						image.source = "./upload/bigger/" + pictures[i].title;
+						
+						image.x = x;
+						image.y = y;
+						
+						image.width = 140;
+						image.height = 140;
+						
+						image.alpha = 1;
+						image.addEventListener(MouseEvent.MOUSE_OVER, mouseOverItem);
+						image.addEventListener(MouseEvent.MOUSE_OUT, mouseOutItem);
+						
+						x += colWidth;
+						
+						pictureBox.addChild(image);
+						
+					}
+				}				
+			}
+			
+			//Effects when the mouse is over any picture
+			protected function mouseOverItem(event:MouseEvent):void
+			{
+				fadeThumb.target = event.target as DisplayObject;
+				fadeThumb.alphaFrom = 1;
+				fadeThumb.alphaTo = 0.7;
+				fadeThumb.play();
+			}
+			
+			//Effects when the mouse is out any picture
+			protected function mouseOutItem(event:MouseEvent):void
+			{
+				fadeThumb.target = event.target as DisplayObject;
+				fadeThumb.alphaFrom = 0.7;
+				fadeThumb.alphaTo = 1;
+				fadeThumb.play();
+			}
+			
+		]]>
+	</fx:Script>
+
+	<mx:Canvas id="pictureBox" y="20" x="0" width="600" height="600" />
+	
+</mx:Module>

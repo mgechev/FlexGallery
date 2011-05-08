@@ -53,7 +53,22 @@
 			{
 				currentState = "error";
 				info.text = "";
-				registerService.send();
+				if (password.text.length < 3 || password2.text.length < 3 || email.text.length < 3)
+				{
+					notify("Invalid information!", true);
+				}
+				else if (password.text != password2.text)
+				{
+					notify("Passwords does not match!", true);
+				}
+				else if (!email.text.match("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$"))
+				{
+					notify("Invalid email!", true);
+				}
+				else
+				{
+					registerService.send();
+				}
 			}
 			
 			//Adding event listeners
