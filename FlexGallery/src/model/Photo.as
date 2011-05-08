@@ -5,8 +5,19 @@ package model
 	public class Photo
 	{
 		private var _name:String;
+		private var _source:String;
 		private var _creator:String;
 		private var _size:uint;
+		
+		public function get source():String
+		{
+			return _source;
+		}
+		
+		public function set source(value:String):void
+		{
+			_source = value;
+		}
 		
 		public function get name():String
 		{

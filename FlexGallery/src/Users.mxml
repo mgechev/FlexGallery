@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   layout="absolute" 
+		   width="800" 
+		   height="600"
+		   creationComplete="initPage(event);">
+	<fx:Declarations>
+		<s:HTTPService id="getData" url="./scripts/index.php?page=users"
+					   showBusyCursor="true" method="GET" result="getUsers(event)">
+			<s:request xmlns="">
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="getPictures" url="./scripts/index.php?page=picture_list"
+					   showBusyCursor="true" method="GET" result="getUserPictures(event)">
+			<s:request xmlns="">
+				<id>
+					{selectedUser}
+				</id>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:Fade duration="300" alphaFrom="0" alphaTo="1" target="{bigPicture}" id="showBigPicture" />
+		<s:Fade duration="300" alphaFrom="1" alphaTo="0" target="{bigPicture}" id="hideBigPicture" />
+		
+		<s:Scale id="zoomPictureEffect" />
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import model.Photo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Image;
+			import mx.rpc.events.ResultEvent;
+			
+			import view.GalleryRenderer;
+			
+			protected var usernameAndId:Dictionary;
+			protected var pictures:ArrayCollection;
+			protected var zoomsCount:Number;
+			
+			[Bindable]
+			protected var imagesCollection:ArrayCollection;			
+			[Bindable]
+			protected var listProvider:ArrayCollection;
+			[Bindable]
+			protected var selectedUser:uint;
+			
+			protected function initPage(event:Event):void
+			{
+				zoomsCount = 0;
+				imagesCollection = new ArrayCollection();
+				listProvider = new ArrayCollection();
+				usernameAndId = new Dictionary();
+				getData.send();
+			}
+			
+			protected function getUsers(event:ResultEvent):void
+			{
+				for (var i:uint = 0; i < event.result.user.length; i++) {
+					
+					usernameAndId[event.result.user[i].username] = event.result.user[i].id;
+					listProvider.addItem(event.result.user[i].username);
+					
+				}
+			}
+			
+			protected function getUserPictures(event:ResultEvent):void
+			{
+				imagesCollection.removeAll();
+				hideBigPicture.play();
+				bigPicture.removeAllChildren();
+				
+				if (event.result.picture != 0)
+				{
+					pictures = event.result.picture;				
+					loadPictures();
+				}
+			}
+			
+			protected function loadPictures():void
+			{
+				for (var i:uint = 0; i < pictures.length; i++) {
+					
+					var item:Photo = new Photo();
+					item.source = "./upload/smallest/" + pictures[i].title;
+					item.name = pictures[i].title;
+					
+					imagesCollection.addItem(item);
+					
+				}
+			}
+			
+			protected function viewUserPictures(event:Event):void
+			{
+			 	selectedUser = usernameAndId[usersList.value];
+				getPictures.send();
+			}
+			
+			protected function largePicture(event:Event):void
+			{
+				hideBigPicture.play();
+				bigPicture.removeAllChildren();
+				var image:Image = new Image();
+				image.source = "./upload/" + imagesCollection[picturesList.selectedIndex].name;
+				
+				image.addEventListener(MouseEvent.MOUSE_WHEEL, zoomPicture);
+				image.addEventListener(MouseEvent.MOUSE_DOWN, startDragging);
+				image.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+				
+				bigPicture.addChild(image);
+				image.width = bigPicture.width;
+				image.height = bigPicture.height;
+				showBigPicture.play();
+			}
+			
+			protected function startDragging(event:MouseEvent):void
+			{
+				var image:Image = event.currentTarget as Image;
+				image.startDrag();
+			}
+			
+			protected function stopDragging(event:MouseEvent):void
+			{
+				var image:Image = event.currentTarget as Image;
+				image.stopDrag();
+			}
+									
+			protected function zoomPicture(event:MouseEvent):void
+			{		
+				zoomPictureEffect.target = bigPicture.getChildAt(0);
+				zoomPictureEffect.duration = 300;
+				if (event.delta > 0 && zoomsCount < 20)
+				{
+					zoomIn(bigPicture.getChildAt(0));
+					zoomsCount += 1;
+					zoomPictureEffect.play();
+				}
+				if (event.delta < 0 && zoomsCount >= -2)				
+				{
+					zoomOut(bigPicture.getChildAt(0));
+					zoomsCount -= 1;
+					zoomPictureEffect.play();
+				}				
+			}
+			
+			protected function zoomIn(element:DisplayObject):void
+			{
+				zoomPictureEffect.scaleXBy = 0.1;
+				zoomPictureEffect.scaleYBy = 0.1;
+			}
+			
+			protected function zoomOut(element:DisplayObject):void
+			{
+				zoomPictureEffect.scaleXBy = -0.1;
+				zoomPictureEffect.scaleYBy = -0.1;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="500" width="112"/>
+
+	<mx:Canvas id="bigPicture" width="687" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)"/>
+	
+
+	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
+					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
+					   columnWidth="108" height="100"
+					   selectionColor="#cccccc" liveScrolling="false"
+					   change="largePicture(event);" y="500"/>
+	
+</mx:Module>

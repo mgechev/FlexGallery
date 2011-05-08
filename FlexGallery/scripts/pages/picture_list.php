@@ -3,11 +3,22 @@
 if (isUserLogged()) {
 
 	//Getting list of all pictures by the user
+	
+	if (empty($_GET['id'])) {
+	
+		$userId = $_SESSION['id'];
+	
+	} else {
+	
+		$userId = (int)$_GET['id'];
+	
+	}
+	
 	$getPicturesByUserId =
 	dbGetArray(
 	'SELECT title, photo_id, comment
 	FROM photos
-	WHERE users_user_id = '. $_SESSION['id'] .'', 35);
+	WHERE users_user_id = '. $userId .'', 35);
 	
 	//Printing this list into xml format
 	echo '<?xml version="1.0" encoding="utf-8"?>';
@@ -21,6 +32,12 @@ if (isUserLogged()) {
 		echo "\t<comment>" . $value['comment'] . "</comment>\n";
 		
 		echo "</picture>\n";
+	
+	}
+	
+	if (count($getPicturesByUserId) == 0) {
+	
+		echo '<picture>0</picture>';
 	
 	}
 

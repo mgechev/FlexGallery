@@ -52,6 +52,10 @@ switch ($page) {
 		include './pages/delete_picture.php';
 		break;		
 		
+	case 'users':
+		include './pages/users.php';
+		break;		
+		
 }
 
 ?>
