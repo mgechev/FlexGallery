@@ -91,7 +91,7 @@ function dbDelete($sql, $errorCode)
 //Update information in the database
 function dbUpdate($sql, $errorCode)
 {
-	$resource = mysql_query($sql) or die('<error>' . mysql_error() . '</error>');
+	$resource = mysql_query($sql);
 	if ($resource) {
 		return true;
 	} else {

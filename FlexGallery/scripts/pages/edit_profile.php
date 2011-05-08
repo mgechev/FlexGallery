@@ -47,6 +47,7 @@ if (isUserLogged()) {
 			echo '<error>Error! Try again later.</error>';
 		
 		}
+		
 	} else {
 		
 		//Getting user's email

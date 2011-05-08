@@ -10,6 +10,28 @@
 			</s:request>	
 		</s:HTTPService>
 		
+		<s:HTTPService id="addComment" url="./scripts/index.php?page=edit_picture"
+					   showBusyCursor="true" method="POST">
+			<s:request xmlns="">
+				<picture>
+					{selectedImageTitle}
+				</picture>
+				<comment>
+					{commentField.text}
+				</comment>
+			</s:request>	
+		</s:HTTPService>
+		
+		
+		<s:HTTPService id="removePicture" url="./scripts/index.php?page=delete_picture"
+					   showBusyCursor="true" method="POST">
+			<s:request xmlns="">
+				<picture>
+					{selectedImageTitle}
+				</picture>
+			</s:request>	
+		</s:HTTPService>
+		
 		<s:Fade alphaFrom="0" alphaTo="1" target="{pictureBox}" duration="400" id="showPictureBox" />
 		<s:Fade alphaFrom="1" alphaTo="0" target="{pictureBox}" duration="400" id="hidePictureBox" />
 		<s:Fade duration="300" id="fadeThumb" />
@@ -20,18 +42,34 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Button;
 			import mx.controls.Image;
+			import mx.controls.TextArea;
+			import mx.core.FlexLoader;
 			import mx.core.UIComponent;
 			import mx.rpc.events.ResultEvent;
 			
-			protected var pictures:ArrayCollection;
+			import spark.components.supportClasses.DisplayLayer;
+			
 			protected const picturesPerPage:Number = 12;
+			protected var pictures:ArrayCollection;
 			protected var currentPage:Number;
+			protected var selectedImage:DisplayObject;			
+			protected var pictureContainer:Dictionary;
+			
+			[Bindable]
+			protected var selectedImageTitle:String;
 			
 			//Initializing the page
 			protected function initPage(event:Event):void
 			{
 				getPictures.send();
 				currentPage = 0;
+			
+				commentButton.addEventListener(MouseEvent.MOUSE_DOWN, commentImage);
+				deleteButton.addEventListener(MouseEvent.MOUSE_DOWN, deleteImage);
+				
+				commentField.addEventListener(KeyboardEvent.KEY_DOWN, sendComment);
+				commentField.visible = false;
+				pictureBox.addChild(commentField);
 			}
 			
 			//Getting all pictures by any user
@@ -101,6 +139,7 @@
 				var colWidth:uint = 150;
 				var x:uint = 0;
 				var y:uint = 0;				
+				pictureContainer = new Dictionary();
 				for (var i:Number = currentPage * picturesPerPage; i < (currentPage + 1 ) * picturesPerPage; i++) {					
 					
 					if (i < pictures.length) {
@@ -114,6 +153,12 @@
 						var image:Image = new Image();
 						image.source = "./upload/bigger/" + pictures[i].title;
 						
+						pictureContainer[image] = pictures[i];
+						
+						pictureBox.addChild(image);
+						
+						//pictureBox.setChildIndex(commentField, 10);
+						
 						image.x = x;
 						image.y = y;
 						
@@ -123,19 +168,100 @@
 						image.alpha = 1;
 						image.addEventListener(MouseEvent.MOUSE_OVER, mouseOverItem);
 						image.addEventListener(MouseEvent.MOUSE_OUT, mouseOutItem);
+						image.addEventListener(MouseEvent.MOUSE_DOWN, editPicture);
 						
-						x += colWidth;
-						
-						pictureBox.addChild(image);
-						
+						x += colWidth;										
 					}
 				}				
+			}
+			
+				
+			//Executing sendComment service and adding the comment localy
+			protected function sendComment(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13)
+				{					
+					pictures[getPictureIndex(pictureContainer[selectedImage].title)].comment = commentField.text;
+					
+					addComment.send();
+					commentField.visible = false;
+				}
+			}
+			
+			
+			protected function getPictureIndex(title:String):uint
+			{
+				for (var i:uint = 0; i < pictures.length; i++)
+				{
+					if (title == pictures[i].title)
+					{
+						return i;
+					}
+				}	
+				return 0;
+			}
+			
+			//Executing the delete request
+			protected function deleteImage(event:MouseEvent):void
+			{
+				removePicture.send();
+				selectedImage.visible = false;
+				hideIcons();
+				pictures.removeItemAt(getPictureIndex(selectedImageTitle));			
+			}
+			
+			//Adding the comment text area
+			protected function commentImage(event:MouseEvent):void
+			{
+				commentField.text = pictureContainer[selectedImage].comment;
+				commentField.visible = true;
+				pictureBox.addChild(commentField);
+				commentField.x = selectedImage.x;
+				commentField.y = selectedImage.y;
+				commentField.width = selectedImage.width;
+				commentField.height = selectedImage.height;
+			}
+			
+			protected function editPicture(event:MouseEvent):void
+			{
+				addIcons(event.currentTarget as DisplayObject);
+			}
+			
+			//Adding the comment and hide icons
+			protected function addIcons(pic:DisplayObject):void
+			{				
+				pictureBox.addChild(commentButton);
+				pictureBox.addChild(deleteButton);
+	
+				if (commentField.parent == pictureBox)
+				{
+					pictureBox.removeChild(commentField);
+				}
+
+				commentButton.x = pic.x;
+				commentButton.y = pic.y;
+				deleteButton.x = pic.x + 30;
+				deleteButton.y = pic.y;
+				commentButton.visible = true;
+				deleteButton.visible = true;
+				selectedImage = pic;
+				selectedImageTitle = pictureContainer[selectedImage].title;
+			}
+			
+			//Hiding the comment and delete icons
+			protected function hideIcons():void
+			{
+				pictureBox.removeChild(commentButton);
+				pictureBox.removeChild(deleteButton);
+				commentButton.visible = false;
+				deleteButton.visible = false;
 			}
 			
 			//Effects when the mouse is over any picture
 			protected function mouseOverItem(event:MouseEvent):void
 			{
-				fadeThumb.target = event.target as DisplayObject;
+				var picture:FlexLoader = event.target as FlexLoader;
+				fadeThumb.target = picture;
 				fadeThumb.alphaFrom = 1;
 				fadeThumb.alphaTo = 0.7;
 				fadeThumb.play();
@@ -144,15 +270,23 @@
 			//Effects when the mouse is out any picture
 			protected function mouseOutItem(event:MouseEvent):void
 			{
-				fadeThumb.target = event.target as DisplayObject;
+				fadeThumb.target = event.target as FlexLoader;
 				fadeThumb.alphaFrom = 0.7;
 				fadeThumb.alphaTo = 1;
 				fadeThumb.play();
 			}
-			
+
 		]]>
 	</fx:Script>
 
 	<mx:Canvas id="pictureBox" y="20" x="0" width="600" height="600" />
+	
+	<mx:Image id="commentButton" source="./images/comment.png"
+			  visible="false" useHandCursor="true" />
+	
+	<mx:Image id="deleteButton" source="./images/delete.png"
+			  visible="false" useHandCursor="true" />
+	
+	<s:TextArea id="commentField" />
 	
 </mx:Module>

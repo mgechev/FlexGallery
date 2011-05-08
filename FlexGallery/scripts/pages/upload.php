@@ -38,7 +38,7 @@ if (!empty($_FILES['Filedata'])) {
 				break;
 			}
 			
-			$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 400, 400);
+			$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 140, 140);
 			if (!$uploaded) {
 				break;
 			}

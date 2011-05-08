@@ -44,6 +44,14 @@ switch ($page) {
 		include './pages/edit_profile.php';
 		break;
 		
+	case 'edit_picture':
+		include './pages/edit_picture.php';
+		break;
+		
+	case 'delete_picture':
+		include './pages/delete_picture.php';
+		break;		
+		
 }
 
 ?>
