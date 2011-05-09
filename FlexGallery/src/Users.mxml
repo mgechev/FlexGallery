@@ -22,6 +22,27 @@
 			</s:request>	
 		</s:HTTPService>
 		
+		<s:HTTPService id="getComments" url="./scripts/index.php?page=comment_list"
+					   showBusyCursor="true" method="GET" result="addComments(event);">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="sendComment" url="./scripts/index.php?page=add_comment"
+					   showBusyCursor="true" method="POST">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+				<content>
+					{commentField.text}
+				</content>
+			</s:request>	
+		</s:HTTPService>
+		
 		<s:Fade duration="300" alphaFrom="0" alphaTo="1" target="{bigPicture}" id="showBigPicture" />
 		<s:Fade duration="300" alphaFrom="1" alphaTo="0" target="{bigPicture}" id="hideBigPicture" />
 		
@@ -30,10 +51,12 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import model.Comment;
 			import model.Photo;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Image;
+			import mx.messaging.messages.CommandMessage;
 			import mx.rpc.events.ResultEvent;
 			
 			import view.GalleryRenderer;
@@ -42,29 +65,45 @@
 			protected var pictures:ArrayCollection;
 			protected var zoomsCount:Number;
 			
+			
+			[Bindable]
+			protected var imageCommentsCollection:ArrayCollection;
 			[Bindable]
 			protected var imagesCollection:ArrayCollection;			
 			[Bindable]
 			protected var listProvider:ArrayCollection;
 			[Bindable]
 			protected var selectedUser:uint;
+			[Bindable]
+			protected var selectedPicture:Number;
 			
 			protected function initPage(event:Event):void
 			{
 				zoomsCount = 0;
 				imagesCollection = new ArrayCollection();
 				listProvider = new ArrayCollection();
+				imageCommentsCollection = new ArrayCollection();
 				usernameAndId = new Dictionary();
 				getData.send();
+				commentField.addEventListener(KeyboardEvent.KEY_DOWN, sendCommentHandler);
 			}
 			
+			//Getting user list. If there is only one user taking it
 			protected function getUsers(event:ResultEvent):void
 			{
-				for (var i:uint = 0; i < event.result.user.length; i++) {
-					
-					usernameAndId[event.result.user[i].username] = event.result.user[i].id;
-					listProvider.addItem(event.result.user[i].username);
-					
+				if (event.result.user.length > 0)
+				{
+					for (var i:uint = 0; i < event.result.user.length; i++) {
+						
+						usernameAndId[event.result.user[i].username] = event.result.user[i].id;
+						listProvider.addItem(event.result.user[i].username);
+						
+					}
+				}
+				else					
+				{
+					usernameAndId[event.result.user.username] = event.result.user.id;
+					listProvider.addItem(event.result.user.username);
 				}
 			}
 			
@@ -73,12 +112,19 @@
 				imagesCollection.removeAll();
 				hideBigPicture.play();
 				bigPicture.removeAllChildren();
-				
 				if (event.result.picture != 0)
 				{
-					pictures = event.result.picture;				
+					if (event.result.picture.length > 0)
+					{
+						pictures = event.result.picture
+					}
+					else
+					{
+						pictures = new ArrayCollection();
+						pictures.addItem(event.result.picture);
+					}
 					loadPictures();
-				}
+				}				
 			}
 			
 			protected function loadPictures():void
@@ -88,7 +134,7 @@
 					var item:Photo = new Photo();
 					item.source = "./upload/smallest/" + pictures[i].title;
 					item.name = pictures[i].title;
-					
+					item.photoId = pictures[i].id;
 					imagesCollection.addItem(item);
 					
 				}
@@ -100,12 +146,48 @@
 				getPictures.send();
 			}
 			
-			protected function largePicture(event:Event):void
+			protected function addComments(event:ResultEvent):void
 			{
+				if (event.result.comment != 0)
+				{
+					if (event.result.comment.length > 1)
+					{
+						for (var i:Number = 0; i < event.result.comment.length; i++) {
+							
+							var comment:Comment = new Comment();
+							comment.date = event.result.comment[i].date;
+							comment.byUser = event.result.comment[i].username;
+							comment.content = event.result.comment[i].content;
+							imageCommentsCollection.addItem(comment);
+							
+						}
+					}
+					else
+					{
+						var singleComment:Comment = new Comment();
+						singleComment.date = event.result.comment.date;
+						singleComment.byUser = event.result.comment.username;
+						singleComment.content = event.result.comment.content;
+						imageCommentsCollection.addItem(singleComment);
+					}
+				}
+			}
+			
+			protected function getPictureComments(id:Number):void
+			{
+				selectedPicture = id;
+				imageCommentsCollection.removeAll();
+				getComments.send();
+			}
+			
+			protected function largePicture(event:Event):void
+			{				
 				hideBigPicture.play();
 				bigPicture.removeAllChildren();
 				var image:Image = new Image();
 				image.source = "./upload/" + imagesCollection[picturesList.selectedIndex].name;
+			
+				getPictureComments(imagesCollection[picturesList.selectedIndex].photoId);
 				
 				image.addEventListener(MouseEvent.MOUSE_WHEEL, zoomPicture);
 				image.addEventListener(MouseEvent.MOUSE_DOWN, startDragging);
@@ -121,6 +203,33 @@
 			{
 				var image:Image = event.currentTarget as Image;
 				image.startDrag();
+			}
+			
+			protected function sendCommentHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13)
+				{
+					commentField.enabled = false;
+					sendComment.send();
+					var comment:Comment = new Comment();
+					comment.content = commentField.text;
+					imageCommentsCollection.addItem(comment);
+					commentField.enabled = false;
+					commentField.text = "";
+					commentCountdown();
+				}				
+			}
+			
+			protected function commentCountdown():void
+			{
+				var commentTimer:Timer = new Timer(5000, 2);
+				commentTimer.addEventListener(TimerEvent.TIMER_COMPLETE, enableComments);
+				commentTimer.start();
+			}
+			
+			protected function enableComments(e:TimerEvent):void
+			{
+				commentField.enabled = true;
 			}
 			
 			protected function stopDragging(event:MouseEvent):void
@@ -167,13 +276,16 @@
 	
 	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="500" width="112"/>
 
-	<mx:Canvas id="bigPicture" width="687" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)"/>
+	<mx:Canvas id="bigPicture" width="529" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)">
+	</mx:Canvas>
 	
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="640" y="1" height="409" width="159"/>
 
 	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
 					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
 					   columnWidth="108" height="100"
 					   selectionColor="#cccccc" liveScrolling="false"
 					   change="largePicture(event);" y="500"/>
+	<s:TextArea x="641" y="409" width="160" height="90" id="commentField"/>
 	
 </mx:Module>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 horizontalAlign="center"
+		 verticalAlign="top">
+	
+	<mx:Label text="By: {data.byUser}, On: {data.date}" fontSize="9" />
+	<mx:Label text="{data.content}" />
+	
+</mx:VBox>

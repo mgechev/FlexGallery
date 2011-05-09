@@ -2,12 +2,24 @@ package model
 {
 	import flashx.textLayout.formats.Float;
 
+	[Bindable]
 	public class Photo
 	{
 		private var _name:String;
 		private var _source:String;
 		private var _creator:String;
 		private var _size:uint;
+		private var _id:Number;
+		
+		public function get photoId():Number
+		{
+			return _id;
+		}
+		
+		public function set photoId(value:Number):void
+		{
+			_id = value;
+		}
 		
 		public function get source():String
 		{

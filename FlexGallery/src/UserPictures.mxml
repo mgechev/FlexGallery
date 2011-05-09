@@ -75,10 +75,21 @@
 			//Getting all pictures by any user
 			protected function getUserPictures(event:ResultEvent):void
 			{
-				pictures = event.result.picture;
-				addPageButtons();
-				clearPictures();
-				displayPictures();
+				if (event.result.picture != 0)
+				{
+					if (event.result.picture.length > 0)
+					{
+						pictures = event.result.picture
+					}
+					else
+					{
+						pictures = new ArrayCollection();
+						pictures.addItem(event.result.picture);
+					}
+					addPageButtons();
+					clearPictures();
+					displayPictures();
+				}
 			}
 			
 			//Adding buttons used for changing the current page with pictures
