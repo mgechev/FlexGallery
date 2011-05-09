@@ -7,12 +7,7 @@
 		   height="600"
 		   creationComplete="initPage(event);">
 	<fx:Declarations>
-		<s:HTTPService id="getData" url="./scripts/index.php?page=users"
-					   showBusyCursor="true" method="GET" result="getUsers(event)">
-			<s:request xmlns="">
-			</s:request>	
-		</s:HTTPService>
-
+		
 		<s:HTTPService id="sendVote" url="./scripts/index.php?page=add_vote"
 					   showBusyCursor="true" method="GET">
 			<s:request xmlns="">
@@ -29,7 +24,7 @@
 					   showBusyCursor="true" method="GET" result="getUserPictures(event)">
 			<s:request xmlns="">
 				<id>
-					{selectedUser}
+					{-1}
 				</id>
 			</s:request>	
 		</s:HTTPService>
@@ -81,11 +76,13 @@
 			import mx.rpc.events.ResultEvent;
 			
 			import view.GalleryRenderer;
-		
+			
 			protected var usernameAndId:Dictionary;
 			protected var pictures:ArrayCollection;
 			protected var zoomsCount:Number;
 			
+			[Bindable]
+			protected var selectedPictureComment:String;
 			[Bindable]
 			protected var currentPictureRating:Number;			
 			[Bindable]
@@ -101,13 +98,13 @@
 			
 			protected function initPage(event:Event):void
 			{
+				getPictures.send();
 				currentPictureRating = 0;
 				zoomsCount = 0;
 				imagesCollection = new ArrayCollection();
 				listProvider = new ArrayCollection();
 				imageCommentsCollection = new ArrayCollection();
 				usernameAndId = new Dictionary();
-				getData.send();
 				commentField.addEventListener(KeyboardEvent.KEY_DOWN, sendCommentHandler);
 			}
 			
@@ -157,16 +154,11 @@
 					var item:Photo = new Photo();
 					item.source = "./upload/smallest/" + pictures[i].title;
 					item.name = pictures[i].title;
+					item.comment = pictures[i].comment;
 					item.photoId = pictures[i].id;
 					imagesCollection.addItem(item);
 					
 				}
-			}
-			
-			protected function viewUserPictures(event:Event):void
-			{
-			 	selectedUser = usernameAndId[usersList.value];
-				getPictures.send();
 			}
 			
 			protected function addComments(event:ResultEvent):void
@@ -209,7 +201,8 @@
 				bigPicture.removeAllChildren();
 				var image:Image = new Image();
 				image.source = "./upload/" + imagesCollection[picturesList.selectedIndex].name;
-			
+				selectedPictureComment = imagesCollection[picturesList.selectedIndex].comment;
+				
 				getPictureComments(imagesCollection[picturesList.selectedIndex].photoId);
 				
 				image.addEventListener(MouseEvent.MOUSE_WHEEL, zoomPicture);
@@ -267,7 +260,7 @@
 				var image:Image = event.currentTarget as Image;
 				image.stopDrag();
 			}
-									
+			
 			protected function zoomPicture(event:MouseEvent):void
 			{		
 				zoomPictureEffect.target = bigPicture.getChildAt(0);
@@ -312,19 +305,15 @@
 				currentPictureRating = toFixed(currentPictureRating, 10);
 			}
 			
-
+			
 		]]>
 	</fx:Script>
 	
-	
-	
-	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="500" width="112"/>
-
-	<mx:Canvas id="bigPicture" width="465" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)">
+	<mx:Canvas id="bigPicture" width="576" height="499"  x="1" y="1" mouseWheel="zoomPicture(event)">
 	</mx:Canvas>
 	
-	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="30" height="380" width="221"/>
-
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="100" height="310" width="221"/>
+	
 	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
 					   x="-1" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
 					   columnWidth="108" height="98"
@@ -333,9 +322,10 @@
 	
 	<s:TextArea x="579" y="409" width="222" height="90" id="commentField"/>
 	
-	<s:Label x="580" y="9" text="Vote:"/>
-	<s:Label x="744" y="7" id="ratingLabel" text="{currentPictureRating}"/>
+	<s:Label x="581" y="83" text="Vote:"/>
+	<s:Label x="745" y="81" id="ratingLabel" text="{currentPictureRating}"/>
 	
-	<s:VSlider x="718" y="9" rotation="90" minimum="1" maximum="5" stepSize="1" value="3" id="vote" changeEnd="addVote(event);" />
+	<s:VSlider x="719" y="83" rotation="90" minimum="1" maximum="5" stepSize="1" value="3" id="vote" changeEnd="addVote(event);" />
+	<s:Label x="580" y="5" width="211" height="54" id="pictureComment" text="{selectedPictureComment}"/>
 	
 </mx:Module>

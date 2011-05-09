@@ -10,6 +10,17 @@ package model
 		private var _creator:String;
 		private var _size:uint;
 		private var _id:Number;
+		private var _comment:String;
+		
+		public function get comment():String
+		{
+			return _comment;
+		}
+		
+		public function set comment(value:String):void
+		{
+			_comment = value;
+		}
 		
 		public function get photoId():Number
 		{

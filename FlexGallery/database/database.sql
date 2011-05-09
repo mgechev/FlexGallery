@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 01, 2011 at 05:09 
+-- Generation Time: May 09, 2011 at 09:40 
 -- Server version: 5.5.8
 -- PHP Version: 5.3.5
 
@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `comment_id` int(11) NOT NULL AUTO_INCREMENT,
   `content` text COLLATE utf8_unicode_ci NOT NULL,
   `date` datetime NOT NULL,
-  `users_user_id` int(11) NOT NULL,
-  `photos_photo_id` int(11) NOT NULL,
-  PRIMARY KEY (`comment_id`,`users_user_id`,`photos_photo_id`),
-  KEY `fk_comments_users1` (`users_user_id`),
-  KEY `fk_comments_photos1` (`photos_photo_id`)
+  `user_id` int(11) NOT NULL,
+  `photo_id` int(11) NOT NULL,
+  PRIMARY KEY (`comment_id`,`user_id`,`photo_id`),
+  KEY `fk_comments_users1` (`user_id`),
+  KEY `fk_comments_photos1` (`photo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS `photos` (
   `photo_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `comment` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `users_user_id` int(11) NOT NULL,
-  PRIMARY KEY (`photo_id`,`users_user_id`),
-  KEY `fk_photos_users1` (`users_user_id`)
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`photo_id`,`user_id`),
+  KEY `fk_photos_users1` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
@@ -75,10 +75,31 @@ CREATE TABLE IF NOT EXISTS `users` (
   `registration_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `last_login` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=0 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 --
 -- Dumping data for table `users`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `vote`
+--
+
+CREATE TABLE IF NOT EXISTS `vote` (
+  `vote_id` int(11) NOT NULL AUTO_INCREMENT,
+  `photo_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rate` int(1) NOT NULL,
+  PRIMARY KEY (`vote_id`,`photo_id`,`user_id`),
+  KEY `fk_vote_photos1` (`photo_id`),
+  KEY `fk_vote_users1` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `vote`
 --
 
 
@@ -90,11 +111,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Constraints for table `comments`
 --
 ALTER TABLE `comments`
-  ADD CONSTRAINT `fk_comments_users1` FOREIGN KEY (`users_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_comments_photos1` FOREIGN KEY (`photos_photo_id`) REFERENCES `photos` (`photo_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_comments_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_comments_photos1` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `photos`
 --
 ALTER TABLE `photos`
-  ADD CONSTRAINT `fk_photos_users1` FOREIGN KEY (`users_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_photos_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `vote`
+--
+ALTER TABLE `vote`
+  ADD CONSTRAINT `fk_vote_photos1` FOREIGN KEY (`photo_id`) REFERENCES `photos` (`photo_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_vote_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION;

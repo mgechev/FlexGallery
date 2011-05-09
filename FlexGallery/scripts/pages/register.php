@@ -41,12 +41,12 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['e
 	//Checking for duplicated username or email
 	$checkUsername = 
 	dbGetNumRows("SELECT 1 
-							 FROM users 
-							 WHERE username = '$user'", 5);
+							     FROM users 
+							     WHERE username = '$user'", 5);
 	$checkEmail =
 	dbGetNumRows("SELECT 1 
-							 FROM users 
-							 WHERE email = '$email'", 10);
+								FROM users 
+								WHERE email = '$email'", 10);
 							 
     //If there is already any user with that name or password printing an error
 	if ($checkEmail != 0 || $checkUsername != 0) {

@@ -1,6 +1,6 @@
 <?php
 
-if (isUserLogged()) {
+//if (isUserLogged()) {
 
 	//Getting list of all pictures by the user
 	
@@ -13,12 +13,30 @@ if (isUserLogged()) {
 		$userId = (int)$_GET['id'];
 	
 	}
+	if ($userId == -1) {	
+		
+		$getPicturesByUserId =
+		dbGetArray('SELECT photos.title, photos.photo_id, photos.comment, AVG( vote.rate ) AS rate
+							FROM photos
+							LEFT JOIN vote ON vote.photo_id = photos.photo_id
+							WHERE vote.rate IS NOT NULL
+							GROUP BY photos.photo_id
+							UNION
+							SELECT photos.title, photos.photo_id, photos.comment, 0 AS rate
+							FROM photos
+							LEFT JOIN vote ON vote.photo_id = photos.photo_id
+							WHERE vote.rate IS NULL
+							GROUP BY photos.photo_id', 35);	
+		
+	} else {
 	
-	$getPicturesByUserId =
-	dbGetArray(
-	'SELECT title, photo_id, comment
-	FROM photos
-	WHERE users_user_id = '. $userId .'', 35);
+		$getPicturesByUserId =
+		dbGetArray(
+		'SELECT title, photo_id, comment
+		FROM photos
+		WHERE user_id = '. $userId .'', 35);
+		
+	}
 	
 	//Printing this list into xml format
 	echo '<?xml version="1.0" encoding="utf-8"?>';
@@ -41,6 +59,6 @@ if (isUserLogged()) {
 	
 	}
 
-}
+//}
 
 ?>
