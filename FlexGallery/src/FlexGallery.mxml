@@ -44,6 +44,11 @@
 			{
 				changeModule("Users.swf");
 			}
+			
+			protected function button7_clickHandler(event:MouseEvent):void
+			{
+				changeModule("MainPage.swf");
+			}
 
 		]]>
 	</fx:Script>
@@ -54,7 +59,8 @@
 	<s:Button label="Pictures" click="button4_clickHandler(event)"  x="865" y="97" width="80"/>
 	<s:Button label="Edit Profile" click="button5_clickHandler(event)"  x="865" y="10"/>
 	<s:Button label="Users" click="button6_clickHandler(event)"  x="865" y="155" width="80"/>
+	<s:Button label="Main" click="button7_clickHandler(event)"  x="865" y="181" width="80"/>
 
-	<mx:ModuleLoader url="Login.swf" id="currentModule"  x="10" y="42"/>
+	<mx:ModuleLoader url="MainPage.swf" id="currentModule"  x="10" y="42"/>
 
 </s:Application>

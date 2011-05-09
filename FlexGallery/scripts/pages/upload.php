@@ -29,11 +29,11 @@ if (!empty($_FILES['Filedata'])) {
 		$newName = number_format($microTime, 4,'','');
 		
 		$fileName = $newName . '.' . $extension;
-		//$thumbId = dbInsert("INSERT INTO photos (title, users_user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
+		//$thumbId = dbInsert("INSERT INTO photos (title, user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
 
 		//Uploading and resizing the image. Creating thumbs
 		$uploaded = false;
-			$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], UPLOAD_DIR . $fileName, 800, 800);
+			$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], UPLOAD_DIR . $fileName, 1000, 1000);
 			if (!$uploaded) {
 				break;
 			}
@@ -59,7 +59,7 @@ if (!empty($_FILES['Filedata'])) {
 			$array['filename'] = $fileName;
 			
 			//Adding information to the database
-			$thumbId = dbInsert("INSERT INTO photos (title, users_user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
+			$thumbId = dbInsert("INSERT INTO photos (title, user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
 			echo '<success>' . $value . 'have been successfully uploaded!' . '</error>';
 
 		} else {

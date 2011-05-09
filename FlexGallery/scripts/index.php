@@ -56,6 +56,22 @@ switch ($page) {
 		include './pages/users.php';
 		break;		
 		
+	case 'comment_list':
+		include './pages/comment_list.php';
+		break;	
+
+	case 'add_comment':
+		include './pages/add_comment.php';
+		break;			
+		
+	case 'get_rating':
+		include './pages/get_rating.php';
+		break;
+		
+	case 'add_vote':
+		include './pages/add_vote.php';
+		break;			
+		
 }
 
 ?>
