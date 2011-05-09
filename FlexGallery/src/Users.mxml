@@ -213,6 +213,12 @@
 					sendComment.send();
 					var comment:Comment = new Comment();
 					comment.content = commentField.text;
+					comment.byUser = "you";
+					
+					var currentDate:Date = new Date();
+					comment.date = currentDate.fullYear + "-" + (currentDate.monthUTC + 1) + "-" + currentDate.date + " "
+						+ currentDate.hours + ":" + currentDate.minutes + ":" + currentDate.seconds;
+					
 					imageCommentsCollection.addItem(comment);
 					commentField.enabled = false;
 					commentField.text = "";
@@ -276,16 +282,16 @@
 	
 	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="500" width="112"/>
 
-	<mx:Canvas id="bigPicture" width="529" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)">
+	<mx:Canvas id="bigPicture" width="465" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)">
 	</mx:Canvas>
 	
-	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="640" y="1" height="409" width="159"/>
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="1" height="409" width="221"/>
 
 	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
 					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
 					   columnWidth="108" height="100"
 					   selectionColor="#cccccc" liveScrolling="false"
 					   change="largePicture(event);" y="500"/>
-	<s:TextArea x="641" y="409" width="160" height="90" id="commentField"/>
+	<s:TextArea x="579" y="409" width="222" height="90" id="commentField"/>
 	
 </mx:Module>
