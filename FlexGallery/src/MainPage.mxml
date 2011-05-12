@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   layout="absolute" 
+		   width="800" 
+		   height="600"
+		   creationComplete="initPage(event);">
+	<fx:Declarations>
+		
+		<s:HTTPService id="sendVote" url="./scripts/index.php?page=add_vote"
+					   showBusyCursor="true" method="GET">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+				<vote>
+					{vote.value}
+				</vote>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="getPictures" url="./scripts/index.php?page=picture_list"
+					   showBusyCursor="true" method="GET" result="getUserPictures(event)">
+			<s:request xmlns="">
+				<id>
+					{-1}
+				</id>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="getComments" url="./scripts/index.php?page=comment_list"
+					   showBusyCursor="true" method="GET" result="addComments(event);">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="getRating" url="./scripts/index.php?page=get_rating"
+					   showBusyCursor="true" method="GET" result="addRating(event);">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="sendComment" url="./scripts/index.php?page=add_comment"
+					   showBusyCursor="true" method="POST">
+			<s:request xmlns="">
+				<id>
+					{selectedPicture}
+				</id>
+				<content>
+					{commentField.text}
+				</content>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:Fade duration="300" alphaFrom="0" alphaTo="1" target="{bigPicture}" id="showBigPicture" />
+		<s:Fade duration="300" alphaFrom="1" alphaTo="0" target="{bigPicture}" id="hideBigPicture" />
+		
+		<s:Scale id="zoomPictureEffect" />
+		
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import model.Comment;
+			import model.Photo;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Image;
+			import mx.messaging.messages.CommandMessage;
+			import mx.rpc.events.ResultEvent;
+			
+			import view.GalleryRenderer;
+			
+			protected var usernameAndId:Dictionary;
+			protected var pictures:ArrayCollection;
+			protected var zoomsCount:Number;
+			
+			[Bindable]
+			protected var selectedPictureComment:String;
+			[Bindable]
+			protected var currentPictureRating:Number;			
+			[Bindable]
+			protected var imageCommentsCollection:ArrayCollection;
+			[Bindable]
+			protected var imagesCollection:ArrayCollection;			
+			[Bindable]
+			protected var listProvider:ArrayCollection;
+			[Bindable]
+			protected var selectedUser:uint;
+			[Bindable]
+			protected var selectedPicture:Number;
+			
+			protected function initPage(event:Event):void
+			{
+				getPictures.send();
+				currentPictureRating = 0;
+				zoomsCount = 0;
+				imagesCollection = new ArrayCollection();
+				listProvider = new ArrayCollection();
+				imageCommentsCollection = new ArrayCollection();
+				usernameAndId = new Dictionary();
+				commentField.addEventListener(KeyboardEvent.KEY_DOWN, sendCommentHandler);
+			}
+			
+			//Getting user list. If there is only one user taking it
+			protected function getUsers(event:ResultEvent):void
+			{
+				if (event.result.user.length > 0)
+				{
+					for (var i:uint = 0; i < event.result.user.length; i++) {
+						
+						usernameAndId[event.result.user[i].username] = event.result.user[i].id;
+						listProvider.addItem(event.result.user[i].username);
+						
+					}
+				}
+				else					
+				{
+					usernameAndId[event.result.user.username] = event.result.user.id;
+					listProvider.addItem(event.result.user.username);
+				}
+			}
+			
+			protected function getUserPictures(event:ResultEvent):void
+			{
+				imagesCollection.removeAll();
+				hideBigPicture.play();
+				bigPicture.removeAllChildren();
+				if (event.result.picture != 0)
+				{
+					if (event.result.picture.length > 0)
+					{
+						pictures = event.result.picture
+					}
+					else
+					{
+						pictures = new ArrayCollection();
+						pictures.addItem(event.result.picture);
+					}
+					loadPictures();
+				}				
+			}
+			
+			protected function loadPictures():void
+			{
+				for (var i:uint = 0; i < pictures.length; i++) {
+					
+					var item:Photo = new Photo();
+					item.source = "./upload/smallest/" + pictures[i].title;
+					item.name = pictures[i].title;
+					item.comment = pictures[i].comment;
+					item.photoId = pictures[i].id;
+					imagesCollection.addItem(item);
+					
+				}
+			}
+			
+			protected function addComments(event:ResultEvent):void
+			{
+				if (event.result.comment != 0)
+				{
+					if (event.result.comment.length > 1)
+					{
+						for (var i:Number = 0; i < event.result.comment.length; i++) {
+							
+							var comment:Comment = new Comment();
+							comment.date = event.result.comment[i].date;
+							comment.byUser = event.result.comment[i].username;
+							comment.content = event.result.comment[i].content;
+							imageCommentsCollection.addItem(comment);
+							
+						}
+					}
+					else
+					{
+						var singleComment:Comment = new Comment();
+						singleComment.date = event.result.comment.date;
+						singleComment.byUser = event.result.comment.username;
+						singleComment.content = event.result.comment.content;
+						imageCommentsCollection.addItem(singleComment);
+					}
+				}
+			}
+			
+			protected function getPictureComments(id:Number):void
+			{
+				selectedPicture = id;
+				imageCommentsCollection.removeAll();
+				getComments.send();
+			}
+			
+			protected function largePicture(event:Event):void
+			{								
+				hideBigPicture.play();
+				bigPicture.removeAllChildren();
+				var image:Image = new Image();
+				image.source = "./upload/" + imagesCollection[picturesList.selectedIndex].name;
+				selectedPictureComment = imagesCollection[picturesList.selectedIndex].comment;
+				
+				getPictureComments(imagesCollection[picturesList.selectedIndex].photoId);
+				
+				image.addEventListener(MouseEvent.MOUSE_WHEEL, zoomPicture);
+				image.addEventListener(MouseEvent.MOUSE_DOWN, startDragging);
+				image.addEventListener(MouseEvent.MOUSE_UP, stopDragging);
+				
+				bigPicture.addChild(image);
+				image.width = bigPicture.width;
+				image.height = bigPicture.height;
+				showBigPicture.play();
+				getRating.send();
+			}
+			
+			protected function startDragging(event:MouseEvent):void
+			{
+				var image:Image = event.currentTarget as Image;
+				image.startDrag();
+			}
+			
+			protected function sendCommentHandler(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13)
+				{
+					commentField.enabled = false;
+					sendComment.send();
+					var comment:Comment = new Comment();
+					comment.content = commentField.text;
+					comment.byUser = "you";
+					
+					var currentDate:Date = new Date();
+					comment.date = currentDate.fullYear + "-" + (currentDate.monthUTC + 1) + "-" + currentDate.date + " "
+						+ currentDate.hours + ":" + currentDate.minutes + ":" + currentDate.seconds;
+					
+					imageCommentsCollection.addItem(comment);
+					commentField.enabled = false;
+					commentField.text = "";
+					commentCountdown();
+				}				
+			}
+			
+			protected function commentCountdown():void
+			{
+				var commentTimer:Timer = new Timer(5000, 2);
+				commentTimer.addEventListener(TimerEvent.TIMER_COMPLETE, enableComments);
+				commentTimer.start();
+			}
+			
+			protected function enableComments(e:TimerEvent):void
+			{
+				commentField.enabled = true;
+			}
+			
+			protected function stopDragging(event:MouseEvent):void
+			{
+				var image:Image = event.currentTarget as Image;
+				image.stopDrag();
+			}
+			
+			protected function zoomPicture(event:MouseEvent):void
+			{		
+				zoomPictureEffect.target = bigPicture.getChildAt(0);
+				zoomPictureEffect.duration = 300;
+				if (event.delta > 0 && zoomsCount < 20)
+				{
+					zoomIn(bigPicture.getChildAt(0));
+					zoomsCount += 1;
+					zoomPictureEffect.play();
+				}
+				if (event.delta < 0 && zoomsCount >= -2)				
+				{
+					zoomOut(bigPicture.getChildAt(0));
+					zoomsCount -= 1;
+					zoomPictureEffect.play();
+				}				
+			}
+			
+			protected function zoomIn(element:DisplayObject):void
+			{
+				zoomPictureEffect.scaleXBy = 0.1;
+				zoomPictureEffect.scaleYBy = 0.1;
+			}
+			
+			protected function zoomOut(element:DisplayObject):void
+			{
+				zoomPictureEffect.scaleXBy = -0.1;
+				zoomPictureEffect.scaleYBy = -0.1;
+			}
+			
+			protected function addVote(event:Event):void
+			{
+				sendVote.send();
+			}
+			
+			protected function addRating(event:ResultEvent):void
+			{
+				currentPictureRating = event.result.rating;	
+				var toFixed:Function = function(number, factor) {
+					return (Math.round(number * factor)/factor);
+				}
+				currentPictureRating = toFixed(currentPictureRating, 10);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Canvas id="bigPicture" width="576" height="499"  x="1" y="1" mouseWheel="zoomPicture(event)">
+	</mx:Canvas>
+	
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="100" height="310" width="221"/>
+	
+	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
+					   x="-1" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
+					   columnWidth="108" height="98"
+					   selectionColor="#cccccc" liveScrolling="false"
+					   change="largePicture(event);" y="498"/>
+	
+	<s:TextArea x="579" y="409" width="222" height="90" id="commentField"/>
+	
+	<s:Label x="581" y="83" text="Vote:"/>
+	<s:Label x="745" y="81" id="ratingLabel" text="{currentPictureRating}"/>
+	
+	<s:VSlider x="719" y="83" rotation="90" minimum="1" maximum="5" stepSize="1" value="3" id="vote" changeEnd="addVote(event);" />
+	<s:Label x="580" y="5" width="211" height="54" id="pictureComment" text="{selectedPictureComment}"/>
+	
+</mx:Module>

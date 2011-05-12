@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx" layout="absolute" width="300" height="170"
+		   creationComplete="initEvents()">
+	
+	
+	<mx:states>
+		<mx:State name="notLogged" />
+		<mx:State name="logged" />
+	</mx:states>
+	
+	<fx:Declarations>
+		<s:HTTPService url="./scripts/index.php?page=login" method="POST" showBusyCursor="true"
+					   result="loginRequestSent(event)" id="loginService">
+			<s:request xmlns="">				
+				<username>{username.text}</username>				
+				<password>{password.text}</password>				
+			</s:request>
+		</s:HTTPService>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.rpc.events.ResultEvent;
+			
+			//Variables which are containing the very first values of password and username field's
+			//borderColor
+			private var passwordBorderColor:Number;
+			private var usernameBorderColor:Number;
+			
+			//Executing when the user have been entered wrong username or password
+			protected function loginFail():void
+			{
+				username.text = "";
+				password.text = "";
+				currentState = "notLogged";
+				username.setStyle("borderColor", "red");
+				password.setStyle("borderColor", "red");
+			}
+			
+			//Executing when the user have been entered right username and password
+			protected function loginSuccessful(text:String):void
+			{
+				currentState = "logged";
+				loggedLabel.text = text;
+			}
+			
+			//Getting the result from the request
+			protected function loginRequestSent(event:ResultEvent):void
+			{
+				if (event.result.error)
+				{
+					loginFail();
+					username.text = event.result.error;
+					password.text = event.result.success;
+				}
+				else
+				{
+					loginSuccessful(event.result.success);
+				}
+			}		
+			
+			//Executing when the user press the login button
+			protected function loginButtonClicked(event:Event):void
+			{
+				if (username.text.length < 3 || password.text.length < 3)				
+				{
+					loginFail();			
+					return;
+				}
+				loginService.send();
+			}
+			
+			//Function user for restoring username and password field's
+			//borderColor
+			protected function restoreFields(event:Event):void
+			{
+				username.setStyle("borderColor", usernameBorderColor);
+				password.setStyle("borderColor", passwordBorderColor);
+			}
+			
+			//Attaching events and initializing the vaules of
+			//usernameBorderColor and passwordBorderColor
+			public function initEvents():void
+			{
+				usernameBorderColor = username.getStyle("borderColor");
+				passwordBorderColor = password.getStyle("borderColor");
+				loginButton.addEventListener(MouseEvent.CLICK, loginButtonClicked);
+				username.addEventListener(FocusEvent.FOCUS_IN, restoreFields);
+				password.addEventListener(FocusEvent.FOCUS_IN, restoreFields);
+			}
+		]]>
+	</fx:Script>
+	<s:Panel width="300" height="170" title.notLogged="Login" title.logged="Welcome" id="loginPanel">
+		
+		<s:TextInput x="109" y="27" id="username" visible.logged="false" visible.notLogged="true"/>
+		<s:TextInput x="110" y="68" id="password" displayAsPassword="true" visible.logged="false" visible.notLogged="true"/>
+		<s:Label x="35" y="35" text="Username:" visible.logged="false" visible.notLogged="true"/>
+		<s:Label x="37" y="73" text="Password:" visible.logged="false" visible.notLogged="true"/>
+		<s:Button x="112" y="103" label="Login" id="loginButton" visible.logged="false" visible.notLogged="true"/>
+		<s:Label x="101" y="55" id="loggedLabel" visible.logged="true" visible.notLogged="false"/>
+		
+	</s:Panel>
+</mx:Module>
