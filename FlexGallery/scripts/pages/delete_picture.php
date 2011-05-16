@@ -1,25 +1,23 @@
 <?php
 
-print '<error>';
+if (isUserLogged()) {
 
-var_dump($_POST);
+	if (!empty($_POST['picture'])) {
 
-print '</error>';
+		$picName = dbInputFilter($_POST['picture']);
 
-if (!empty($_POST['picture'])) {
+		$deletePicture = dbDelete('DELETE
+													FROM photos
+													WHERE title = "' . $picName . '"', 70);
 
-	$picName = dbInputFilter($_POST['picture']);
+		unlink(UPLOAD_DIR . $picName);
+		unlink(THUMB1_DIR . $picName);
+		unlink(THUMB2_DIR . $picName);
+		
+		echo '<error>asdasd</error>';
+		
+	}
 
-	$deletePicture = dbDelete('DELETE
-												FROM photos
-												WHERE title = "' . $picName . '"', 70);
-
-	unlink(UPLOAD_DIR . $picName);
-	unlink(THUMB1_DIR . $picName);
-	unlink(THUMB2_DIR . $picName);
-	
-	echo '<error>asdasd</error>';
-	
-}
+	}
 
 ?>

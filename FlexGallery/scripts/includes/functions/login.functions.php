@@ -36,7 +36,7 @@ function isUserLogged()
 	} elseif ($_SESSION['ip'] !== get_user_ip()) {
 		return false;
 	} else {
-		$_SESSION['time'] = $time;
+		//$_SESSION['time'] = $time;
 		return true;
 	}
 }
