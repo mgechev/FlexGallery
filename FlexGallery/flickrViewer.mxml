@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Module xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   xmlns:mx="library://ns.adobe.com/flex/mx"
+		   xmlns:flickr="com.adobe.webapis.flickr.*"
+		   layout="absolute" width="400" height="300">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.webapis.flickr.FlickrService;
+			import com.adobe.webapis.flickr.PagedPhotoList;
+			import com.adobe.webapis.flickr.events.FlickrResultEvent;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			private static const FLICKR_API_KEY:String = "397ca1c9126bbd1d81ecca2a32688c97"; //Public Flickr API key
+			private static const COMMONS_LICENSE_ID:Number = 2;
+			private static const MAX_RETURNED_RECORDS:Number = 50;
+			public var flickrService:FlickrService = new FlickrService(FLICKR_API_KEY);
+			[Bindable]
+			public var photos:ArrayCollection;
+			
+			public function onComplete():void {
+				flickrService.addEventListener(FlickrResultEvent.PHOTOS_SEARCH, onSearchResult);	
+				
+			}
+			public function onSearchResult(event:FlickrResultEvent):void {
+				if (event.success){
+					var resultList:PagedPhotoList = event.data.photos;
+					photos = new ArrayCollection(resultList.photos);
+					
+				}
+				else {
+					Alert.show("No images have this tag","Unsuccessful search");
+				}
+			}
+			public function searchIt(e:MouseEvent):void{ 
+				flickrService.photos.search("",
+					this.tags.text,
+					"any",
+					"",
+					null,
+					null,
+					null,
+					null,
+					COMMONS_LICENSE_ID,
+					"owner_name",
+					MAX_RETURNED_RECORDS);
+			}
+		]]>
+	</fx:Script>
+	<s:VGroup x="0" y="0" width="400" height="300" paddingTop="10" paddingBottom="10">
+		
+	
+	<s:HGroup id="hgroup" x="13" y="16" width="100%" height="25">
+		<s:Label text="Search tag:" fontSize="13"/>
+		<s:TextInput id="tags"/>
+		<s:Button id="searchBtn" click="searchIt(event);" label="Search"/>
+	</s:HGroup>
+	<s:List id="imageDisplay" dataProvider="{photos}"
+			width="100%" height="100%"
+			x="0" y="0">
+		<s:layout>
+			<s:TileLayout  requestedColumnCount="5"
+						   requestedRowCount="8"
+						   horizontalGap="2"
+						   verticalGap="2"/>
+		</s:layout>
+		<s:itemRenderer >
+			<fx:Component>
+				<mx:Image source="{'http://static.flickr.com' +'/' + data.server + '/' + data.id + '_' + data.secret + '_t.jpg'}"
+						  height="100" width="100"
+						  >
+					<fx:Script>
+						<![CDATA[
+							import mx.effects.Zoom;
+						]]> 
+					</fx:Script>
+				</mx:Image> 
+				
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
+	</s:VGroup>
+</mx:Module>

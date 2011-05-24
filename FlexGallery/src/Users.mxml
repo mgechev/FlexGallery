@@ -3,8 +3,8 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx"
 		   layout="absolute" 
-		   width="800" 
-		   height="600"
+		   width="850" 
+		   height="450"
 		   creationComplete="initPage(event);">
 	<fx:Declarations>
 		<s:HTTPService id="getData" url="./scripts/index.php?page=users"
@@ -318,20 +318,20 @@
 	
 	
 	
-	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="500" width="112"/>
+	<mx:List dataProvider="{listProvider}" id="usersList" change="viewUserPictures(event);"  x="0" y="0" height="340" width="96"/>
 
-	<mx:Canvas id="bigPicture" width="465" height="499"  x="112" y="1" mouseWheel="zoomPicture(event)">
+	<mx:Canvas id="bigPicture" width="482" height="338"  x="95" y="1" mouseWheel="zoomPicture(event)">
 	</mx:Canvas>
 	
-	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="30" height="380" width="221"/>
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="view.CommentsRenderer" x="578" y="30" height="216" width="221"/>
 
 	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
-					   x="-1" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
+					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="view.GalleryRenderer"
 					   columnWidth="108" height="98"
 					   selectionColor="#cccccc" liveScrolling="false"
-					   change="largePicture(event);" y="498"/>
+					   change="largePicture(event);" y="340"/>
 	
-	<s:TextArea x="579" y="409" width="222" height="90" id="commentField"/>
+	<s:TextArea x="578" y="247" width="222" height="90" id="commentField"/>
 	
 	<s:Label x="580" y="9" text="Vote:"/>
 	<s:Label x="744" y="7" id="ratingLabel" text="{currentPictureRating}"/>

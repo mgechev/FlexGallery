@@ -3,8 +3,8 @@
 		   xmlns:s="library://ns.adobe.com/flex/spark" 
 		   xmlns:mx="library://ns.adobe.com/flex/mx" 
 		   layout="absolute"
-		   width="400" 
-		   height="300"
+		   width="450" 
+		   height="350"
 		   creationComplete="initPage(event);">
 	
 	<mx:states>

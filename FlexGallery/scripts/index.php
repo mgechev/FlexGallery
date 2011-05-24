@@ -70,7 +70,11 @@ switch ($page) {
 		
 	case 'add_vote':
 		include './pages/add_vote.php';
-		break;			
+		break;		
+
+	case 'login_check':
+		include './pages/login_check.php';
+		break;				
 		
 }
 

@@ -16,14 +16,16 @@
     <application path="FlexGallery.mxml"/>
   </applications>
   <modules>
-    <module application="src/FlexGallery.mxml" destPath="UploadPictures.swf" optimize="true" sourcePath="src/UploadPictures.mxml"/>
-    <module application="src/FlexGallery.mxml" destPath="Registration.swf" optimize="false" sourcePath="src/Registration.mxml"/>
-    <module application="src/FlexGallery.mxml" destPath="Login.swf" optimize="true" sourcePath="src/Login.mxml"/>
-    <module application="src/FlexGallery.mxml" destPath="UserPictures.swf" optimize="true" sourcePath="src/UserPictures.mxml"/>
     <module application="src/FlexGallery.mxml" destPath="EditProfile.swf" optimize="true" sourcePath="src/EditProfile.mxml"/>
     <module application="src/FlexGallery.mxml" destPath="Users.swf" optimize="true" sourcePath="src/Users.mxml"/>
     <module application="src/FlexGallery.mxml" destPath="MainPage.swf" optimize="true" sourcePath="src/MainPage.mxml"/>
+<<<<<<< HEAD
     <module application="src/FlexGallery.mxml" destPath="FlickrSearch.swf" optimize="true" sourcePath="src/FlickrSearch.mxml"/>
+=======
+    <module application="src/FlexGallery.mxml" destPath="UploadPictures.swf" optimize="true" sourcePath="src/UploadPictures.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="Registration.swf" optimize="false" sourcePath="src/Registration.mxml"/>
+    <module application="src/FlexGallery.mxml" destPath="UserPictures.swf" optimize="true" sourcePath="src/UserPictures.mxml"/>
+>>>>>>> 8d9bd620481d350b00e8289e33e18b607e6fe78d
   </modules>
   <buildCSSFiles/>
 </actionScriptProperties>

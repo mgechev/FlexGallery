@@ -1,66 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600">
-	<fx:Declarations>
+			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   minWidth="955"
+			   minHeight="600"
+			   creationComplete="init(event)">
+	
+	<s:states>
+		<s:State name="notLogged" />
+		<s:State name="logged" />
+	</s:states>
+	
+	<fx:Declarations>		
+		<s:HTTPService id="loginCheckService" url="./scripts/index.php?page=login_check"
+					   method="GET" result="loginCheckResult(event)">
+			<s:request xmlns="">
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="logoutUserService" url="./scripts/index.php?page=login_check"
+					   method="GET">
+			<s:request xmlns="">
+				<logoutUser>
+					{'true'}
+				</logoutUser>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService id="updateSessionService" url="./scripts/index.php?page=login_check"
+					   method="GET">
+			<s:request xmlns="">
+				<updateSession>
+					{'true'}
+				</updateSession>
+			</s:request>	
+		</s:HTTPService>
+		
+		<s:HTTPService url="./scripts/index.php?page=login" method="POST" showBusyCursor="true"
+					   result="loginRequestSent(event)" id="loginService">
+			<s:request xmlns="">				
+				<username>{username.text}</username>				
+				<password>{password.text}</password>				
+			</s:request>
+		</s:HTTPService>
+		
 	</fx:Declarations>
 	
+
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
 			import mx.modules.ModuleManager;
+			import mx.rpc.events.ResultEvent;
+			import mx.states.State;
+			
+			import org.osmf.events.TimeEvent;
+			
+			private var isUserLogged:Boolean = false;
 	
 			//private var moduleLoader:IModuleInfo;
 			
-			private function changeModule(module:String):void
-			{
-				currentModule.url = module;
+			private function init(event:Event):void
+			{				
+				loginCheckService.send();
+				var loginTimer:Timer = new Timer(500, 100);
+				loginTimer.addEventListener(TimerEvent.TIMER, makeLoginCheck);
+				loginTimer.start();
+				
+				usernameBorderColor = username.getStyle("borderColor");
+				passwordBorderColor = password.getStyle("borderColor");
+				loginButton.addEventListener(MouseEvent.CLICK, loginButtonClicked);
+				username.addEventListener(FocusEvent.FOCUS_IN, restoreFields);
+				password.addEventListener(FocusEvent.FOCUS_IN, restoreFields);
 				
 			}
 			
-
-			protected function button1_clickHandler(event:MouseEvent):void
+			private function makeLoginCheck(event:Event):void
 			{
-				changeModule("Login.swf");
+				loginCheckService.send();
 			}
-			protected function button2_clickHandler(event:MouseEvent):void
+			
+			private function loginCheckResult(event:ResultEvent):void
+			{
+				if (event.result.login != isUserLogged)
+				{
+					if (event.result.login == true)
+					{
+						loginUser();
+					}
+					else				
+					{
+						logoutUser();
+					}
+				}
+			}
+					
+			private function loginUser():void
+			{
+				currentState = "logged";
+				isUserLogged = true;
+				changeModule("MainPage.swf");
+			}
+			
+			private function logoutUser():void
+			{
+				currentState = "notLogged";
+				isUserLogged = false;
+				changeModule("MainPage.swf");
+			}
+			
+			private function changeModule(module:String):void
+			{
+				currentModule.url = module;				
+			}
+			
+
+			protected function uploadPicturesModule(event:MouseEvent):void
 			{
 				changeModule("UploadPictures.swf");
+				updateSessionService.send();
 			}
-			protected function button3_clickHandler(event:MouseEvent):void
+			protected function registerModule(event:MouseEvent):void
 			{
 				changeModule("Registration.swf");
 			}
-			protected function button4_clickHandler(event:MouseEvent):void
+			protected function userPicturesModule(event:MouseEvent):void
 			{
 				changeModule("UserPictures.swf");
 			}
 			
-			protected function button5_clickHandler(event:MouseEvent):void
+			protected function editProfileModule(event:MouseEvent):void
 			{
 				changeModule("EditProfile.swf");
 			}
 			
-			protected function button6_clickHandler(event:MouseEvent):void
+			protected function usersModule(event:MouseEvent):void
 			{
 				changeModule("Users.swf");
+				updateSessionService.send();
 			}
 			
-			protected function button7_clickHandler(event:MouseEvent):void
+			protected function mainPageModule(event:MouseEvent):void
 			{
 				changeModule("MainPage.swf");
+				if (isUserLogged)
+				{
+					updateSessionService.send();
+				}
+			}
+			
+			protected function logout(event:Event):void
+			{
+				logoutUserService.send();
+				logoutUser();
 			}
 
+			/* LOGIN FUNCTIONS */
+			
+			//Variables which are containing the very first values of password and username field's
+			//borderColor
+			private var passwordBorderColor:Number;
+			private var usernameBorderColor:Number;
+			
+			//Executing when the user have been entered wrong username or password
+			public function loginFail():void
+			{
+				username.text = "";
+				password.text = "";
+				currentState = "notLogged";
+				username.setStyle("borderColor", "red");
+				password.setStyle("borderColor", "red");
+			}
+			
+			//Executing when the user have been entered right username and password
+			public function loginSuccessful(text:String):void
+			{
+				currentState = "logged";
+				loggedLabel.text = text;
+			}
+			
+			//Getting the result from the request
+			protected function loginRequestSent(event:ResultEvent):void
+			{
+				if (event.result.error)
+				{
+					loginFail();
+					username.text = event.result.error;
+					password.text = event.result.success;
+				}
+				else
+				{
+					loginSuccessful(event.result.success);
+				}
+			}		
+			
+			//Executing when the user press the login button
+			protected function loginButtonClicked(event:Event):void
+			{
+				if (username.text.length < 3 || password.text.length < 3)				
+				{
+					loginFail();			
+					return;
+				}
+				loginService.send();
+			}
+			
+			//Function user for restoring username and password field's
+			//borderColor
+			protected function restoreFields(event:Event):void
+			{
+				username.setStyle("borderColor", usernameBorderColor);
+				password.setStyle("borderColor", passwordBorderColor);
+			}
+			
+			//Attaching events and initializing the vaules of
+			//usernameBorderColor and passwordBorderColor
+			public function initEvents():void
+			{
+
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:Button label="Login" click="button1_clickHandler(event)"  x="865" y="126" width="80"/>
-	<s:Button label="Upload" click="button2_clickHandler(event)"  x="865" y="68" width="80"/>
-	<s:Button label="Register" click="button3_clickHandler(event)"  x="865" y="39" width="80"/>
-	<s:Button label="Pictures" click="button4_clickHandler(event)"  x="865" y="97" width="80"/>
-	<s:Button label="Edit Profile" click="button5_clickHandler(event)"  x="865" y="10"/>
-	<s:Button label="Users" click="button6_clickHandler(event)"  x="865" y="155" width="80"/>
-	<s:Button label="Main" click="button7_clickHandler(event)"  x="865" y="181" width="80"/>
+	<s:Panel width="300" title.notLogged="Login" title.logged="Welcome"
+			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
+		
+		<s:TextInput id="username" visible.logged="false" visible.notLogged="true" x="84" y="10"/>
+		<s:TextInput id="password" displayAsPassword="true" visible.logged="false" visible.notLogged="true" x="84" y="51"/>
+		<s:Label text="Username:" visible.logged="false" visible.notLogged="true" x="10" y="18"/>
+		<s:Label text="Password:" visible.logged="false" visible.notLogged="true" x="11" y="56"/>
+		<s:Button  label="Login" id="loginButton" visible.logged="false" visible.notLogged="true" x="220" y="11"/>
+		<s:Label id="loggedLabel" visible.logged="true" visible.notLogged="false" x="92" y="24" x.logged="68" y.logged="30"/>
+		
+	</s:Panel>
+	
+	<s:Button label="Upload" click="uploadPicturesModule(event)" includeIn="logged" width="80" x="186" y="120"/>
+	<s:Button label="Register" click="registerModule(event)" includeIn="notLogged" width="80" x="10" y="120"/>
+	<s:Button label="Pictures" click="userPicturesModule(event)" includeIn="logged" width="80" x="274" y="120"/>
+	<s:Button label="Edit Profile" click="editProfileModule(event)" includeIn="logged" x="10" y="120"/>
+	<s:Button label="Users" click="usersModule(event)" includeIn="logged" x="362" y="120"/>
+	<s:Button label="Home" click="mainPageModule(event)" x="538" y="120" x.notLogged="98" y.notLogged="120" x.logged="440" y.logged="120"/>
 
-	<mx:ModuleLoader url="MainPage.swf" id="currentModule"  x="10" y="42"/>
+	<mx:ModuleLoader url="MainPage.swf" id="currentModule" x="0" y="150"/>
+	<s:Button includeIn="logged" x="98" y="120" click="logout(event)" label="Logout" width="80"/>
 
 </s:Application>
