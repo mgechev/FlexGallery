@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   width="240" height="80">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<s:Fade id="showEffect" alphaFrom="0" alphaTo="1" targets="{[itemImage,clickBtn]}" duration="1200"  />
+	</fx:Declarations>
+	<s:layout>
+		<s:VerticalLayout horizontalAlign="center" verticalAlign="middle" gap="10"
+						  paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10"/>
+	</s:layout>
+	<mx:ProgressBar id="imgLoader" width="100%" height="100%" source="itemImage" />
+	<mx:Image id="itemImage"  includeInLayout="false"/>
+	<s:Button id="clickBtn" label="open in flickr" includeInLayout="false"/>
+</s:TitleWindow>
