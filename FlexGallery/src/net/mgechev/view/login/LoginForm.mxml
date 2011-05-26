@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			import net.mgechev.events.LoginEvent;
+			import net.mgechev.vo.LoginVO;
+			public function login(event:MouseEvent):void
+			{
+				var loginEvent:LoginEvent = new LoginEvent(new LoginVO(usernameInput.text, passwordInput.text));
+				loginEvent.dispatch();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Panel width="300" title="Login"
+			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
+		
+		<s:TextInput id="usernameInput" visible="true" x="84" y="10"/>
+		<s:TextInput id="passwordInput" displayAsPassword="true" visible="true" x="84" y="51"/>
+		<s:Label text="Username:" visible="true" x="10" y="18"/>
+		<s:Label text="Password:" visible="true" x="11" y="56"/>
+		<s:Button label="Login" id="loginButton" visible="true" click="login(event);" x="220" y="11"/>
+		
+	</s:Panel>
+	
+</mx:VBox>

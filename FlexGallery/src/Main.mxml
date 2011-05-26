@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   minWidth="955"
+			   minHeight="600" 
+			   xmlns:login="net.mgechev.view.login.*" xmlns:control="net.mgechev.control.*" xmlns:business="net.mgechev.business.*" xmlns:view="net.mgechev.view.*">
+	
+	
+	<fx:Declarations>		
+		<control:Controller id="controller" />
+		<business:Services id="services" />
+		<s:VerticalLayout />
+	</fx:Declarations>
+	
+
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.model.ModelLocator;
+			
+			import net.mgechev.model.ViewModelLocator;
+		[Bindable]		
+		private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		
+		]]>
+	</fx:Script>
+
+	<view:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
+	
+	<mx:ViewStack width="304" height="122" visible="true" selectedIndex="{modelLocator.workflowState}" x="0" y="48">
+		<login:LoginForm />
+		<login:WelcomeScreen username="{modelLocator.username}" />
+	</mx:ViewStack>
+
+	<view:EditProfileForm email="{modelLocator.email}"
+	visible="{((modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE))}"  x="5" y="178"/>
+	
+</s:Application>

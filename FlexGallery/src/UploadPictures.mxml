@@ -19,7 +19,7 @@
 	
 		<fx:Script>
 			<![CDATA[		
-				import model.Photo;
+				import temp.model.Photo;
 				
 				import mx.collections.ArrayCollection;
 				import mx.controls.List;

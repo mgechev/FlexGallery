@@ -9,16 +9,16 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged())
 	
 	//Checking is the user logged
 	$isValidUser =
-	dbGetRow("SELECT user_id, username
+	dbGetArray("SELECT user_id, username, email
 						FROM users 
-						WHERE username = '$user' && password = '$pass' LIMIT 1", 5);
+						WHERE username = '$user' AND password = '$pass' LIMIT 1", 5);
 
 	//Printing the result
 	if (count($isValidUser) > 0) {
 	
-		loginUser($isValidUser);
+		loginUser($isValidUser[0]);
 		
-		echo '<success>Welcome '. $isValidUser['username'] .'</success>';
+		echo '<success><username>'. $isValidUser[0]['username'] .'</username><id>' . $isValidUser[0]['user_id'] .'</id><email>' . $isValidUser[0]['email'] .'</email></success>';
 	
 	} else {
 	
@@ -27,7 +27,7 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged())
 	}	
 } else if (isUserLogged()) {
 
-	echo '<success> Welcome ' . $_SESSION['username']  . '</success>';
+	echo '<success><username>'. $_SESSION['username'] .'</username><id>' . $_SESSION['id'] .'</id><email>' . $_SESSION['email'] .'</email></success>';
 	exit;
 	
 }

@@ -1,7 +1,7 @@
 <?php
 
 if (isUserLogged()) {
-
+	
 	if (!empty($_GET['id']) && !empty($_GET['vote'])) {
 
 		$id = (int)$_GET['id'];

@@ -1,7 +1,7 @@
 <?php
 
 if (isUserLogged()) {
-
+	//adding comment to $_POST['id'] picture
 	if (!empty($_POST['content']) && !empty($_POST['id'])) {
 	
 		$id = (int)$_POST['id'];

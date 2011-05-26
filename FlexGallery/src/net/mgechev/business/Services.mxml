@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:cairngorm="com.adobe.cairngorm.business.*">
+	
+	<mx:HTTPService
+		id="loginService"
+		url="./scripts/index.php?page=login"
+		method="POST">
+		
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="logoutService"
+		url="./scripts/index.php?page=login_check"
+		method="POST">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="editProfileService"
+		url="./scripts/index.php?page=edit_profile"
+		method="POST">
+	</mx:HTTPService>
+	
+</cairngorm:ServiceLocator>

@@ -45,6 +45,7 @@ function loginUser($array)
 {
 	$_SESSION['id'] = $array['user_id'];
 	$_SESSION['username'] = $array['username'];
+	$_SESSION['email'] = $array['email'];
 	$_SESSION['ip'] = get_user_ip();
 	$_SESSION['time'] = time();
 
