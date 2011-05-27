@@ -7,25 +7,25 @@ package net.mgechev.business
 	import mx.rpc.http.HTTPService;
 	
 	import net.mgechev.vo.ProfileVO;
-
-	public class EditProfileDelegate
+	
+	public class RegistrationDelegate
 	{
 		
 		private var responder:IResponder;
 		private var service:mx.rpc.http.HTTPService;
 		
-		public function EditProfileDelegate(responder:IResponder) 
+		public function RegistrationDelegate(responder:IResponder) 
 		{			
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getHTTPService("editProfileService");
+			this.service = ServiceLocator.getInstance().getHTTPService("registrationService");
 		}
 		
-		public function editProfile(editPrifileData:ProfileVO):void 
+		public function register(registrationData:ProfileVO):void 
 		{			
 			var token:AsyncToken = this.service.send( 
-				{email:editPrifileData.email,
-				password:editPrifileData.password,
-				oldPassword:editPrifileData.oldPassword} );
+				{email:registrationData.email,
+					password:registrationData.password,
+					username:registrationData.username} );
 			token.addResponder(responder); 
 		}
 		

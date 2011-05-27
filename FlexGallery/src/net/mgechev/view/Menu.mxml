@@ -6,6 +6,8 @@
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
+			
 			import net.mgechev.events.ChangePageEvent;
 			import net.mgechev.model.ViewModelLocator;
 			

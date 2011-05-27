@@ -7,21 +7,23 @@ package net.mgechev.commands
 	import mx.rpc.IResponder;
 	
 	import net.mgechev.business.EditProfileDelegate;
+	import net.mgechev.business.RegistrationDelegate;
 	import net.mgechev.events.EditProfileEvent;
+	import net.mgechev.events.RegistrationEvent;
 	import net.mgechev.model.ViewModelLocator;
 	import net.mgechev.vo.ProfileVO;
-
-	public class EditProfileCommand implements ICommand, IResponder
+	
+	public class RegistrationCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var editProfileData:ProfileVO;
 		
-		public function EditProfileCommand()
+		public function RegistrationCommand()
 		{
 		}
 		
 		public function isValidData(data:ProfileVO):Boolean
 		{
+
 			if (data.password != data.confirmPassword)
 			{
 				Alert.show("Passwords doesn't match!");
@@ -37,12 +39,11 @@ package net.mgechev.commands
 		
 		public function execute(event:CairngormEvent):void
 		{
-			var editProfileEvent:EditProfileEvent = event as EditProfileEvent;
-			if (isValidData(editProfileEvent.editProfileData))
+			var registerEvent:RegistrationEvent = event as RegistrationEvent;
+			if (isValidData(registerEvent.registerData))
 			{
-				var delegate:EditProfileDelegate = new EditProfileDelegate(this);
-				editProfileData = editProfileEvent.editProfileData;
-				delegate.editProfile(editProfileEvent.editProfileData);
+				var delegate:RegistrationDelegate = new RegistrationDelegate(this);
+				delegate.register(registerEvent.registerData);
 			}
 		}
 		
@@ -55,7 +56,6 @@ package net.mgechev.commands
 			else			
 			{
 				Alert.show(event.result.success);
-				modelLocator.email = editProfileData.email;
 			}
 		}
 		

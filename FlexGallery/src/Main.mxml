@@ -33,6 +33,13 @@
 	</mx:ViewStack>
 
 	<view:EditProfileForm email="{modelLocator.email}"
-	visible="{((modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE))}"  x="5" y="178"/>
+	visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
+	modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="5" y="178"/>
+	
+	<view:RegistrationForm visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
+						   modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="3" y="178"/>
+	
+	<view:UploadForm progress="{modelLocator.uploadProgress}" visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
+					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
 	
 </s:Application>

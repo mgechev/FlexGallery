@@ -2,6 +2,8 @@ package net.mgechev.model
 {
 	import com.adobe.cairngorm.model.IModelLocator;
 	
+	import flash.utils.Dictionary;
+	
 	[Bindable]
 	public class ViewModelLocator implements IModelLocator {
 		
@@ -25,6 +27,9 @@ package net.mgechev.model
 		public var username:String;
 		public var id:uint;
 		public var email:String;
+		
+		public var filesUploaded:Dictionary;
+		public var uploadProgress:uint = 0;
 		
 		public static const LOGIN_SCREEN:uint = 0;
 		public static const WELCOME_SCREEN:uint = 1;

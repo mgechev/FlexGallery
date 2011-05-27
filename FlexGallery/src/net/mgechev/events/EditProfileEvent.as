@@ -4,14 +4,14 @@ package net.mgechev.events
 	
 	import flash.events.Event;
 	
-	import net.mgechev.vo.EditProfileVO;
+	import net.mgechev.vo.ProfileVO;
 	
 	public class EditProfileEvent extends CairngormEvent
 	{
 		public static const EDITPROFILE:String = "EditProfile";
-		public var editProfileData:EditProfileVO;
+		public var editProfileData:ProfileVO;
 		
-		public function EditProfileEvent(editProfileData:EditProfileVO)
+		public function EditProfileEvent(editProfileData:ProfileVO)
 		{
 			this.editProfileData = editProfileData;
 			super(EDITPROFILE);

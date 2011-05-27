@@ -73,7 +73,6 @@ successfully completed!</success>';
 		echo '<error>Error! Please try again later!</error>';
 	
 	}
-	
 }
 
 ?>

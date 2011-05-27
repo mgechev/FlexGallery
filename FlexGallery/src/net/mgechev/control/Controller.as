@@ -8,10 +8,14 @@ package net.mgechev.control
 	import net.mgechev.commands.EditProfileCommand;
 	import net.mgechev.commands.LoginCommand;
 	import net.mgechev.commands.LogoutCommand;
+	import net.mgechev.commands.RegistrationCommand;
+	import net.mgechev.commands.UploadCommand;
 	import net.mgechev.events.ChangePageEvent;
 	import net.mgechev.events.EditProfileEvent;
 	import net.mgechev.events.LoginEvent;
 	import net.mgechev.events.LogoutEvent;
+	import net.mgechev.events.RegistrationEvent;
+	import net.mgechev.events.UploadEvent;
 	import net.mgechev.model.ViewModelLocator;
 	
 	public class Controller extends FrontController 
@@ -27,6 +31,8 @@ package net.mgechev.control
 			this.addCommand(LogoutEvent.LOGOUT, LogoutCommand);
 			this.addCommand(ChangePageEvent.CHANGEPAGE, ChangePageCommand);
 			this.addCommand(EditProfileEvent.EDITPROFILE, EditProfileCommand);
+			this.addCommand(RegistrationEvent.REGISTER, RegistrationCommand);
+			this.addCommand(UploadEvent.UPLOAD, UploadCommand);
 		}
 		
 	}

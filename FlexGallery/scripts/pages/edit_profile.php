@@ -48,14 +48,8 @@ if (isUserLogged()) {
 		
 		}
 		
-	} else {
-		
-		//Getting user's email
-		$getEmail = dbGetRow('SELECT email
-												FROM users
-												WHERE user_id = ' . $_SESSION['id'] . '', 65);
-												
-		echo '<email>' . $getEmail['email'] . '</email>';
+	} else {		
+		echo '<error>Please fill required data!</error>';
 	}
 }
 

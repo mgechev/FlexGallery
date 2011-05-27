@@ -24,7 +24,8 @@ package net.mgechev.business
 		
 		public function logout():void 
 		{			
-			var token:AsyncToken = this.service.send( {logoutUser:1} );
+			var logout:uint = 1;
+			var token:AsyncToken = this.service.send( {logoutUser:logout} );
 			token.addResponder(responder); 
 		}
 		

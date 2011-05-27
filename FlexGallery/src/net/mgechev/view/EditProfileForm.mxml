@@ -10,7 +10,7 @@
 			import mx.controls.Alert;
 			
 			import net.mgechev.events.EditProfileEvent;
-			import net.mgechev.vo.EditProfileVO;
+			import net.mgechev.vo.ProfileVO;
 			
 			[Bindable]
 			public var email:String;
@@ -18,7 +18,7 @@
 			public function editProfile(event:MouseEvent):void
 			{			
 				var editProfileEvent:EditProfileEvent = new EditProfileEvent(
-					new EditProfileVO(oldPasswordInput.text, passwordInput.text, 
+					new ProfileVO(oldPasswordInput.text, passwordInput.text, 
 						confirmPasswordInput.text, emailInput.text));
 				editProfileEvent.dispatch();
 					
@@ -29,21 +29,13 @@
 	<s:Panel title="Edit Profile" width="100%" height="100%">	
 		
 		<s:TextInput x="168" y="53" id="oldPasswordInput" displayAsPassword="true"/>
-		
 		<s:TextInput x="168" y="88" id="passwordInput" displayAsPassword="true"/>
-		
 		<s:TextInput x="168" y="123" id="confirmPasswordInput" displayAsPassword="true"/>
-		
 		<s:TextInput x="168" y="157" id="emailInput" text="{email}"/>
-		
 		<s:Label x="79" y="59" text="Old password:"/>
-		
 		<s:Label x="99" y="94" text="Password:"/>
-		
 		<s:Label x="40" y="129" text="Repeat the password:"/>
-		
 		<s:Label x="122" y="163" text="Email:"/>
-		
 		<s:Button label="Edit" id="registerButton" x="170" y="184" click="editProfile(event);"/>
 		
 		

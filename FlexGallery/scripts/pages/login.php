@@ -19,6 +19,11 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged())
 		loginUser($isValidUser[0]);
 		
 		echo '<success><username>'. $isValidUser[0]['username'] .'</username><id>' . $isValidUser[0]['user_id'] .'</id><email>' . $isValidUser[0]['email'] .'</email></success>';
+		
+		$myFile = "testFile.txt";
+		$fh = fopen($myFile, 'w') or die("can't open file");
+		fwrite($fh, '<success><username>'. $isValidUser[0]['username'] .'</username><id>' . $isValidUser[0]['user_id'] .'</id><email>' . $isValidUser[0]['email'] .'</email></success>');
+		fclose($fh);
 	
 	} else {
 	
