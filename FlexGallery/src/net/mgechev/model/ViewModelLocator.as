@@ -56,6 +56,35 @@ package net.mgechev.model
 		public static const EDIT_PROFILE:uint = 4;
 		public static const VIEW_USERS:uint = 5;
 		
+		public static const PICTURES_PER_PAGE:uint = 8;
+		
+		public function logout():void
+		{
+			workflowState = 0;
+			username = null;
+			id = 0;
+			email = null;
+			currentPage = ViewModelLocator.HOME;
+		}
+		
+		public function resetData():void
+		{
+			usersList = null;
+			
+			selectedPicture = null;
+			picturesList = null;
+			pictureComments = null;
+			picturesVoted = new ArrayCollection();
+			pictureRating = 0;
+			pictureRatingCount = 0;
+			pictureRatingSum = 0;
+			pageReached = 0;
+			
+			filesUploaded = null;
+			uploadProgress = 0;		
+			
+		}
+		
 	}
 }
 		

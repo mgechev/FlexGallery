@@ -2,9 +2,9 @@
 
 if (isUserLogged()) {
 
-	if (!empty($_POST['picture'])) {
+	if (!empty($_GET['picture'])) {
 
-		$picName = dbInputFilter($_POST['picture']);
+		$picName = dbInputFilter($_GET['picture']);
 
 		$deletePicture = dbDelete('DELETE
 													FROM photos
@@ -14,10 +14,8 @@ if (isUserLogged()) {
 		unlink(THUMB1_DIR . $picName);
 		unlink(THUMB2_DIR . $picName);
 		
-		echo '<error>asdasd</error>';
-		
 	}
 
-	}
+}
 
 ?>

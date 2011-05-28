@@ -56,8 +56,8 @@ switch ($page) {
 		include './pages/users.php';
 		break;		
 		
-	case 'comment_list':
-		include './pages/comment_list.php';
+	case 'picture_details':
+		include './pages/picture_details.php';
 		break;	
 
 	case 'add_comment':

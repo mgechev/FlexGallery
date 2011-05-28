@@ -32,7 +32,7 @@ package net.mgechev.commands.gallery
 		public function result(event:Object):void
 		{
 			modelLocator.picturesList = new ArrayCollection();
-			if (event.result.picture.length > 0)
+			if (event.result.picture != 0)
 			{
 				for (var i:uint = 0; i < event.result.picture.length; i++)
 				{					
@@ -42,14 +42,6 @@ package net.mgechev.commands.gallery
 					photo.comment = event.result.picture[i].comment;
 					modelLocator.picturesList.addItem(photo);
 				}
-			}
-			else					
-			{
-				var singlePhoto:PhotoVO = new PhotoVO();
-				singlePhoto.id = event.result.picture.id;
-				singlePhoto.name = event.result.picture.title;
-				singlePhoto.comment = event.result.picture.comment;
-				modelLocator.picturesList.addItem(singlePhoto);
 			}
 			modelLocator.selectedPicture = modelLocator.picturesList[0];
 		}

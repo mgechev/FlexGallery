@@ -2,8 +2,10 @@
 
 if (isUserLogged()) {
 
-	$usersList = dbGetArray('SELECT user_id, username
+	$usersList = dbGetArray('SELECT users.user_id, users.username
 											FROM users
+											RIGHT JOIN photos ON photos.user_id = users.user_id
+											GROUP BY users.user_id
 											ORDER BY user_id ASC', 80);
 											
 

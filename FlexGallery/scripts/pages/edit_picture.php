@@ -2,9 +2,9 @@
 
 if (isUserLogged()) {
 
-	if (!empty($_POST['picture'])) {
+	if (!empty($_POST['id'])) {
 
-		$picName = dbInputFilter($_POST['picture']);
+		$id = dbInputFilter($_POST['id']);
 		
 		if (!empty($_POST['comment'])) {
 		
@@ -14,7 +14,7 @@ if (isUserLogged()) {
 				$addComment = dbUpdate('UPDATE photos
 															SET
 															comment = "' . $comment . '"
-															WHERE title = "' . $picName . '"', 65);
+															WHERE photo_id = "' . $id . '"', 65);
 															
 			}
 		

@@ -73,5 +73,25 @@
 		showBusyCursor="true"
 		method="GET">
 	</mx:HTTPService>
-		
+	
+	<mx:HTTPService 
+		id="deletePictureService"
+		url="./scripts/index.php?page=delete_picture"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="editCommentService"
+		url="./scripts/index.php?page=edit_picture"
+		showBusyCursor="true"
+		method="POST">
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="loginCheckService" 
+		url="./scripts/index.php?page=login_check"
+		method="GET">
+	</mx:HTTPService>
+	
 </cairngorm:ServiceLocator>

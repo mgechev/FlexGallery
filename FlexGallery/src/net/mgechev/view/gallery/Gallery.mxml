@@ -70,8 +70,11 @@
 					commentField.focusEnabled = false;
 					commentField.enabled = false;
 					var currentDate:Date = new Date();
-					var date:String = currentDate.fullYear + "-" + (currentDate.monthUTC + 1) + "-" + currentDate.date + " "
-						+ currentDate.hours + ":" + currentDate.minutes + ":" + currentDate.seconds;
+					var date:String = currentDate.fullYear + "-" + 
+						(currentDate.monthUTC + 1) + "-" + 
+						currentDate.date + " "
+						+ currentDate.hours + ":" + 
+						currentDate.minutes + ":" + currentDate.seconds;
 					
 					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
 						date, picturesList.selectedItem.id);
@@ -112,7 +115,7 @@
 			
 			protected function nextPage(event:Event):void
 			{
-				if (modelLocator.picturesList.length > 7)
+				if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
 				{
 					modelLocator.pageReached = modelLocator.pageReached + 1;
 					getPictures(modelLocator.pageReached);
@@ -169,7 +172,7 @@
 	</s:List>
 	
 	<s:TextArea x="578" y="328" width="222" height="49" id="commentField"
-				enabled="{modelLocator.username != null}"
+				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
 			    keyDown="sendComment(event);" text="Enter comment end press Enter..." 
 				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
 				(commentField.text=''):
@@ -180,7 +183,8 @@
 	<s:Label x="581" y="5" text="Vote:"/>
 	<s:Label x="720" y="4" id="ratingLabel" text="{modelLocator.pictureRating}"/>
 	
-	<s:VSlider x="712" y="5" rotation="90" enabled="{modelLocator.username != null}"
+	<s:VSlider x="712" y="5" rotation="90" 
+			   enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
 			   minimum="1" maximum="5" stepSize="1" 
 			   value="3" id="voteInput" 
 			   changeEnd="sendVote(event);" />

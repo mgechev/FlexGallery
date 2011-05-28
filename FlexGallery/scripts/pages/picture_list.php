@@ -1,32 +1,25 @@
 <?php
 
 //if (isUserLogged()) {
-
 	//Getting list of all pictures by the user
-	
-	if (empty($_GET['id'])) {
-	
-		$userId = $_SESSION['id'];
-	
-	} else {
-	
+	if (!empty($_GET['id'])) {
 		$userId = (int)$_GET['id'];
-	
+	} else {
+		$userId = -1;
 	}
+	
+	if (!empty($_GET['pageNumber'])) {
+		$page = (int)$_GET['pageNumber'];
+	} else {
+		$page = 0;
+	}
+
 	if ($userId == -1) {	
 		
 		$getPicturesByUserId =
-		dbGetArray('SELECT photos.title, photos.photo_id, photos.comment, AVG( vote.rate ) AS rate
+		dbGetArray('SELECT photos.title, photos.photo_id, photos.comment
 							FROM photos
-							LEFT JOIN vote ON vote.photo_id = photos.photo_id
-							WHERE vote.rate IS NOT NULL
-							GROUP BY photos.photo_id
-							UNION
-							SELECT photos.title, photos.photo_id, photos.comment, 0 AS rate
-							FROM photos
-							LEFT JOIN vote ON vote.photo_id = photos.photo_id
-							WHERE vote.rate IS NULL
-							GROUP BY photos.photo_id', 35);	
+							LIMIT '. $page * PAGE_SIZE . ', '. PAGE_SIZE .'', 35);	
 		
 	} else {
 	
@@ -34,7 +27,8 @@
 		dbGetArray(
 		'SELECT title, photo_id, comment
 		FROM photos
-		WHERE user_id = '. $userId .'', 35);
+		WHERE user_id = '. $userId .'
+		LIMIT '. $page * PAGE_SIZE . ', '. PAGE_SIZE .'', 35);
 		
 	}
 	

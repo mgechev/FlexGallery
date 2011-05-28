@@ -40,7 +40,7 @@ if (isUserLogged()) {
 					break;
 				}
 				
-				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 140, 140);
+				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 200, 200);
 				if (!$uploaded) {
 					break;
 				}

@@ -12,6 +12,7 @@ define('THUMB1_DIR', '../upload/bigger/');
 define('THUMB2_DIR', '../upload/smallest/');
 
 define('USER_SESSION_TIME', 3600);
+define('PAGE_SIZE', 8);
 
 if (DEBUG_MODE) {
 	error_reporting(30719);

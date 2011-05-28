@@ -41,11 +41,17 @@
 			
 		]]>
 	</fx:Script>
-	<s:Button label="Upload" click="changePage(event);" id="btnUpload" visible="{logged}" width="80" x="176" y="10"/>
-	<s:Button label="Register" click="changePage(event);" id="btnRegister" visible="{!logged}" width="80" x="88" y="10"/>
-	<s:Button label="Pictures" click="changePage(event);" id="btnPictures" visible="{logged}" width="80" x="342" y="10"/>
-	<s:Button label="Edit Profile" click="changePage(event);" id="btnEditProfile" visible="{logged}" x="88" y="10"/>
-	<s:Button label="Users" click="changePage(event);" id="btnUsers" visible="{logged}" x="264" y="10"/>
-	<s:Button label="Home" click="changePage(event);" id="btnHome" x="10" y="10"/>
+	<s:Button label="Upload" click="changePage(event);"
+			  id="btnUpload" visible="{logged}" width="80" x="176" y="10"/>
+	<s:Button label="Register" click="changePage(event);"
+			  id="btnRegister" visible="{!logged}" width="80" x="88" y="10"/>
+	<s:Button label="Pictures" click="changePage(event);"
+			  id="btnPictures" visible="{logged}" width="80" x="342" y="10"/>
+	<s:Button label="Edit Profile" click="changePage(event);" 
+			  id="btnEditProfile" visible="{logged}" x="88" y="10"/>
+	<s:Button label="Users" click="changePage(event);"
+			  id="btnUsers" visible="{logged}" x="264" y="10"/>
+	<s:Button label="Home" click="changePage(event);" 
+			  id="btnHome" x="10" y="10"/>
 
 </s:Group>

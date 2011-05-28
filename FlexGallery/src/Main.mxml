@@ -4,7 +4,14 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   minWidth="955"
 			   minHeight="600" 
-			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" xmlns:control="net.mgechev.control.*" xmlns:business="net.mgechev.business.*" xmlns:view="net.mgechev.view.*" xmlns:gallery="net.mgechev.view.gallery.*" xmlns:picturecontrol="net.mgechev.view.gallery.picturecontrol.*" xmlns:appcontrol="net.mgechev.view.appcontrol.*">
+			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" 
+			   xmlns:control="net.mgechev.control.*" 
+			   xmlns:business="net.mgechev.business.*" 
+			   xmlns:view="net.mgechev.view.*" 
+			   xmlns:gallery="net.mgechev.view.gallery.*" 
+			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*" 
+			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
+			   creationComplete="init(event);">
 	
 	
 	<fx:Declarations>		
@@ -18,9 +25,27 @@
 		<![CDATA[
 			import com.adobe.cairngorm.model.ModelLocator;
 			
+			import mx.controls.Alert;
+			
+			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
-		[Bindable]		
-		private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			
+			[Bindable]		
+			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			
+			public function init(event:Event):void
+			{
+				loginCheck(new Event("login"));
+				var loginCheckTimer:Timer = new Timer(5000, 0);
+				loginCheckTimer.addEventListener(TimerEvent.TIMER, loginCheck);
+				loginCheckTimer.start();
+			}
+			
+			public function loginCheck(event:Event):void
+			{
+				var loginCheck:LoginCheckEvent = new LoginCheckEvent();
+				loginCheck.dispatch();
+			}
 		
 		]]>
 	</fx:Script>
@@ -50,5 +75,9 @@
 	
 	<gallery:Gallery isUserpanelEnabled="false"
 					 visible="{modelLocator.currentPage == ViewModelLocator.HOME}"  x="0" y="178"/>
+	
+	<picturecontrol:EditPictures 
+					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="176"/>
 	
 </s:Application>
