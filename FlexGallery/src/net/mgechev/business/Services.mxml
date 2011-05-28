@@ -31,5 +31,68 @@
 		method="POST"
 		showBusyCursor="true">
 	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="getUserPicturesService" 
+		url="./scripts/index.php?page=picture_list"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+		
+	<mx:HTTPService 
+		id="getPictureCommentService"
+		url="./scripts/index.php?page=comment_list"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="getUserListService" 
+		url="./scripts/index.php?page=users"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="sendComment" 
+		url="./scripts/index.php?page=add_comment"
+		showBusyCursor="true"
+		method="POST">
+	</mx:HTTPService>
+	<!--
+	<s:request xmlns="">
+	<id>
+	{selectedPicture}
+	</id>
+	<content>
+	{commentField.text}
+	</content>
+	</s:request>	
+	-->
+	<mx:HTTPService
+		id="getComments" 
+		url="./scripts/index.php?page=comment_list"
+		showBusyCursor="true" 
+		method="GET">
+	</mx:HTTPService>
+	<!--		<s:request xmlns="">
+			<id>
+				{selectedPicture}
+			</id>
+		</s:request>	-->
+	
+	
+	<mx:HTTPService 
+		id="getRating" 
+		url="./scripts/index.php?page=get_rating"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	<!--	<s:request xmlns="">
+			<id>
+				{selectedPicture}
+			</id>
+		</s:request>	
+	</s:HTTPService> -->
 		
 </cairngorm:ServiceLocator>

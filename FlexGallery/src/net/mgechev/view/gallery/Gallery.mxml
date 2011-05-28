@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="800"
+		 height="454"
+		 creationComplete="addEventListeners(event);">
+	<fx:Declarations>
+		<s:Fade alphaFrom="1" alphaTo="0" duration="300" target="{bigPicture}" id="hide" />
+		<s:Fade alphaFrom="0" alphaTo="1" duration="300" target="{bigPicture}" id="show" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.controls.scrollClasses.ScrollBar;
+			
+			import net.mgechev.events.gallery.GetPictureCommentsEvent;
+			import net.mgechev.events.gallery.LoadUserPicturesEvent;
+			import net.mgechev.events.gallery.PictureCommentEvent;
+			import net.mgechev.model.ViewModelLocator;
+			import net.mgechev.vo.CommentVO;
+			
+			import spark.components.Scroller;
+			
+			[Bindable]
+			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			
+			[Bindable]
+			public var commentsProvider:ArrayCollection;
+			[Bindable]
+			public var picturesProvider:ArrayCollection;
+			[Bindable]
+			public var currentPictureRating:Number = 0;			
+			[Bindable]
+			public var isUserpanelEnabled:Boolean = false;
+			
+			private function addEventListeners(event:Event):void
+			{
+				//picturesList.Scroller.addEventListener(Event.CHANGE, picturesListScrolled);
+			}
+			
+			protected function loadUserPictures(event:Event):void				
+			{
+				var loadPictures:LoadUserPicturesEvent = new LoadUserPicturesEvent(usersList.selectedItem.id);
+				loadPictures.dispatch();
+			}
+			
+			protected function scalePicture(event:Event):void
+			{
+				var getPictureComments:GetPictureCommentsEvent = new
+					GetPictureCommentsEvent(picturesList.selectedItem.id);
+				getPictureComments.dispatch();
+				hide.play();
+				bigPicture.removeAllChildren();
+				var image:Image = new Image();
+				image.source = "./upload/" + picturesList.selectedItem.name;
+				if (image.width > image.height)
+				{
+					image.width = bigPicture.width;
+				}
+				else					
+				{
+					image.height = bigPicture.height;
+				}
+				bigPicture.addChild(image);
+				show.play();
+			}
+
+			
+			protected function sendComment(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13)
+				{
+					commentField.focusEnabled = false;
+					commentField.enabled = false;
+					var currentDate:Date = new Date();
+					var date:String = currentDate.fullYear + "-" + (currentDate.monthUTC + 1) + "-" + currentDate.date + " "
+						+ currentDate.hours + ":" + currentDate.minutes + ":" + currentDate.seconds;
+					
+					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
+						date, picturesList.selectedItem.id);
+										
+					modelLocator.pictureComments.addItem(comment);
+					
+					var pictureCommentEvent:PictureCommentEvent = 
+						new PictureCommentEvent(comment);
+					pictureCommentEvent.dispatch();
+					
+					commentField.enabled = false;
+					commentField.text = "";
+					commentCountdown();
+				}				
+			}
+			
+			protected function commentCountdown():void
+			{
+				var commentTimer:Timer = new Timer(5000, 2);
+				commentTimer.addEventListener(TimerEvent.TIMER_COMPLETE, enableComments);
+				commentTimer.start();
+			}
+			
+			protected function enableComments(e:TimerEvent):void
+			{
+				commentField.enabled = true;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);"
+			itemRenderer="net.mgechev.view.gallery.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
+			 id="usersList" x="0" y="4" height="373" width="96"/>
+	
+	<mx:Canvas id="bigPicture" width="482" height="372"  x="96" y="4">
+	</mx:Canvas>
+	
+	<s:List id="commentsList" dataProvider="{modelLocator.pictureComments}"
+			 itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer" x="578" y="71" height="216" width="221"/>
+	
+
+	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}"
+					   x="0" width="100%"
+					   itemRenderer="net.mgechev.view.gallery.renderers.GalleryRenderer"
+					   height="75"
+					   selectionColor="#cccccc" change="scalePicture(event);"
+					   y="376" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
+	</s:List>
+	
+	<s:TextArea x="578" y="287" width="222" height="90" id="commentField"
+			    keyDown="sendComment(event);" text="Enter comment end press Enter..." 
+				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
+				(commentField.text=''):
+				(commentField.text=commentField.text))}" 
+				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
+				(commentField.text=commentField.text))}"/>
+	
+	<s:Label x="586" y="12" text="Vote:"/>
+	<s:Label x="586" y="31" id="ratingLabel" text="{currentPictureRating}"/>
+	
+	<s:VSlider x="724" y="12" rotation="90" minimum="1" maximum="5" stepSize="1" value="3" id="vote" />
+	
+</s:Group>

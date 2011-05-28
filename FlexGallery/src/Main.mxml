@@ -4,7 +4,7 @@
 			   xmlns:mx="library://ns.adobe.com/flex/mx"
 			   minWidth="955"
 			   minHeight="600" 
-			   xmlns:login="net.mgechev.view.login.*" xmlns:control="net.mgechev.control.*" xmlns:business="net.mgechev.business.*" xmlns:view="net.mgechev.view.*">
+			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" xmlns:control="net.mgechev.control.*" xmlns:business="net.mgechev.business.*" xmlns:view="net.mgechev.view.*" xmlns:gallery="net.mgechev.view.gallery.*" xmlns:picturecontrol="net.mgechev.view.gallery.picturecontrol.*" xmlns:appcontrol="net.mgechev.view.appcontrol.*">
 	
 	
 	<fx:Declarations>		
@@ -25,21 +25,24 @@
 		]]>
 	</fx:Script>
 
-	<view:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
+	<appcontrol:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
 	
 	<mx:ViewStack width="304" height="122" visible="true" selectedIndex="{modelLocator.workflowState}" x="0" y="48">
-		<login:LoginForm />
-		<login:WelcomeScreen username="{modelLocator.username}" />
+		<usercontrol:LoginForm />
+		<usercontrol:WelcomeScreen username="{modelLocator.username}" />
 	</mx:ViewStack>
 
-	<view:EditProfileForm email="{modelLocator.email}"
+	<usercontrol:EditProfileForm email="{modelLocator.email}"
 	visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
 	modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="5" y="178"/>
 	
-	<view:RegistrationForm visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
+	<usercontrol:RegistrationForm visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
 						   modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="3" y="178"/>
 	
-	<view:UploadForm progress="{modelLocator.uploadProgress}" visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
+	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}" visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
+					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
+	
+	<gallery:Gallery isUserpanelEnabled="true" visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
 					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
 	
 </s:Application>

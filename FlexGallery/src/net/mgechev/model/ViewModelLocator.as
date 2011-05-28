@@ -4,6 +4,8 @@ package net.mgechev.model
 	
 	import flash.utils.Dictionary;
 	
+	import mx.collections.ArrayCollection;
+	
 	[Bindable]
 	public class ViewModelLocator implements IModelLocator {
 		
@@ -21,6 +23,11 @@ package net.mgechev.model
 			}
 			return instance;
 		}
+		
+		public var usersList:ArrayCollection;
+		
+		public var picturesList:ArrayCollection;
+		public var pictureComments:ArrayCollection;
 		
 		public var currentPage:uint = 0;
 		public var workflowState:uint = 0;

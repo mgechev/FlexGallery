@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+
+	
+	<fx:Declarations>
+		<s:Fade target="{photosList}" id="showPhotoList" alphaTo="1" duration="500" />
+		
+		<s:Fade target="{photosList}" id="hidePhotoList" alphaTo="0" duration="500" />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[		
+			import mx.collections.ArrayCollection;
+			import mx.controls.List;
+			import mx.printing.PrintAdvancedDataGrid;
+			
+			import net.mgechev.events.picturecontrol.UploadEvent;
+			import net.mgechev.model.ViewModelLocator;
+			import net.mgechev.vo.PhotoVO;
+			
+			private var uploadedPhotosCount:Number = 0;
+			
+			[Bindable]
+			private var notes:ArrayCollection;
+			[Bindable]
+			private var fileReferenceList:FileReferenceList;
+			private var _progress:uint = 0;
+			
+			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			
+			
+			public function set progress(p:uint):void
+			{
+				_progress = p;
+				uploadedPhotosCount++;
+				progressBar.setProgress((uploadedPhotosCount * 100) / fileReferenceList.fileList.length,
+					progressBar.maximum);
+			}
+			
+			//Browsing for files
+			private function selectFile():void 
+			{
+				fileReferenceList = new FileReferenceList();
+				notes = new ArrayCollection();
+				
+				uploadButton.addEventListener(MouseEvent.CLICK, fileSelectedHandler);
+				fileReferenceList.addEventListener(Event.SELECT, addFile);
+				
+				progressBar.setProgress(0, progressBar.maximum);
+				uploadedPhotosCount = 0;
+				modelLocator.uploadProgress = 0;
+				
+				fileReferenceList.browse();
+			}
+
+			private function addFile(event:Event):void
+			{
+				var fileReference:FileReference;
+				var fileReferenceList:FileReferenceList = FileReferenceList(event.target);
+				
+				for (var i:Number = 0; i < fileReferenceList.fileList.length; i++) {
+					
+					fileReference = fileReferenceList.fileList[i] as FileReference;
+					var photo:PhotoVO = new PhotoVO();
+					photo.name = fileReference.name;
+					photo.creator = fileReference.creator;
+					photo.size = fileReference.size;
+					notes.addItem(photo);
+					
+				}
+				uploadButton.enabled = true;
+			}
+			
+			private function fileSelectedHandler(event:Event):void 
+			{					
+				uploadButton.enabled = false;
+				for (var i:Number = 0; i < fileReferenceList.fileList.length; i++) {
+					var uploadEvent:UploadEvent = new UploadEvent(fileReferenceList.fileList[i] as FileReference);
+					uploadEvent.dispatch();			
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:HorizontalLayout>		
+		</s:HorizontalLayout>
+	</fx:Declarations>
+	<mx:DataGrid id="photosList" dataProvider="{notes}" x="49" y="69" height="150" width="300">
+		<mx:columns>
+			<mx:DataGridColumn headerText="Photo" dataField="name" />
+			<mx:DataGridColumn headerText="Creator" dataField="creator" />
+			<mx:DataGridColumn headerText="Size" dataField="size" />
+		</mx:columns>				
+	</mx:DataGrid>
+	<mx:Button click="selectFile();" label="Select Files" x="48" y="235"
+			   enabled="true" />
+	
+	<mx:Button label="Upload" x="277" y="235" id="uploadButton" enabled="false" />
+	
+	<mx:ProgressBar x="100" y="27" id="progressBar" 
+					mode="manual" maximum="100" minimum="0"/>
+</s:Group>

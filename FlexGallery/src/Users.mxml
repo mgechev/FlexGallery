@@ -80,7 +80,7 @@
 			import mx.messaging.messages.CommandMessage;
 			import mx.rpc.events.ResultEvent;
 			
-			import temp.view.GalleryRenderer;
+			import net.mgechev.view.gallery.renderers.GalleryRenderer;
 		
 			protected var usernameAndId:Dictionary;
 			protected var pictures:ArrayCollection;
@@ -323,10 +323,10 @@
 	<mx:Canvas id="bigPicture" width="482" height="338"  x="95" y="1" mouseWheel="zoomPicture(event)">
 	</mx:Canvas>
 	
-	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="temp.view.CommentsRenderer" x="578" y="30" height="216" width="221"/>
+	<mx:List id="commentsList" dataProvider="{imageCommentsCollection}" itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer" x="578" y="30" height="216" width="221"/>
 
 	<mx:HorizontalList id="picturesList" dataProvider="{imagesCollection}"
-					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="temp.view.GalleryRenderer"
+					   x="0" width="100%" iconField="{imagesCollection}" itemRenderer="net.mgechev.view.gallery.renderers.GalleryRenderer"
 					   columnWidth="108" height="98"
 					   selectionColor="#cccccc" liveScrolling="false"
 					   change="largePicture(event);" y="340"/>
