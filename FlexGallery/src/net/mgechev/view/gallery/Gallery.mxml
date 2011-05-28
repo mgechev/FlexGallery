@@ -4,7 +4,7 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="800"
 		 height="454"
-		 creationComplete="addEventListeners(event);">
+		 creationComplete="init(event);">
 	<fx:Declarations>
 		<s:Fade alphaFrom="1" alphaTo="0" duration="300" target="{bigPicture}" id="hide" />
 		<s:Fade alphaFrom="0" alphaTo="1" duration="300" target="{bigPicture}" id="show" />
@@ -16,9 +16,10 @@
 			import mx.controls.Image;
 			import mx.controls.scrollClasses.ScrollBar;
 			
-			import net.mgechev.events.gallery.GetPictureCommentsEvent;
-			import net.mgechev.events.gallery.LoadUserPicturesEvent;
+			import net.mgechev.events.gallery.GetPictureDetailsEvent;
+			import net.mgechev.events.gallery.LoadPicturesEvent;
 			import net.mgechev.events.gallery.PictureCommentEvent;
+			import net.mgechev.events.gallery.PictureVoteEvent;
 			import net.mgechev.model.ViewModelLocator;
 			import net.mgechev.vo.CommentVO;
 			
@@ -26,45 +27,38 @@
 			
 			[Bindable]
 			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-			
 			[Bindable]
 			public var commentsProvider:ArrayCollection;
 			[Bindable]
-			public var picturesProvider:ArrayCollection;
-			[Bindable]
-			public var currentPictureRating:Number = 0;			
+			public var picturesProvider:ArrayCollection;	
 			[Bindable]
 			public var isUserpanelEnabled:Boolean = false;
 			
-			private function addEventListeners(event:Event):void
+			private var selectedUserId:Number;
+			
+			private function init(event:Event):void
 			{
-				//picturesList.Scroller.addEventListener(Event.CHANGE, picturesListScrolled);
+				if (isUserpanelEnabled == false)
+				{
+					var loadPictures:LoadPicturesEvent = new LoadPicturesEvent(0);
+					loadPictures.dispatch();
+					selectedUserId = -1;
+				}
 			}
 			
 			protected function loadUserPictures(event:Event):void				
 			{
-				var loadPictures:LoadUserPicturesEvent = new LoadUserPicturesEvent(usersList.selectedItem.id);
-				loadPictures.dispatch();
+				selectedUserId = usersList.selectedItem.id;
+				getPictures(0);				
 			}
 			
 			protected function scalePicture(event:Event):void
 			{
-				var getPictureComments:GetPictureCommentsEvent = new
-					GetPictureCommentsEvent(picturesList.selectedItem.id);
+				var getPictureComments:GetPictureDetailsEvent = new
+					GetPictureDetailsEvent(picturesList.selectedItem.id);
 				getPictureComments.dispatch();
 				hide.play();
-				bigPicture.removeAllChildren();
-				var image:Image = new Image();
-				image.source = "./upload/" + picturesList.selectedItem.name;
-				if (image.width > image.height)
-				{
-					image.width = bigPicture.width;
-				}
-				else					
-				{
-					image.height = bigPicture.height;
-				}
-				bigPicture.addChild(image);
+				modelLocator.selectedPicture = picturesList.selectedItem;
 				show.play();
 			}
 
@@ -106,22 +100,65 @@
 				commentField.enabled = true;
 			}
 			
+			protected function sendVote(event:Event):void
+			{
+				if (!modelLocator.picturesVoted.contains(picturesList.selectedItem.id))
+				{
+					var pictureVoteEvent:PictureVoteEvent = 
+						new PictureVoteEvent(picturesList.selectedItem.id, voteInput.value);
+					pictureVoteEvent.dispatch();
+				}
+			}
+			
+			protected function nextPage(event:Event):void
+			{
+				if (modelLocator.picturesList.length > 7)
+				{
+					modelLocator.pageReached = modelLocator.pageReached + 1;
+					getPictures(modelLocator.pageReached);
+				}
+			}
+			
+			protected function previousPage(event:Event):void
+			{
+				if (modelLocator.pageReached > 0)
+				{
+					modelLocator.pageReached = modelLocator.pageReached - 1;
+					getPictures(modelLocator.pageReached);
+				}
+			}
+			
+			protected function getPictures(page:uint):void
+			{
+				var loadPicturesEvent:LoadPicturesEvent = 
+					new LoadPicturesEvent(page,selectedUserId);
+				loadPicturesEvent.dispatch();
+			}
+			
 		]]>
 	</fx:Script>
 	
 	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);"
 			itemRenderer="net.mgechev.view.gallery.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
-			 id="usersList" x="0" y="4" height="373" width="96"/>
+			id="usersList" x="0" y="4" height="373" width="96"/>
 	
 	<mx:Canvas id="bigPicture" width="482" height="372"  x="96" y="4">
+		<mx:Image source="./upload/{modelLocator.selectedPicture.name}"
+				  width="{bigPicture.width}" height="{bigPicture.height}" />
 	</mx:Canvas>
 	
-	<s:List id="commentsList" dataProvider="{modelLocator.pictureComments}"
-			 itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer" x="578" y="71" height="216" width="221"/>
+	<s:List id="commentsList" 
+			dataProvider="{modelLocator.pictureComments}"
+			itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer"
+			x="578" 
+			y="112" 
+			height="216" 
+			width="221"
+			borderVisible="false"/>
 	
 
 	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}"
-					   x="0" width="100%"
+					   x="96" width="616"
 					   itemRenderer="net.mgechev.view.gallery.renderers.GalleryRenderer"
 					   height="75"
 					   selectionColor="#cccccc" change="scalePicture(event);"
@@ -131,7 +168,8 @@
 		</s:layout>
 	</s:List>
 	
-	<s:TextArea x="578" y="287" width="222" height="90" id="commentField"
+	<s:TextArea x="578" y="328" width="222" height="49" id="commentField"
+				enabled="{modelLocator.username != null}"
 			    keyDown="sendComment(event);" text="Enter comment end press Enter..." 
 				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
 				(commentField.text=''):
@@ -139,9 +177,16 @@
 				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
 				(commentField.text=commentField.text))}"/>
 	
-	<s:Label x="586" y="12" text="Vote:"/>
-	<s:Label x="586" y="31" id="ratingLabel" text="{currentPictureRating}"/>
+	<s:Label x="581" y="5" text="Vote:"/>
+	<s:Label x="720" y="4" id="ratingLabel" text="{modelLocator.pictureRating}"/>
 	
-	<s:VSlider x="724" y="12" rotation="90" minimum="1" maximum="5" stepSize="1" value="3" id="vote" />
+	<s:VSlider x="712" y="5" rotation="90" enabled="{modelLocator.username != null}"
+			   minimum="1" maximum="5" stepSize="1" 
+			   value="3" id="voteInput" 
+			   changeEnd="sendVote(event);" />
+
+	<mx:Text  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
+	<s:Button x="0" y="376" label="Back" width="96" height="78" click="previousPage(event);"/>
+	<s:Button x="712" y="376" label="Next" width="88" height="76" click="nextPage(event);"/>
 	
 </s:Group>

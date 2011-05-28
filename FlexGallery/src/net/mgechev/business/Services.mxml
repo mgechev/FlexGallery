@@ -33,7 +33,7 @@
 	</mx:HTTPService>
 	
 	<mx:HTTPService
-		id="getUserPicturesService" 
+		id="getPicturesService" 
 		url="./scripts/index.php?page=picture_list"
 		showBusyCursor="true"
 		method="GET">
@@ -41,7 +41,7 @@
 		
 	<mx:HTTPService 
 		id="getPictureCommentService"
-		url="./scripts/index.php?page=comment_list"
+		url="./scripts/index.php?page=picture_details"
 		showBusyCursor="true"
 		method="GET">
 	</mx:HTTPService>
@@ -54,45 +54,24 @@
 	</mx:HTTPService>
 	
 	<mx:HTTPService 
-		id="sendComment" 
+		id="sendCommentService" 
 		url="./scripts/index.php?page=add_comment"
 		showBusyCursor="true"
 		method="POST">
 	</mx:HTTPService>
-	<!--
-	<s:request xmlns="">
-	<id>
-	{selectedPicture}
-	</id>
-	<content>
-	{commentField.text}
-	</content>
-	</s:request>	
-	-->
+
 	<mx:HTTPService
 		id="getComments" 
 		url="./scripts/index.php?page=comment_list"
 		showBusyCursor="true" 
 		method="GET">
 	</mx:HTTPService>
-	<!--		<s:request xmlns="">
-			<id>
-				{selectedPicture}
-			</id>
-		</s:request>	-->
-	
-	
+
 	<mx:HTTPService 
-		id="getRating" 
-		url="./scripts/index.php?page=get_rating"
+		id="sendVoteService"
+		url="./scripts/index.php?page=add_vote"
 		showBusyCursor="true"
 		method="GET">
 	</mx:HTTPService>
-	<!--	<s:request xmlns="">
-			<id>
-				{selectedPicture}
-			</id>
-		</s:request>	
-	</s:HTTPService> -->
 		
 </cairngorm:ServiceLocator>

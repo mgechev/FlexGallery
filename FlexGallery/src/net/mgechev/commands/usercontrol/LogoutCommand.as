@@ -28,6 +28,8 @@ package net.mgechev.commands.usercontrol
 		public function result(event:Object):void
 		{
 			modelLocator.workflowState = ViewModelLocator.LOGIN_SCREEN;
+			modelLocator.username = null;
+			modelLocator.id = 0;
 		}
 		
 		public function fault(event:Object):void

@@ -7,21 +7,21 @@ package net.mgechev.business.gallery
 	import mx.rpc.http.HTTPService;
 	
 	import net.mgechev.vo.CommentVO;
-
-	public class PictureCommentDelegate
+	
+	public class PictureVoteDelegate
 	{
 		private var responder:IResponder;
 		private var service:mx.rpc.http.HTTPService;
 		
-		public function PictureCommentDelegate(responder:IResponder) 
+		public function PictureVoteDelegate(responder:IResponder) 
 		{			
 			this.responder = responder;
-			this.service = ServiceLocator.getInstance().getHTTPService("sendCommentService");
+			this.service = ServiceLocator.getInstance().getHTTPService("sendVoteService");
 		}
 		
-		public function comment(commentData:net.mgechev.vo.CommentVO):void 
+		public function vote(pictureId:uint, rating:uint):void 
 		{			
-			var token:AsyncToken = this.service.send( {id:commentData.id, content:commentData.content} );
+			var token:AsyncToken = this.service.send( {id:pictureId, vote:rating} );
 			token.addResponder(responder); 
 		}
 		

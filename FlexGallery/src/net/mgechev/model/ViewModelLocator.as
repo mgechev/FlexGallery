@@ -6,6 +6,8 @@ package net.mgechev.model
 	
 	import mx.collections.ArrayCollection;
 	
+	import net.mgechev.vo.PhotoVO;
+	
 	[Bindable]
 	public class ViewModelLocator implements IModelLocator {
 		
@@ -13,7 +15,7 @@ package net.mgechev.model
 		
 		public function ViewModelLocator(enforcer:SingletonEnforcer) {
 			if (enforcer == null) {
-				throw new Error("You Can Only Have One ViewModelLocator");
+				throw new Error("You can have only one instance of ViewModelLocator!");
 			}
 		}
 		
@@ -26,8 +28,14 @@ package net.mgechev.model
 		
 		public var usersList:ArrayCollection;
 		
+		public var selectedPicture:PhotoVO;
 		public var picturesList:ArrayCollection;
 		public var pictureComments:ArrayCollection;
+		public var picturesVoted:ArrayCollection = new ArrayCollection();
+		public var pictureRating:Number = 0;
+		public var pictureRatingCount:uint;
+		public var pictureRatingSum:uint;
+		public var pageReached:uint = 0;
 		
 		public var currentPage:uint = 0;
 		public var workflowState:uint = 0;

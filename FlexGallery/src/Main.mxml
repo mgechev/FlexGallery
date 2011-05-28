@@ -33,16 +33,22 @@
 	</mx:ViewStack>
 
 	<usercontrol:EditProfileForm email="{modelLocator.email}"
-	visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
-	modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="5" y="178"/>
+					visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="5" y="178"/>
 	
-	<usercontrol:RegistrationForm visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
-						   modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="3" y="178"/>
+	<usercontrol:RegistrationForm 
+				    visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
+				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="3" y="178"/>
 	
-	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}" visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
+	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}"
+					visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
+	
+	<gallery:Gallery isUserpanelEnabled="true"
+					 visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
 					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
 	
-	<gallery:Gallery isUserpanelEnabled="true" visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
-					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
+	<gallery:Gallery isUserpanelEnabled="false"
+					 visible="{modelLocator.currentPage == ViewModelLocator.HOME}"  x="0" y="178"/>
 	
 </s:Application>
