@@ -15,6 +15,7 @@ package net.mgechev.commands.gallery
 	public class GetPictureDetailsCommand implements IResponder, ICommand
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		public var delegate:GetPictureDetailsDelegate;
 		
 		public function GetPictureDetailsCommand()
 		{
@@ -23,8 +24,8 @@ package net.mgechev.commands.gallery
 		public function execute(event:CairngormEvent):void
 		{
 			var getPictureComments:GetPictureDetailsEvent = event as GetPictureDetailsEvent;
-			var delegate:GetPictureDetailsDelegate = new GetPictureDetailsDelegate(this);
-			delegate.getComments(getPictureComments.pictureId);
+			delegate = new GetPictureDetailsDelegate(this, getPictureComments.pictureId);
+			modelLocator.pushService(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -58,6 +59,8 @@ package net.mgechev.commands.gallery
 					modelLocator.pictureComments.addItem(singleComment);
 				}
 			}
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

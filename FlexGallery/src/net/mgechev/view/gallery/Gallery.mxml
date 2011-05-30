@@ -139,7 +139,7 @@
 			{
 				if (event.keyCode == 13)
 				{
-					picturesList.setFocus();
+					bntSlideshow.setFocus();
 					commentField.enabled = false;
 					var currentDate:Date = new Date();
 					var date:String = currentDate.fullYear + "-" + 
@@ -147,7 +147,6 @@
 						currentDate.date + " "
 						+ currentDate.hours + ":" + 
 						currentDate.minutes + ":" + currentDate.seconds;
-					
 					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
 						date, modelLocator.selectedPicture.id);
 										
@@ -300,6 +299,6 @@
 	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
 	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" click="previousPageButtonPressed(event);"/>
 	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" click="nextPageButtonPressed(event);"/>
-	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" click="startSlideShow(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="bntSlideshow" click="startSlideShow(event);"/>
 	
 </s:Group>

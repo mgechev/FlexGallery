@@ -5,6 +5,7 @@ package net.mgechev.model
 	import flash.utils.Dictionary;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	
 	import net.mgechev.vo.PhotoVO;
 	
@@ -25,6 +26,37 @@ package net.mgechev.model
 			}
 			return instance;
 		}
+		
+		public function pushService(service:Object):void
+		{
+			_servicesQueue.addItemAt(service, 0);
+			if (_servicesQueue.length == 1 && canExecute)
+			{
+				canExecute = false;
+				executeService();
+			}
+		}
+		
+		public function executeService():void
+		{
+			if (_servicesQueue.length > 0)
+			{
+				var executionService:Object = _servicesQueue.getItemAt(_servicesQueue.length - 1);
+				executionService.execute();
+			}
+		}
+		
+		public function dequeue(delegate:Object):void
+		{
+			if (_servicesQueue.length >= 1)
+			{
+				_servicesQueue.removeItemAt(_servicesQueue.getItemIndex(delegate));
+				canExecute = true;
+			}
+		}
+		
+		private var canExecute:Boolean = true;
+		private var _servicesQueue:ArrayCollection = new ArrayCollection();
 		
 		public var usersList:ArrayCollection;
 		

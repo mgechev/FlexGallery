@@ -8,23 +8,26 @@ package net.mgechev.business.usercontrol
 	import mx.rpc.http.HTTPService;
 	import mx.rpc.http.mxml.HTTPService;
 	
+	import net.mgechev.business.IDelegate;
 	import net.mgechev.vo.UserVO;
 	
-	public class LoginDelegate
+	public class LoginDelegate implements IDelegate
 	{
 		
 		private var responder:IResponder;
 		private var service:mx.rpc.http.HTTPService;
+		public var parameter:Object;
 		
-		public function LoginDelegate(responder:IResponder) 
-		{			
+		public function LoginDelegate(responder:IResponder, parameter:Object = null) 
+		{
+			this.parameter = parameter;
 			this.responder = responder;
 			this.service = ServiceLocator.getInstance().getHTTPService("loginService");
 		}
 		
-		public function login(loginData:net.mgechev.vo.UserVO):void 
+		public function execute():void 
 		{			
-			var token:AsyncToken = this.service.send( {username:loginData.username, password:loginData.password} );
+			var token:AsyncToken = this.service.send( {username:parameter.username, password:parameter.password} );
 			token.addResponder(responder); 
 		}
 		

@@ -16,6 +16,7 @@ package net.mgechev.commands.usercontrol
 	public class RegistrationCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegate:RegistrationDelegate;
 		
 		public function RegistrationCommand()
 		{
@@ -42,9 +43,10 @@ package net.mgechev.commands.usercontrol
 			var registerEvent:RegistrationEvent = event as RegistrationEvent;
 			if (isValidData(registerEvent.registerData))
 			{
-				var delegate:RegistrationDelegate = new RegistrationDelegate(this);
-				delegate.register(registerEvent.registerData);
+				delegate = new RegistrationDelegate(this, registerEvent.registerData);
+				delegate.execute();
 			}
+			modelLocator.pushService(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -57,6 +59,8 @@ package net.mgechev.commands.usercontrol
 			{
 				Alert.show(event.result.success);
 			}
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

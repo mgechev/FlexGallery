@@ -12,12 +12,14 @@ package net.mgechev.commands.gallery
 	import net.mgechev.events.gallery.LoadPicturesEvent;
 	import net.mgechev.model.ViewModelLocator;
 	import net.mgechev.vo.CommentVO;
+	import net.mgechev.vo.PageUserPairVO;
 	import net.mgechev.vo.PhotoVO;
 
 	public class LoadPicturesCommand implements ICommand, IResponder
 	{
 		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegate:LoadPicturesDelegate;
 		
 		public function LoadPicturesCommand()
 		{
@@ -26,8 +28,8 @@ package net.mgechev.commands.gallery
 		public function execute(event:CairngormEvent):void
 		{
 			var loadPictures:LoadPicturesEvent = event as LoadPicturesEvent;
-			var delegate:LoadPicturesDelegate = new LoadPicturesDelegate(this);
-			delegate.load(loadPictures.page, loadPictures.userId);
+			delegate = new LoadPicturesDelegate(this, new PageUserPairVO(loadPictures.page, loadPictures.userId));
+			modelLocator.pushService(delegate);
 		}
 		
 		private function getPictureComments(comments:Object):ArrayCollection
@@ -67,6 +69,8 @@ package net.mgechev.commands.gallery
 				}
 			}
 			modelLocator.selectedPicture = modelLocator.picturesList[0];
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

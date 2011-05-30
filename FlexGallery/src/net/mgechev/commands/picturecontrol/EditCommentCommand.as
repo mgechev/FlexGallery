@@ -10,10 +10,12 @@ package net.mgechev.commands.picturecontrol
 	import net.mgechev.business.picturecontrol.EditCommentDelegate;
 	import net.mgechev.events.picturecontrol.EditCommentEvent;
 	import net.mgechev.model.ViewModelLocator;
+	import net.mgechev.vo.PhotoCommentPairVO;
 	
 	public class EditCommentCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegate:EditCommentDelegate;
 		
 		public function EditCommentCommand()
 		{
@@ -22,12 +24,14 @@ package net.mgechev.commands.picturecontrol
 		public function execute(event:CairngormEvent):void
 		{
 			var editComment:EditCommentEvent = event as EditCommentEvent;
-			var delegate:EditCommentDelegate = new EditCommentDelegate(this);
-			delegate.editComment(editComment.pictureId, editComment.comment);
+			delegate = new EditCommentDelegate(this, new PhotoCommentPairVO(editComment.pictureId, editComment.comment));
+			modelLocator.pushService(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

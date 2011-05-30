@@ -15,6 +15,7 @@ package net.mgechev.commands.appcontrol
 	public class LoginCheckCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		public var delegate:LoginCheckDelegate;
 		
 		public function LoginCheckCommand()
 		{
@@ -23,8 +24,8 @@ package net.mgechev.commands.appcontrol
 		public function execute(event:CairngormEvent):void
 		{
 			var loginCheck:LoginCheckEvent = event as LoginCheckEvent;
-			var delegate:LoginCheckDelegate = new LoginCheckDelegate(this);
-			delegate.check();
+			delegate = new LoginCheckDelegate(this);
+			modelLocator.pushService(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -43,6 +44,8 @@ package net.mgechev.commands.appcontrol
 				modelLocator.id = event.result.id;
 				modelLocator.email = event.result.email;
 			}
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

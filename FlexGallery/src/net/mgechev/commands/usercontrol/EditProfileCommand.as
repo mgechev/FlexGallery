@@ -15,6 +15,7 @@ package net.mgechev.commands.usercontrol
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		private var editProfileData:ProfileVO;
+		private var delegate:EditProfileDelegate;
 		
 		public function EditProfileCommand()
 		{
@@ -40,9 +41,9 @@ package net.mgechev.commands.usercontrol
 			var editProfileEvent:EditProfileEvent = event as EditProfileEvent;
 			if (isValidData(editProfileEvent.editProfileData))
 			{
-				var delegate:EditProfileDelegate = new EditProfileDelegate(this);
+				delegate = new EditProfileDelegate(this, editProfileEvent.editProfileData);
 				editProfileData = editProfileEvent.editProfileData;
-				delegate.editProfile(editProfileEvent.editProfileData);
+				modelLocator.pushService(delegate);
 			}
 		}
 		
@@ -57,6 +58,8 @@ package net.mgechev.commands.usercontrol
 				Alert.show(event.result.success);
 				modelLocator.email = editProfileData.email;
 			}
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

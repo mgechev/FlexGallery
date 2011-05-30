@@ -6,26 +6,29 @@ package net.mgechev.business.usercontrol
 	import mx.rpc.IResponder;
 	import mx.rpc.http.HTTPService;
 	
+	import net.mgechev.business.IDelegate;
 	import net.mgechev.vo.ProfileVO;
 
-	public class EditProfileDelegate
+	public class EditProfileDelegate implements IDelegate
 	{
 		
 		private var responder:IResponder;
 		private var service:mx.rpc.http.HTTPService;
+		public var parameter:Object;
 		
-		public function EditProfileDelegate(responder:IResponder) 
+		public function EditProfileDelegate(responder:IResponder, parameter:Object) 
 		{			
+			this.parameter = parameter;
 			this.responder = responder;
 			this.service = ServiceLocator.getInstance().getHTTPService("editProfileService");
 		}
 		
-		public function editProfile(editPrifileData:ProfileVO):void 
+		public function execute():void 
 		{			
 			var token:AsyncToken = this.service.send( 
-				{email:editPrifileData.email,
-				password:editPrifileData.password,
-				oldPassword:editPrifileData.oldPassword} );
+				{email:parameter.email,
+				password:parameter.password,
+				oldPassword:parameter.oldPassword} );
 			token.addResponder(responder); 
 		}
 		

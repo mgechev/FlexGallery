@@ -15,6 +15,7 @@ package net.mgechev.commands.gallery
 	{
 		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegate:LoadUserListDelegate;
 		
 		public function LoadUserListCommand()
 		{
@@ -23,8 +24,8 @@ package net.mgechev.commands.gallery
 		public function execute(event:CairngormEvent):void
 		{
 			var loadUserListEvent:LoadUserListEvent = event as LoadUserListEvent;
-			var delegate:LoadUserListDelegate = new LoadUserListDelegate(this);
-			delegate.load();
+			delegate = new LoadUserListDelegate(this);
+			modelLocator.pushService(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -41,6 +42,8 @@ package net.mgechev.commands.gallery
 			{
 				modelLocator.usersList.addItem(new UserVO(event.result.user.username, "", event.result.user.id));
 			}
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void

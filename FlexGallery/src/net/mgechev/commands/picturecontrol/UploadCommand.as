@@ -18,6 +18,7 @@ package net.mgechev.commands.picturecontrol
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		public var currentFile:FileReference;
+		private var delegate:UploadDelegate;
 		
 		public function UploadCommand()
 		{
@@ -32,8 +33,8 @@ package net.mgechev.commands.picturecontrol
 			var uploadEvent:UploadEvent = event as UploadEvent;
 			modelLocator.filesUploaded[uploadEvent.picture] = false;
 			currentFile = uploadEvent.picture;
-			var delegate:UploadDelegate = new UploadDelegate(this);
-			delegate.upload(currentFile);
+			delegate = new UploadDelegate(this, currentFile);
+			modelLocator.pushService(delegate);
 		}
 		
 		
@@ -41,11 +42,13 @@ package net.mgechev.commands.picturecontrol
 		{
 			modelLocator.filesUploaded[currentFile] = true;
 			modelLocator.uploadProgress++;
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			Alert.show("asdasd");
 		}
 	}
 }

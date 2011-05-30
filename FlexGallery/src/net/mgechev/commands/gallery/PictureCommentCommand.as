@@ -13,6 +13,7 @@ package net.mgechev.commands.gallery
 	public class PictureCommentCommand implements IResponder, ICommand
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegate:PictureCommentDelegate;
 		
 		public function PictureCommentCommand()
 		{
@@ -23,8 +24,8 @@ package net.mgechev.commands.gallery
 			var pictureComment:PictureCommentEvent = event as PictureCommentEvent;
 			if (pictureComment.comment.content.length >= 2)
 			{
-				var delegate:PictureCommentDelegate = new PictureCommentDelegate(this);
-				delegate.comment(pictureComment.comment);
+				delegate = new PictureCommentDelegate(this, pictureComment.comment);
+				modelLocator.pushService(delegate);
 			}
 			else
 			{
@@ -34,7 +35,8 @@ package net.mgechev.commands.gallery
 		
 		public function result(event:Object):void
 		{
-
+			modelLocator.dequeue(delegate);
+			modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void
