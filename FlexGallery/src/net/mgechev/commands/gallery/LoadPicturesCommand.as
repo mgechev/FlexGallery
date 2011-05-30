@@ -11,6 +11,7 @@ package net.mgechev.commands.gallery
 	import net.mgechev.business.gallery.LoadUserListDelegate;
 	import net.mgechev.events.gallery.LoadPicturesEvent;
 	import net.mgechev.model.ViewModelLocator;
+	import net.mgechev.vo.CommentVO;
 	import net.mgechev.vo.PhotoVO;
 
 	public class LoadPicturesCommand implements ICommand, IResponder
@@ -29,6 +30,24 @@ package net.mgechev.commands.gallery
 			delegate.load(loadPictures.page, loadPictures.userId);
 		}
 		
+		private function getPictureComments(comments:Object):ArrayCollection
+		{
+			var pictureComments:ArrayCollection = new ArrayCollection();
+			if (comments != 0 && comments.length > 1)
+			{
+				for (var j:uint = 0; j < comments.length; j++)
+				{
+					var comment:CommentVO = new CommentVO(
+						comments[j].content,
+						comments[j].username,
+						comments[j].date,
+						comments[j].id);
+					pictureComments.addItem(comment);
+				}
+			}
+			return pictureComments;
+		}
+		
 		public function result(event:Object):void
 		{
 			modelLocator.picturesList = new ArrayCollection();
@@ -39,8 +58,12 @@ package net.mgechev.commands.gallery
 					var photo:PhotoVO = new PhotoVO();
 					photo.id = event.result.picture[i].id;
 					photo.name = event.result.picture[i].title;
-					photo.comment = event.result.picture[i].comment;
-					modelLocator.picturesList.addItem(photo);
+					photo.comment = event.result.picture[i].description;
+					photo.votesCount = event.result.picture[i].count;
+					photo.rating = event.result.picture[i].rating;
+					photo.ratingSum = event.result.picture[i].ratingSum;
+					photo.commentsList = getPictureComments(event.result.picture[i].comment);
+					modelLocator.picturesList.addItem(photo);	
 				}
 			}
 			modelLocator.selectedPicture = modelLocator.picturesList[0];

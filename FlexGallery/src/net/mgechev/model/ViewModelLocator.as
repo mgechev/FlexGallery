@@ -55,6 +55,7 @@ package net.mgechev.model
 		public static const PICTURES:uint = 3;
 		public static const EDIT_PROFILE:uint = 4;
 		public static const VIEW_USERS:uint = 5;
+		public static const SLIDESHOW_TIMEOUT:uint = 5000;
 		
 		public static const PICTURES_PER_PAGE:uint = 8;
 		

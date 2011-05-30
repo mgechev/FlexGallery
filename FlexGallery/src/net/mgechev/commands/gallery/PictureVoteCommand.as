@@ -3,6 +3,7 @@ package net.mgechev.commands.gallery
 	import com.adobe.cairngorm.commands.ICommand;
 	import com.adobe.cairngorm.control.CairngormEvent;
 	
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.rpc.IResponder;
 	
@@ -30,9 +31,10 @@ package net.mgechev.commands.gallery
 		
 		public function result(event:Object):void
 		{
-			modelLocator.pictureRatingCount++;
-			modelLocator.pictureRatingSum += lastVote;
-			modelLocator.pictureRating = modelLocator.pictureRatingSum / modelLocator.pictureRatingCount;
+			modelLocator.selectedPicture.votesCount++;
+			modelLocator.selectedPicture.ratingSum += lastVote;
+			modelLocator.selectedPicture.rating = 
+				modelLocator.selectedPicture.ratingSum / modelLocator.selectedPicture.votesCount;
 		}
 		
 		public function fault(event:Object):void

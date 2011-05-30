@@ -4,10 +4,15 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="800"
 		 height="454"
-		 creationComplete="init(event);">
+		 creationComplete="init(event);"
+		 keyDown="keyPressed(event);">
+	<s:states>
+		<s:State name="normalState" />
+		<s:State name="slideShowstate" />
+	</s:states>
 	<fx:Declarations>
-		<s:Fade alphaFrom="1" alphaTo="0" duration="300" target="{bigPicture}" id="hide" />
-		<s:Fade alphaFrom="0" alphaTo="1" duration="300" target="{bigPicture}" id="show" />
+		<s:Fade alphaFrom="1" alphaTo="0" duration="700" target="{bigPicture}" id="hide" />
+		<s:Fade alphaFrom="0" alphaTo="1" duration="700" target="{bigPicture}" id="show" />
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -25,6 +30,9 @@
 			
 			import spark.components.Scroller;
 			
+			[Bindable]
+			public var inSlideshowState:Boolean = false;
+			private var changeSlideshowPictureTimer:Timer;
 			[Bindable]
 			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 			[Bindable]
@@ -46,6 +54,73 @@
 				}
 			}
 			
+			private function keyPressed(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 37)
+				{
+					maximizeLeftPicture();
+				}
+				if (event.keyCode == 39)
+				{
+					maximizeRightPicture();
+				}
+				if (event.keyCode == 27)
+				{
+					stopSlideshow();
+				}
+			}
+			
+			private function stopSlideshowHandle(event:Event):void
+			{
+				stopSlideshow();
+			}
+			
+			private function stopSlideshow():void
+			{
+				this.stage.displayState = StageDisplayState.NORMAL;
+				changeSlideshowPictureTimer.stop();
+				currentState = "normalState";
+				inSlideshowState = false;
+			}
+			
+			private function maximizeLeftPicture():Boolean
+			{
+				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
+				if (selectedPictureIndex > 0)
+				{
+					modelLocator.selectedPicture = modelLocator.picturesList[selectedPictureIndex - 1];
+					return true;
+				}
+				else
+				{
+					if (previousPage())
+					{
+						modelLocator.selectedPicture = modelLocator.picturesList[modelLocator.picturesList.length - 1];
+						return true;
+					}					
+				}
+				return false;
+			}
+			
+			private function maximizeRightPicture():Boolean
+			{
+				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
+				if (selectedPictureIndex < ViewModelLocator.PICTURES_PER_PAGE - 1)
+				{
+					modelLocator.selectedPicture = modelLocator.picturesList[selectedPictureIndex + 1];
+					return true;
+				}
+				else
+				{
+					if (nextPage())
+					{
+						modelLocator.selectedPicture = modelLocator.picturesList[0];
+						return true;
+					}					
+				}
+				return false;
+			}
+			
 			protected function loadUserPictures(event:Event):void				
 			{
 				selectedUserId = usersList.selectedItem.id;
@@ -54,9 +129,6 @@
 			
 			protected function scalePicture(event:Event):void
 			{
-				var getPictureComments:GetPictureDetailsEvent = new
-					GetPictureDetailsEvent(picturesList.selectedItem.id);
-				getPictureComments.dispatch();
 				hide.play();
 				modelLocator.selectedPicture = picturesList.selectedItem;
 				show.play();
@@ -67,7 +139,7 @@
 			{
 				if (event.keyCode == 13)
 				{
-					commentField.focusEnabled = false;
+					picturesList.setFocus();
 					commentField.enabled = false;
 					var currentDate:Date = new Date();
 					var date:String = currentDate.fullYear + "-" + 
@@ -77,9 +149,9 @@
 						currentDate.minutes + ":" + currentDate.seconds;
 					
 					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
-						date, picturesList.selectedItem.id);
+						date, modelLocator.selectedPicture.id);
 										
-					modelLocator.pictureComments.addItem(comment);
+					modelLocator.selectedPicture.commentsList.addItem(comment);
 					
 					var pictureCommentEvent:PictureCommentEvent = 
 						new PictureCommentEvent(comment);
@@ -113,23 +185,38 @@
 				}
 			}
 			
-			protected function nextPage(event:Event):void
+			protected function nextPageButtonPressed(event:Event):void
+			{
+				nextPage();
+			}
+			
+			protected function previousPageButtonPressed(event:Event):void
+			{
+				previousPage();
+			}
+						
+			protected function nextPage():Boolean
 			{
 				if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
 				{
 					modelLocator.pageReached = modelLocator.pageReached + 1;
 					getPictures(modelLocator.pageReached);
+					return true;
 				}
+				return false;
 			}
 			
-			protected function previousPage(event:Event):void
+			protected function previousPage():Boolean
 			{
 				if (modelLocator.pageReached > 0)
 				{
 					modelLocator.pageReached = modelLocator.pageReached - 1;
 					getPictures(modelLocator.pageReached);
+					return true;
 				}
+				return false;
 			}
+			
 			
 			protected function getPictures(page:uint):void
 			{
@@ -138,20 +225,41 @@
 				loadPicturesEvent.dispatch();
 			}
 			
+			protected function startSlideShow(event:MouseEvent):void
+			{
+				inSlideshowState = true;
+				currentState = "slideShowstate";
+				this.stage.displayState = StageDisplayState.FULL_SCREEN;
+				changeSlideshowPictureTimer = new Timer(ViewModelLocator.SLIDESHOW_TIMEOUT, 0);
+				changeSlideshowPictureTimer.addEventListener(TimerEvent.TIMER, changeSlideShowPicture);
+				changeSlideshowPictureTimer.start();
+			}
+			
+			protected function changeSlideShowPicture(event:TimerEvent):void				
+			{
+				hide.play();
+				if (!maximizeRightPicture())
+				{
+					stopSlideshow();
+				}
+				show.play();
+			}
+			
 		]]>
 	</fx:Script>
 	
-	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);"
+	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);" excludeFrom="slideShowstate"
 			itemRenderer="net.mgechev.view.gallery.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
 			id="usersList" x="0" y="4" height="373" width="96"/>
 	
-	<mx:Canvas id="bigPicture" width="482" height="372"  x="96" y="4">
+	<mx:Canvas id="bigPicture" width.slideShowstate="100%" height.slideShowstate="100%"
+			   width.normalState="482" height.normalState="372" x="96" y="4" click="stopSlideshowHandle(event);">
 		<mx:Image source="./upload/{modelLocator.selectedPicture.name}"
 				  width="{bigPicture.width}" height="{bigPicture.height}" />
 	</mx:Canvas>
 	
-	<s:List id="commentsList" 
-			dataProvider="{modelLocator.pictureComments}"
+	<s:List id="commentsList" excludeFrom="slideShowstate"
+			dataProvider="{modelLocator.selectedPicture.commentsList}"
 			itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer"
 			x="578" 
 			y="112" 
@@ -160,7 +268,7 @@
 			borderVisible="false"/>
 	
 
-	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}"
+	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}" excludeFrom="slideShowstate"
 					   x="96" width="616"
 					   itemRenderer="net.mgechev.view.gallery.renderers.GalleryRenderer"
 					   height="75"
@@ -171,7 +279,7 @@
 		</s:layout>
 	</s:List>
 	
-	<s:TextArea x="578" y="328" width="222" height="49" id="commentField"
+	<s:TextArea x="578" y="328" width="222" height="49" id="commentField" excludeFrom="slideShowstate"
 				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
 			    keyDown="sendComment(event);" text="Enter comment end press Enter..." 
 				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
@@ -180,17 +288,18 @@
 				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
 				(commentField.text=commentField.text))}"/>
 	
-	<s:Label x="581" y="5" text="Vote:"/>
-	<s:Label x="720" y="4" id="ratingLabel" text="{modelLocator.pictureRating}"/>
+	<s:Label x="581" y="5" excludeFrom="slideShowstate" text="Vote:"/>
+	<s:Label x="720" y="4" excludeFrom="slideShowstate" id="ratingLabel" text="{modelLocator.selectedPicture.rating}"/>
 	
-	<s:VSlider x="712" y="5" rotation="90" 
+	<s:VSlider x="712" y="5" rotation="90" excludeFrom="slideShowstate"
 			   enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
 			   minimum="1" maximum="5" stepSize="1" 
 			   value="3" id="voteInput" 
 			   changeEnd="sendVote(event);" />
 
-	<mx:Text  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
-	<s:Button x="0" y="376" label="Back" width="96" height="78" click="previousPage(event);"/>
-	<s:Button x="712" y="376" label="Next" width="88" height="76" click="nextPage(event);"/>
+	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
+	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" click="previousPageButtonPressed(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" click="nextPageButtonPressed(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" click="startSlideShow(event);"/>
 	
 </s:Group>

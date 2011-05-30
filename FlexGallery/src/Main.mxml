@@ -14,7 +14,10 @@
 			   creationComplete="init(event);">
 	
 	
-	<fx:Declarations>		
+	<fx:Declarations>
+		
+		<s:Fade alphaFrom="1" alphaTo="0" duration="300" id="hidePageEffect" />
+		<s:Fade alphaFrom="0" alphaTo="1" duration="300" id="showPageEffect" />
 		<control:Controller id="controller" />
 		<business:Services id="services" />
 		<s:VerticalLayout />
@@ -26,6 +29,8 @@
 			import com.adobe.cairngorm.model.ModelLocator;
 			
 			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
 			
 			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
@@ -39,6 +44,7 @@
 				var loginCheckTimer:Timer = new Timer(5000, 0);
 				loginCheckTimer.addEventListener(TimerEvent.TIMER, loginCheck);
 				loginCheckTimer.start();
+				homeGalleryPage.setFocus();				
 			}
 			
 			public function loginCheck(event:Event):void
@@ -47,37 +53,64 @@
 				loginCheck.dispatch();
 			}
 		
+
+			protected function hidePage(event:FlexEvent):void
+			{
+				hidePageEffect.target = event.target;
+				hidePageEffect.play();
+			}
+			
+			protected function showPage(event:FlexEvent):void
+			{
+				showPageEffect.target = event.target;
+				showPageEffect.play();
+				(event.target as UIComponent).setFocus();
+			}
+
 		]]>
 	</fx:Script>
+<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top">
 
-	<appcontrol:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
+	<mx:Canvas>
 	
-	<mx:ViewStack width="304" height="122" visible="true" selectedIndex="{modelLocator.workflowState}" x="0" y="48">
-		<usercontrol:LoginForm />
+	<appcontrol:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}"
+					 x="21" y="142"/>
+	
+	<mx:ViewStack width="304" height="122" selectedIndex="{modelLocator.workflowState}" x="11" y="9"
+				  visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}">
+		<usercontrol:LoginForm dropShadowVisible="false" />
 		<usercontrol:WelcomeScreen username="{modelLocator.username}" />
 	</mx:ViewStack>
-
-	<usercontrol:EditProfileForm email="{modelLocator.email}"
+		
+	<usercontrol:EditProfileForm email="{modelLocator.email}" hide="hidePage(event);" show="showPage(event);"
 					visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="5" y="178"/>
-	
-	<usercontrol:RegistrationForm 
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" x="200" y="178" />
+	<usercontrol:RegistrationForm hide="hidePage(event);" show="showPage(event);"
 				    visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
-				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="3" y="178"/>
+				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="200" y="178" />
 	
-	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}"
+	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}" hide="hidePage(event);" show="showPage(event);"
 					visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="200" y="178"/>
 	
-	<gallery:Gallery isUserpanelEnabled="true"
+	<gallery:Gallery isUserpanelEnabled="true" id="galleryPage"
+					 x="0" 
+					 y="178"
+					 hide="hidePage(event);" show="showPage(event);"
 					 visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
-					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="178"/>
+					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"/>
 	
-	<gallery:Gallery isUserpanelEnabled="false"
-					 visible="{modelLocator.currentPage == ViewModelLocator.HOME}"  x="0" y="178"/>
+	<gallery:Gallery id="homeGalleryPage"
+					 x="0" 
+					 y="178"
+					 isUserpanelEnabled="false" hide="hidePage(event);" show="showPage(event);"
+					 visible="{modelLocator.currentPage == ViewModelLocator.HOME}" />
 	
-	<picturecontrol:EditPictures 
+	<picturecontrol:EditPictures hide="hidePage(event);" show="showPage(event);"
 					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="0" y="176"/>
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" x="100" y="178"/>
+	</mx:Canvas>
+</mx:VBox>
 	
 </s:Application>

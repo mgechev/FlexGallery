@@ -1,5 +1,7 @@
 package net.mgechev.vo
 {
+	import mx.collections.ArrayCollection;
+
 	[Bindable]
 	public class PhotoVO
 	{
@@ -9,6 +11,10 @@ package net.mgechev.vo
 		public var size:uint;
 		public var id:Number;
 		public var comment:String;
+		public var rating:Number;
+		public var votesCount:uint;
+		public var ratingSum:uint;
+		public var commentsList:ArrayCollection;
 		
 		public function get creator():String
 		{
