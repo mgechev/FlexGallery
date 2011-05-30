@@ -13,7 +13,7 @@ package com.altras.flickrSearch.service
 	public class FlickrSearchService extends Actor implements IFlickrSearchService
 	{
 		private static const FLICKR_SEARCH_API_POINT:String="http://api.flickr.com/services/rest/?method=flickr.photos.search";
-		private static const FLICKR_API_KEY:String="";
+		private static const FLICKR_API_KEY:String="397ca1c9126bbd1d81ecca2a32688c97";
 		private var _service:HTTPService;
 		private var _parser:IFlickrSearchResultParser;
 		public function FlickrSearchService()
