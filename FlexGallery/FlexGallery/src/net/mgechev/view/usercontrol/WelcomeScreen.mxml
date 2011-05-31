@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			import net.mgechev.events.usercontrol.LogoutEvent;
+			
+			[Bindable]
+			public var username:String;
+			
+			public function logout(event:MouseEvent):void
+			{
+				var logoutEvent:LogoutEvent = new LogoutEvent();
+				logoutEvent.dispatch();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Panel width="300" title="Hello"
+			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
+		
+		<s:Label text="Welcome, {username}" x="79" y="25" id="welcomeText"/>
+		<s:Button click="logout(event);" label="Logout"  x="114" y="54"/>
+		
+	</s:Panel>
+</mx:VBox>

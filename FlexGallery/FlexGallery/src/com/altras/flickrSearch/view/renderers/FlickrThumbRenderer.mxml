@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true"
+				click="onClick(event)">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import com.altras.flickrSearch.controller.ThumbSelectCommand;
+			import com.altras.flickrSearch.controller.events.ThumbSelectEvent;
+			import com.altras.flickrSearch.model.vo.FlickrThumbVO;
+			
+			override public function set data(value:Object):void {
+				super.data = value;
+				var thumbVO:FlickrThumbVO = value as FlickrThumbVO;
+				if (thumbVO) {
+					itemLabel.text = thumbVO.title;
+					itemImage.source = thumbVO.src;
+				}
+				
+			}
+			protected function onClick(event:MouseEvent):void {
+				
+				dispatchEvent(new ThumbSelectEvent(ThumbSelectEvent.SELECT,FlickrThumbVO(data),true));
+			}
+		]]>
+	</fx:Script>
+	<s:Group>
+		<s:layout>
+			<s:VerticalLayout  verticalAlign="middle"
+							   horizontalAlign="center"
+							   gap="10"
+							   paddingBottom="10"
+							   paddingLeft="10"
+							   paddingRight="10"
+							   paddingTop="10"/>
+		</s:layout>
+		<s:Label id="itemLabel"
+				 width="120"
+				 maxDisplayedLines="1"
+				 textAlign="center"/>
+		<mx:Image id="itemImage"/>
+	</s:Group>
+</s:ItemRenderer>

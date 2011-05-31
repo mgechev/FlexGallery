@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="600"
+		 height="500">
+	<fx:Script>
+		<![CDATA[
+			import net.mgechev.events.gallery.LoadPicturesEvent;
+			import net.mgechev.model.ViewModelLocator;
+			import net.mgechev.view.picturecontrol.renderers.EditPicturesRenderer;
+			
+			[Bindable]
+			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			
+			protected function loadUserPictures(event:Event):void
+			{
+				modelLocator.pageReached = 0;
+				loadPictures(0);
+			}
+			
+			protected function loadPictures(page:uint):void
+			{
+				var loadPictures:LoadPicturesEvent = new LoadPicturesEvent(page, modelLocator.id);
+				loadPictures.dispatch();
+			}
+			
+			protected function nextPage(event:Event):void
+			{
+				if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
+				{
+					modelLocator.pageReached++;
+					loadPictures(modelLocator.pageReached);
+				}
+			}
+			
+			protected function previousPage(event:Event):void
+			{
+				if (modelLocator.pageReached > 0)
+				{
+					modelLocator.pageReached--;
+					loadPictures(modelLocator.pageReached);
+				}
+			}			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:List id="picturesList"
+			itemRenderer="net.mgechev.view.picturecontrol.renderers.EditPicturesRenderer"
+			dataProvider="{modelLocator.picturesList}" x="100" y="0" width="410" height="500"/>
+	<s:Button x="0" y="0" label="Back" width="101" height="500" click="previousPage(event);"/>
+	<s:Button x="507" y="0" label="Next" width="93" height="501" click="nextPage(event);"/>
+</s:Group>

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="800"
+		 height="454"
+		 creationComplete="init(event);"
+		 keyDown="keyPressed(event);">
+	<s:states>
+		<s:State name="normalState" />
+		<s:State name="slideShowstate" />
+	</s:states>
+	<fx:Declarations>
+		<s:Fade alphaFrom="1" alphaTo="0" duration="700" target="{bigPicture}" id="hide" />
+		<s:Fade alphaFrom="0" alphaTo="1" duration="700" target="{bigPicture}" id="show" />
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.controls.Image;
+			import mx.controls.scrollClasses.ScrollBar;
+			
+			import net.mgechev.events.gallery.GetPictureDetailsEvent;
+			import net.mgechev.events.gallery.LoadPicturesEvent;
+			import net.mgechev.events.gallery.PictureCommentEvent;
+			import net.mgechev.events.gallery.PictureVoteEvent;
+			import net.mgechev.model.ViewModelLocator;
+			import net.mgechev.vo.CommentVO;
+			
+			import spark.components.Scroller;
+			
+			[Bindable]
+			public var inSlideshowState:Boolean = false;
+			private var changeSlideshowPictureTimer:Timer;
+			[Bindable]
+			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+			[Bindable]
+			public var commentsProvider:ArrayCollection;
+			[Bindable]
+			public var picturesProvider:ArrayCollection;	
+			[Bindable]
+			public var isUserpanelEnabled:Boolean = false;
+			
+			private var selectedUserId:Number;
+			
+			private function init(event:Event):void
+			{
+				if (isUserpanelEnabled == false)
+				{
+					var loadPictures:LoadPicturesEvent = new LoadPicturesEvent(0);
+					loadPictures.dispatch();
+					selectedUserId = -1;
+				}
+			}
+			
+			private function keyPressed(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 37)
+				{
+					maximizeLeftPicture();
+				}
+				if (event.keyCode == 39)
+				{
+					maximizeRightPicture();
+				}
+				if (event.keyCode == 27)
+				{
+					stopSlideshow();
+				}
+			}
+			
+			private function stopSlideshowHandle(event:Event):void
+			{
+				stopSlideshow();
+			}
+			
+			private function stopSlideshow():void
+			{
+				this.stage.displayState = StageDisplayState.NORMAL;
+				changeSlideshowPictureTimer.stop();
+				currentState = "normalState";
+				inSlideshowState = false;
+			}
+			
+			private function maximizeLeftPicture():Boolean
+			{
+				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
+				if (selectedPictureIndex > 0)
+				{
+					modelLocator.selectedPicture = modelLocator.picturesList[selectedPictureIndex - 1];
+					return true;
+				}
+				else
+				{
+					if (previousPage())
+					{
+						modelLocator.selectedPicture = modelLocator.picturesList[modelLocator.picturesList.length - 1];
+						return true;
+					}					
+				}
+				return false;
+			}
+			
+			private function maximizeRightPicture():Boolean
+			{
+				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
+				if (selectedPictureIndex < ViewModelLocator.PICTURES_PER_PAGE - 1)
+				{
+					modelLocator.selectedPicture = modelLocator.picturesList[selectedPictureIndex + 1];
+					return true;
+				}
+				else
+				{
+					if (nextPage())
+					{
+						modelLocator.selectedPicture = modelLocator.picturesList[0];
+						return true;
+					}					
+				}
+				return false;
+			}
+			
+			protected function loadUserPictures(event:Event):void				
+			{
+				selectedUserId = usersList.selectedItem.id;
+				getPictures(0);				
+			}
+			
+			protected function scalePicture(event:Event):void
+			{
+				hide.play();
+				modelLocator.selectedPicture = picturesList.selectedItem;
+				show.play();
+			}
+
+			
+			protected function sendComment(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13)
+				{
+					picturesList.setFocus();
+					commentField.enabled = false;
+					var currentDate:Date = new Date();
+					var date:String = currentDate.fullYear + "-" + 
+						(currentDate.monthUTC + 1) + "-" + 
+						currentDate.date + " "
+						+ currentDate.hours + ":" + 
+						currentDate.minutes + ":" + currentDate.seconds;
+					
+					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
+						date, modelLocator.selectedPicture.id);
+										
+					modelLocator.selectedPicture.commentsList.addItem(comment);
+					
+					var pictureCommentEvent:PictureCommentEvent = 
+						new PictureCommentEvent(comment);
+					pictureCommentEvent.dispatch();
+					
+					commentField.enabled = false;
+					commentField.text = "";
+					commentCountdown();
+				}				
+			}
+			
+			protected function commentCountdown():void
+			{
+				var commentTimer:Timer = new Timer(5000, 2);
+				commentTimer.addEventListener(TimerEvent.TIMER_COMPLETE, enableComments);
+				commentTimer.start();
+			}
+			
+			protected function enableComments(e:TimerEvent):void
+			{
+				commentField.enabled = true;
+			}
+			
+			protected function sendVote(event:Event):void
+			{
+				if (!modelLocator.picturesVoted.contains(picturesList.selectedItem.id))
+				{
+					var pictureVoteEvent:PictureVoteEvent = 
+						new PictureVoteEvent(picturesList.selectedItem.id, voteInput.value);
+					pictureVoteEvent.dispatch();
+				}
+			}
+			
+			protected function nextPageButtonPressed(event:Event):void
+			{
+				nextPage();
+			}
+			
+			protected function previousPageButtonPressed(event:Event):void
+			{
+				previousPage();
+			}
+						
+			protected function nextPage():Boolean
+			{
+				if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
+				{
+					modelLocator.pageReached = modelLocator.pageReached + 1;
+					getPictures(modelLocator.pageReached);
+					return true;
+				}
+				return false;
+			}
+			
+			protected function previousPage():Boolean
+			{
+				if (modelLocator.pageReached > 0)
+				{
+					modelLocator.pageReached = modelLocator.pageReached - 1;
+					getPictures(modelLocator.pageReached);
+					return true;
+				}
+				return false;
+			}
+			
+			
+			protected function getPictures(page:uint):void
+			{
+				var loadPicturesEvent:LoadPicturesEvent = 
+					new LoadPicturesEvent(page,selectedUserId);
+				loadPicturesEvent.dispatch();
+			}
+			
+			protected function startSlideShow(event:MouseEvent):void
+			{
+				inSlideshowState = true;
+				currentState = "slideShowstate";
+				this.stage.displayState = StageDisplayState.FULL_SCREEN;
+				changeSlideshowPictureTimer = new Timer(ViewModelLocator.SLIDESHOW_TIMEOUT, 0);
+				changeSlideshowPictureTimer.addEventListener(TimerEvent.TIMER, changeSlideShowPicture);
+				changeSlideshowPictureTimer.start();
+			}
+			
+			protected function changeSlideShowPicture(event:TimerEvent):void				
+			{
+				hide.play();
+				if (!maximizeRightPicture())
+				{
+					stopSlideshow();
+				}
+				show.play();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);" excludeFrom="slideShowstate"
+			itemRenderer="net.mgechev.view.gallery.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
+			id="usersList" x="0" y="4" height="373" width="96"/>
+	
+	<mx:Canvas id="bigPicture" width.slideShowstate="100%" height.slideShowstate="100%"
+			   width.normalState="482" height.normalState="372" x="96" y="4" click="stopSlideshowHandle(event);">
+		<mx:Image source="./upload/{modelLocator.selectedPicture.name}"
+				  width="{bigPicture.width}" height="{bigPicture.height}" />
+	</mx:Canvas>
+	
+	<s:List id="commentsList" excludeFrom="slideShowstate"
+			dataProvider="{modelLocator.selectedPicture.commentsList}"
+			itemRenderer="net.mgechev.view.gallery.renderers.CommentsRenderer"
+			x="578" 
+			y="112" 
+			height="216" 
+			width="221"
+			borderVisible="false"/>
+	
+
+	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}" excludeFrom="slideShowstate"
+					   x="96" width="616"
+					   itemRenderer="net.mgechev.view.gallery.renderers.GalleryRenderer"
+					   height="75"
+					   selectionColor="#cccccc" change="scalePicture(event);"
+					   y="376" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
+	</s:List>
+	
+	<s:TextArea x="578" y="328" width="222" height="49" id="commentField" excludeFrom="slideShowstate"
+				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+			    keyDown="sendComment(event);" text="Enter comment end press Enter..." 
+				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
+				(commentField.text=''):
+				(commentField.text=commentField.text))}" 
+				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
+				(commentField.text=commentField.text))}"/>
+	
+	<s:Label x="581" y="5" excludeFrom="slideShowstate" text="Vote:"/>
+	<s:Label x="720" y="4" excludeFrom="slideShowstate" id="ratingLabel" text="{modelLocator.selectedPicture.rating}"/>
+	
+	<s:VSlider x="712" y="5" rotation="90" excludeFrom="slideShowstate"
+			   enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+			   minimum="1" maximum="5" stepSize="1" 
+			   value="3" id="voteInput" 
+			   changeEnd="sendVote(event);" />
+
+	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
+	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" click="previousPageButtonPressed(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" click="nextPageButtonPressed(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" click="startSlideShow(event);"/>
+	
+</s:Group>

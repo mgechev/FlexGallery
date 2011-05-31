@@ -6,7 +6,6 @@ package net.mgechev.control
 	
 	import net.mgechev.commands.appcontrol.ChangePageCommand;
 	import net.mgechev.commands.appcontrol.LoginCheckCommand;
-	import net.mgechev.commands.appcontrol.ApplicationInitializationCommand;
 	import net.mgechev.commands.gallery.GetPictureDetailsCommand;
 	import net.mgechev.commands.gallery.LoadPicturesCommand;
 	import net.mgechev.commands.gallery.LoadUserListCommand;
@@ -21,7 +20,6 @@ package net.mgechev.control
 	import net.mgechev.commands.usercontrol.RegistrationCommand;
 	import net.mgechev.events.appcontrol.ChangePageEvent;
 	import net.mgechev.events.appcontrol.LoginCheckEvent;
-	import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
 	import net.mgechev.events.gallery.GetPictureDetailsEvent;
 	import net.mgechev.events.gallery.LoadPicturesEvent;
 	import net.mgechev.events.gallery.LoadUserListEvent;
@@ -59,7 +57,6 @@ package net.mgechev.control
 			this.addCommand(DeletePictureEvent.DELETE_PICTURE, DeletePictureCommand);
 			this.addCommand(EditCommentEvent.EDIT_COMMENT_EVENT, EditCommentCommand);
 			this.addCommand(LoginCheckEvent.LOGIN_CHECK, LoginCheckCommand);
-			this.addCommand(ApplicationInitializationEvent.APPLICATION_INITIALIZATION, ApplicationInitializationCommand);
 		}
 		
 	}

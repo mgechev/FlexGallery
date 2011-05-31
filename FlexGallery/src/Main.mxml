@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
-			   xmlns:mx="library://ns.adobe.com/flex/mx"
-			   minWidth="955"
-			   minHeight="600" 
+<s:Application minWidth="955" minHeight="600" 
+			   creationComplete="{(new ApplicationInitializationEvent()).dispatch()}"
 			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" 
 			   xmlns:control="net.mgechev.control.*" 
 			   xmlns:business="net.mgechev.business.*" 
@@ -11,7 +8,9 @@
 			   xmlns:gallery="net.mgechev.view.gallery.*" 
 			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*" 
 			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
-			   creationComplete="init(event);">
+			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
+			   xmlns:mx="library://ns.adobe.com/flex/mx">
 	
 	
 	<fx:Declarations>
@@ -33,84 +32,49 @@
 			import mx.events.FlexEvent;
 			
 			import net.mgechev.events.appcontrol.LoginCheckEvent;
+			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
 			import net.mgechev.model.ViewModelLocator;
 			
 			[Bindable]		
 			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-			
-			public function init(event:Event):void
-			{
-				loginCheck(new Event("login"));
-				var loginCheckTimer:Timer = new Timer(5000, 0);
-				loginCheckTimer.addEventListener(TimerEvent.TIMER, loginCheck);
-				loginCheckTimer.start();
-				homeGalleryPage.setFocus();				
-			}
-			
-			public function loginCheck(event:Event):void
-			{
-				var loginCheck:LoginCheckEvent = new LoginCheckEvent();
-				loginCheck.dispatch();
-			}
-		
-
-			protected function hidePage(event:FlexEvent):void
-			{
-				hidePageEffect.target = event.target;
-				hidePageEffect.play();
-			}
-			
-			protected function showPage(event:FlexEvent):void
-			{
-				showPageEffect.target = event.target;
-				showPageEffect.play();
-				(event.target as UIComponent).setFocus();
-			}
 
 		]]>
 	</fx:Script>
 <mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top">
 
-	<mx:Canvas>
+	<s:Group>
 	
-	<appcontrol:Menu logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}"
-					 x="21" y="142"/>
+	<appcontrol:Menu x="21" y="142" logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
+					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}" />
 	
-	<mx:ViewStack width="304" height="122" selectedIndex="{modelLocator.workflowState}" x="11" y="9"
-				  visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}">
-		<usercontrol:LoginForm dropShadowVisible="false" />
-		<usercontrol:WelcomeScreen username="{modelLocator.username}" />
-	</mx:ViewStack>
+	<usercontrol:LoginForm dropShadowVisible="false" 
+					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+	<usercontrol:WelcomeScreen username="{modelLocator.username}" 
+					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
 		
-	<usercontrol:EditProfileForm email="{modelLocator.email}" hide="hidePage(event);" show="showPage(event);"
+	<usercontrol:EditProfileForm x="200" y="178" email="{modelLocator.email}"  showEffect="{showPageEffect}"
 					visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" x="200" y="178" />
-	<usercontrol:RegistrationForm hide="hidePage(event);" show="showPage(event);"
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
+	<usercontrol:RegistrationForm x="200" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
 				    visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
-				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" x="200" y="178" />
+				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" />
 	
-	<picturecontrol:UploadForm progress="{modelLocator.uploadProgress}" hide="hidePage(event);" show="showPage(event);"
+	<picturecontrol:UploadForm  x="200" y="178" progress="{modelLocator.uploadProgress}" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
 					visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"  x="200" y="178"/>
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
 	
-	<gallery:Gallery isUserpanelEnabled="true" id="galleryPage"
-					 x="0" 
-					 y="178"
-					 hide="hidePage(event);" show="showPage(event);"
-					 visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
-					 modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"/>
+	<gallery:Gallery x="0" y="178" isUserpanelEnabled="true" id="galleryPage"
+					hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
+					visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"/>
 	
-	<gallery:Gallery id="homeGalleryPage"
-					 x="0" 
-					 y="178"
-					 isUserpanelEnabled="false" hide="hidePage(event);" show="showPage(event);"
-					 visible="{modelLocator.currentPage == ViewModelLocator.HOME}" />
+	<gallery:Gallery x="0" y="178" id="homeGalleryPage" isUserpanelEnabled="false" hideEffect="{hidePageEffect}" 
+					showEffect="{showPageEffect}" visible="{modelLocator.currentPage == ViewModelLocator.HOME}" />
 	
-	<picturecontrol:EditPictures hide="hidePage(event);" show="showPage(event);"
+	<picturecontrol:EditPictures x="100" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
 					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" x="100" y="178"/>
-	</mx:Canvas>
+					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
+	</s:Group>
 </mx:VBox>
 	
 </s:Application>
