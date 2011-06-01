@@ -8,39 +8,54 @@
 			   xmlns:gallery="net.mgechev.view.gallery.*" 
 			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*" 
 			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
+			   xmlns:flickrView="com.altras.flickrSearch.view.*"
+			   xmlns:flickrSearch="com.altras.flickrSearch.*"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
 			   xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:states>
+		<s:State name="State1"/>
+		<s:State name="flickrSearching"/>
+	</s:states>
 	
 	
 	<fx:Declarations>
-		
 		<s:Fade alphaFrom="1" alphaTo="0" duration="300" id="hidePageEffect" />
 		<s:Fade alphaFrom="0" alphaTo="1" duration="300" id="showPageEffect" />
 		<control:Controller id="controller" />
 		<business:Services id="services" />
-		<s:VerticalLayout />
+		<flickrSearch:FlickrSearchContext contextView="{this}"/>		
 	</fx:Declarations>
 	
-
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.cairngorm.model.ModelLocator;
+			import com.altras.flickrSearch.controller.SearchCommand;
+			
+			import flash.utils.flash_proxy;
 			
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
-			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
+			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
 			
 			[Bindable]		
 			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+
 		]]>
 	</fx:Script>
-<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top">
+	
+<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top" includeIn="State1">
+	<s:Button label="Button" click="currentState='flickrSearching'" x.flickrSearching="308" y.flickrSearching="10"/>
 
 	<s:Group>
 	
@@ -74,7 +89,11 @@
 	<picturecontrol:EditPictures x="100" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
 					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
 					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
+	
 	</s:Group>
 </mx:VBox>
+	<flickrView:FlickrSearchView id="flickrSearchView" width="100%" height="100%" includeIn="flickrSearching" x="0" y="38">
+	</flickrView:FlickrSearchView>
+	<s:Button includeIn="flickrSearching" click="currentState=''" x="923" y="6" label="X"/>
 	
 </s:Application>

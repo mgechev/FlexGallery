@@ -19,7 +19,7 @@
 		<link>
 			<name>bin-debug</name>
 			<type>2</type>
-			<location>P:/xampp/htdocs/FlexGallery-debug</location>
+			<location>D:/_Programs/wamp/www/FlexGallery</location>
 		</link>
 	</linkedResources>
 </projectDescription>
