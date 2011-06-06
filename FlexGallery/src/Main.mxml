@@ -40,10 +40,9 @@
 
 		]]>
 	</fx:Script>
-<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top">
 
-	<s:Group>
-	
+	<s:Group height="100%" width="100%" verticalCenter="" horizontalCenter="0">
+		
 	<appcontrol:Menu x="21" y="142" logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
 					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}" />
 	
@@ -75,6 +74,5 @@
 					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
 					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
 	</s:Group>
-</mx:VBox>
-	
+		
 </s:Application>
