@@ -20,6 +20,7 @@
 		<control:Controller id="controller" />
 		<business:Services id="services" />
 		<s:VerticalLayout />
+		
 	</fx:Declarations>
 	
 

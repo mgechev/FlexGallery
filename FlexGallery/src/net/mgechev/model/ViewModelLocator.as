@@ -3,6 +3,7 @@ package net.mgechev.model
 	import com.adobe.cairngorm.model.IModelLocator;
 	
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
@@ -88,6 +89,8 @@ package net.mgechev.model
 		public static const EDIT_PROFILE:uint = 4;
 		public static const VIEW_USERS:uint = 5;
 		public static const SLIDESHOW_TIMEOUT:uint = 5000;
+		
+		public static var changeSlideShowPicture:Timer;
 		
 		public static const PICTURES_PER_PAGE:uint = 8;
 		

@@ -17,6 +17,7 @@ package net.mgechev.commands.appcontrol
 		public function ApplicationInitializationCommand()
 		{
 		}
+		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void

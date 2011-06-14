@@ -6,6 +6,7 @@
 		 height="454"
 		 creationComplete="init(event);"
 		 keyDown="keyPressed(event);">
+	
 	<s:states>
 		<s:State name="normalState" />
 		<s:State name="slideShowstate" />
@@ -21,12 +22,18 @@
 			import mx.controls.Image;
 			import mx.controls.scrollClasses.ScrollBar;
 			
+			import net.mgechev.commands.gallery.CommentFieldControlCommand;
+			import net.mgechev.events.gallery.CommentFieldControlEvent;
 			import net.mgechev.events.gallery.GetPictureDetailsEvent;
 			import net.mgechev.events.gallery.LoadPicturesEvent;
 			import net.mgechev.events.gallery.PictureCommentEvent;
 			import net.mgechev.events.gallery.PictureVoteEvent;
+			import net.mgechev.events.gallery.StartSlideShowEvent;
+			import net.mgechev.events.gallery.StopSlideShowEvent;
 			import net.mgechev.model.ViewModelLocator;
 			import net.mgechev.vo.CommentVO;
+			
+			import org.osmf.layout.AbsoluteLayoutFacet;
 			
 			import spark.components.Scroller;
 			
@@ -66,24 +73,18 @@
 				}
 				if (event.keyCode == 27)
 				{
-					stopSlideshow();
+					var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(this);
+					stopSlideshow.dispatch();
 				}
 			}
 			
 			private function stopSlideshowHandle(event:Event):void
 			{
-				stopSlideshow();
+				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(this);
+				stopSlideshow.dispatch();
 			}
 			
-			private function stopSlideshow():void
-			{
-				this.stage.displayState = StageDisplayState.NORMAL;
-				changeSlideshowPictureTimer.stop();
-				currentState = "normalState";
-				inSlideshowState = false;
-			}
-			
-			private function maximizeLeftPicture():Boolean
+			public function maximizeLeftPicture():Boolean
 			{
 				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
 				if (selectedPictureIndex > 0)
@@ -102,7 +103,7 @@
 				return false;
 			}
 			
-			private function maximizeRightPicture():Boolean
+			public function maximizeRightPicture():Boolean
 			{
 				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
 				if (selectedPictureIndex < ViewModelLocator.PICTURES_PER_PAGE - 1)
@@ -156,17 +157,12 @@
 						new PictureCommentEvent(comment);
 					pictureCommentEvent.dispatch();
 					
-					commentField.enabled = false;
-					commentField.text = "";
-					commentCountdown();
+					var commentFieldEvent:CommentFieldControlEvent = 
+						new CommentFieldControlEvent(commentField);
+					
+					commentFieldEvent.dispatch();
+				
 				}				
-			}
-			
-			protected function commentCountdown():void
-			{
-				var commentTimer:Timer = new Timer(5000, 2);
-				commentTimer.addEventListener(TimerEvent.TIMER_COMPLETE, enableComments);
-				commentTimer.start();
 			}
 			
 			protected function enableComments(e:TimerEvent):void
@@ -224,25 +220,6 @@
 				loadPicturesEvent.dispatch();
 			}
 			
-			protected function startSlideShow(event:MouseEvent):void
-			{
-				inSlideshowState = true;
-				currentState = "slideShowstate";
-				this.stage.displayState = StageDisplayState.FULL_SCREEN;
-				changeSlideshowPictureTimer = new Timer(ViewModelLocator.SLIDESHOW_TIMEOUT, 0);
-				changeSlideshowPictureTimer.addEventListener(TimerEvent.TIMER, changeSlideShowPicture);
-				changeSlideshowPictureTimer.start();
-			}
-			
-			protected function changeSlideShowPicture(event:TimerEvent):void				
-			{
-				hide.play();
-				if (!maximizeRightPicture())
-				{
-					stopSlideshow();
-				}
-				show.play();
-			}
 			
 		]]>
 	</fx:Script>
@@ -252,7 +229,7 @@
 			id="usersList" x="0" y="4" height="373" width="96"/>
 	
 	<mx:Canvas id="bigPicture" width.slideShowstate="100%" height.slideShowstate="100%"
-			   width.normalState="482" height.normalState="372" x="96" y="4" click="stopSlideshowHandle(event);">
+			   width.normalState="482" height.normalState="372" x="96" y="4" click="(new StopSlideShowEvent(this)).dispatch();">
 		<mx:Image source="./upload/{modelLocator.selectedPicture.name}"
 				  width="{bigPicture.width}" height="{bigPicture.height}" />
 	</mx:Canvas>
@@ -299,6 +276,6 @@
 	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
 	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" click="previousPageButtonPressed(event);"/>
 	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" click="nextPageButtonPressed(event);"/>
-	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="bntSlideshow" click="startSlideShow(event);"/>
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="bntSlideshow" click="(new StartSlideShowEvent(this)).dispatch();"/>
 	
 </s:Group>
