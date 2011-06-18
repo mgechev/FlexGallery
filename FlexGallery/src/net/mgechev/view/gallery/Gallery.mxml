@@ -4,8 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="800"
 		 height="454"
-		 creationComplete="init(event);"
-		 keyDown="keyPressed(event);">
+		 creationComplete="{(new GalleryInitializationEvent(this)).dispatch()};"
+		 keyDown="{(new GalleryKeyPressedEvent(this)).dispatch()}">
 	
 	<s:states>
 		<s:State name="normalState" />
@@ -24,6 +24,8 @@
 			
 			import net.mgechev.commands.gallery.CommentFieldControlCommand;
 			import net.mgechev.events.gallery.CommentFieldControlEvent;
+			import net.mgechev.events.gallery.GalleryInitializationEvent;
+			import net.mgechev.events.gallery.GalleryKeyPressedEvent;
 			import net.mgechev.events.gallery.GetPictureDetailsEvent;
 			import net.mgechev.events.gallery.LoadPicturesEvent;
 			import net.mgechev.events.gallery.PictureCommentEvent;
@@ -49,35 +51,9 @@
 			[Bindable]
 			public var isUserpanelEnabled:Boolean = false;
 			
-			private var selectedUserId:Number;
+			public var selectedUserId:Number;
 			
-			private function init(event:Event):void
-			{
-				if (isUserpanelEnabled == false)
-				{
-					var loadPictures:LoadPicturesEvent = new LoadPicturesEvent(0);
-					loadPictures.dispatch();
-					selectedUserId = -1;
-				}
-			}
-			
-			private function keyPressed(event:KeyboardEvent):void
-			{
-				if (event.keyCode == 37)
-				{
-					maximizeLeftPicture();
-				}
-				if (event.keyCode == 39)
-				{
-					maximizeRightPicture();
-				}
-				if (event.keyCode == 27)
-				{
-					var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(this);
-					stopSlideshow.dispatch();
-				}
-			}
-			
+					
 			private function stopSlideshowHandle(event:Event):void
 			{
 				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(this);

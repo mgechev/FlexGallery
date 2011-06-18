@@ -32,8 +32,8 @@
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
-			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
+			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
 			
 			[Bindable]		
@@ -42,19 +42,22 @@
 		]]>
 	</fx:Script>
 
-	<s:Group height="100%" width="100%" verticalCenter="" horizontalCenter="0">
+	<s:Group verticalCenter="0" horizontalCenter="0">
 		
 	<appcontrol:Menu x="21" y="142" logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
 					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}" />
 	
 	<usercontrol:LoginForm dropShadowVisible="false" 
-					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN &amp;&amp;
+							  ViewModelLocator.inSlideshowState == false}" />
+		
 	<usercontrol:WelcomeScreen username="{modelLocator.username}" 
 					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
 		
 	<usercontrol:EditProfileForm x="200" y="178" email="{modelLocator.email}"  showEffect="{showPageEffect}"
 					visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
 					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
+		
 	<usercontrol:RegistrationForm x="200" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
 				    visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
 				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" />

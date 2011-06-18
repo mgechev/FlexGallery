@@ -29,6 +29,7 @@ package net.mgechev.commands.gallery
 			gallery.currentState = "slideShowstate";
 			gallery.stage.displayState = StageDisplayState.FULL_SCREEN;
 			
+			ViewModelLocator.inSlideshowState = true;
 			ViewModelLocator.changeSlideShowPicture = new Timer(ViewModelLocator.SLIDESHOW_TIMEOUT, 0);
 			ViewModelLocator.changeSlideShowPicture.addEventListener(TimerEvent.TIMER, changePicture);
 			ViewModelLocator.changeSlideShowPicture.start();

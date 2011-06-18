@@ -91,6 +91,7 @@ package net.mgechev.model
 		public static const SLIDESHOW_TIMEOUT:uint = 5000;
 		
 		public static var changeSlideShowPicture:Timer;
+		public static var inSlideshowState:Boolean;
 		
 		public static const PICTURES_PER_PAGE:uint = 8;
 		

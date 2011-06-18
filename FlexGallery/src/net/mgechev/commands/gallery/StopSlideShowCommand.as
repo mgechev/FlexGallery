@@ -27,6 +27,7 @@ package net.mgechev.commands.gallery
 			var stopSlideShow:StopSlideShowEvent = event as StopSlideShowEvent;
 			gallery = stopSlideShow.gallery;
 			stopSlideshow();
+			ViewModelLocator.inSlideshowState = false;
 		}
 		
 		public function stopSlideshow():void
