@@ -17,17 +17,18 @@ package net.mgechev.commands.appcontrol
 		public function ApplicationInitializationCommand()
 		{
 		}
+		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void
 		{
-			loginCheck(new Event("login"));
+			loginCheck();
 			var loginCheckTimer:Timer = new Timer(5000, 0);
 			loginCheckTimer.addEventListener(TimerEvent.TIMER, loginCheck);
 			loginCheckTimer.start();	
 		}
 		
-		private function loginCheck(event:Event):void
+		private function loginCheck(event:Event = null):void
 		{
 			var loginCheck:LoginCheckEvent = new LoginCheckEvent();
 			loginCheck.dispatch();
