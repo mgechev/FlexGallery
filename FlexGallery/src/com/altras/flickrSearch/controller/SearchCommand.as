@@ -5,9 +5,6 @@ package com.altras.flickrSearch.controller
 	import com.altras.flickrSearch.service.FlickrSearchResultParser;
 	import com.altras.flickrSearch.service.IFlickrSearchService;
 	import com.altras.flickrSearch.service.events.FlickrSearchResultEvent;
-	
-	import flash.profiler.showRedrawRegions;
-	
 	import mx.controls.Alert;
 	
 	import org.robotlegs.mvcs.Command;
