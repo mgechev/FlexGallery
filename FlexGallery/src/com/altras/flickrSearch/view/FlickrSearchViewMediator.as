@@ -35,7 +35,7 @@ package com.altras.flickrSearch.view
 			eventMap.mapListener(view,ThumbSelectEvent.SELECT,onThumbSelect,ThumbSelectEvent);
 			eventMap.mapListener(eventDispatcher,FlickrDataEvent.DATA_UPDATED, onDataUpdated,FlickrDataEvent);
 			
-			view.searchTxt.text="bla,bla";
+			view.searchTxt.text="type search tags here and click search ;)";
 			processSearch();
 			
 			
