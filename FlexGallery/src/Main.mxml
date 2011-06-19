@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application minWidth="955" minHeight="600" 
+			   backgroundColor="#ffffff"
 			   creationComplete="{(new ApplicationInitializationEvent()).dispatch()}"
 			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" 
 			   xmlns:control="net.mgechev.control.*" 

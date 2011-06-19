@@ -9,6 +9,7 @@ package net.mgechev.control
 	import net.mgechev.commands.appcontrol.LoginCheckCommand;
 	import net.mgechev.commands.gallery.CommentFieldControlCommand;
 	import net.mgechev.commands.gallery.GalleryInitializationCommand;
+	import net.mgechev.commands.gallery.GalleryKeyPressedCommand;
 	import net.mgechev.commands.gallery.GetPictureDetailsCommand;
 	import net.mgechev.commands.gallery.LoadPicturesCommand;
 	import net.mgechev.commands.gallery.LoadUserListCommand;
@@ -28,6 +29,7 @@ package net.mgechev.control
 	import net.mgechev.events.appcontrol.LoginCheckEvent;
 	import net.mgechev.events.gallery.CommentFieldControlEvent;
 	import net.mgechev.events.gallery.GalleryInitializationEvent;
+	import net.mgechev.events.gallery.GalleryKeyPressedEvent;
 	import net.mgechev.events.gallery.GetPictureDetailsEvent;
 	import net.mgechev.events.gallery.LoadPicturesEvent;
 	import net.mgechev.events.gallery.LoadUserListEvent;
@@ -72,6 +74,7 @@ package net.mgechev.control
 			this.addCommand(StartSlideShowEvent.START_SLIDE_SHOW_EVENT, StartSlideShowCommand);
 			this.addCommand(StopSlideShowEvent.STOP_SLIDE_SHOW_EVENT, StopSlideShowCommand);
 			this.addCommand(GalleryInitializationEvent.GALLERY_INITIALIZATION_EVENT, GalleryInitializationCommand);
+			this.addCommand(GalleryKeyPressedEvent.GALLERY_KEY_PRESSED_EVENT, GalleryKeyPressedCommand);
 		}
 		
 	}

@@ -5,15 +5,16 @@
 		 width="800"
 		 height="454"
 		 creationComplete="{(new GalleryInitializationEvent(this)).dispatch()};"
-		 keyDown="{(new GalleryKeyPressedEvent(this)).dispatch()}">
+		 keyDown="{(new GalleryKeyPressedEvent(this)).dispatch()}"
+		 xmlns:panzoom="org.rockholla.controls.panzoom.*">
 	
 	<s:states>
 		<s:State name="normalState" />
 		<s:State name="slideShowstate" />
 	</s:states>
 	<fx:Declarations>
-		<s:Fade alphaFrom="1" alphaTo="0" duration="700" target="{bigPicture}" id="hide" />
-		<s:Fade alphaFrom="0" alphaTo="1" duration="700" target="{bigPicture}" id="show" />
+		<s:Fade alphaFrom="1" alphaTo="0" duration="700" target="{panzoom}" id="hide" />
+		<s:Fade alphaFrom="0" alphaTo="1" duration="700" target="{panzoom}" id="show" />
 	</fx:Declarations>
 	<fx:Script>
 		<![CDATA[
@@ -82,7 +83,7 @@
 			public function maximizeRightPicture():Boolean
 			{
 				var selectedPictureIndex:uint = modelLocator.picturesList.getItemIndex(modelLocator.selectedPicture);
-				if (selectedPictureIndex < ViewModelLocator.PICTURES_PER_PAGE - 1)
+				if (selectedPictureIndex < modelLocator.picturesList.length)
 				{
 					modelLocator.selectedPicture = modelLocator.picturesList[selectedPictureIndex + 1];
 					return true;
@@ -196,19 +197,90 @@
 				loadPicturesEvent.dispatch();
 			}
 			
+		
+			/*
+				Zooming
+			*/
+			
+			import spark.components.BorderContainer;
+			import spark.components.Button;
+			
+			public static const MAX_ZOOM:Number = 4;
+			public static const MIN_ZOOM:Number = 0.3;
+			
+			protected function _onCreationComplete():void
+			{
+				
+			}
+			
+			// When our slider changes, we want the zoom level to update.  There's a public zoom method
+			// within the PanZoomComponent that accepts a scale value (1 = actual size or 100%, 0.5 = half the size or 50%, etc.)
+			protected function _onSliderChanged():void
+			{
+				this.panzoom.zoom(this.slider.value/100);
+			}
+			
+			// The PanZoomComponent provides and event "zoom" for which you can set a callback
+			// whenever a zoom in or out happens.  Here, we're detecting a zoom from the component
+			// and setting the slider value accordingly
+			protected function _onZoom():void
+			{
+				if(this.slider.value/100 != this.panzoom.scale)
+				{
+					this.slider.value = this.panzoom.scale * 100;
+				}
+			}
 			
 		]]>
+		
 	</fx:Script>
+	
+	<fx:Style>
+		@namespace panzoom "org.rockholla.controls.panzoom.*";
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.redBox
+		{
+			backgroundColor: #ff0000;
+		}
+		.yellowBox
+		{
+			backgroundColor: #ffff00;
+		}
+		
+	</fx:Style>
 	
 	<s:List dataProvider="{modelLocator.usersList}" change="loadUserPictures(event);" excludeFrom="slideShowstate"
 			itemRenderer="net.mgechev.view.gallery.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
 			id="usersList" x="0" y="4" height="373" width="96"/>
 	
-	<mx:Canvas id="bigPicture" width.slideShowstate="100%" height.slideShowstate="100%"
-			   width.normalState="482" height.normalState="372" x="96" y="4" click="(new StopSlideShowEvent(this)).dispatch();">
-		<mx:Image source="./upload/{modelLocator.selectedPicture.name}"
-				  width="{bigPicture.width}" height="{bigPicture.height}" />
-	</mx:Canvas>
+	<panzoom:PanZoomComponent id="panzoom" backgroundColor="0x807F7A"							  
+							  width.slideShowstate="100%"
+							  height.slideShowstate="100%"
+							  width.normalState="482"
+							  height.normalState="372"
+							  x="96" y="4"
+							  scaleMin="{MIN_ZOOM}" scaleMax="{MAX_ZOOM}" 
+							  contentWidth="1600" contentHeight="1200"
+							  contentBackgroundColor="0x000000" contentBackgroundAlpha="1"
+							  childPreventsPan="false"
+							  zoomToCursor="true"
+							  zoomSpeed="0.6"
+							  zoom="this._onZoom()">
+		
+		<mx:Image source="./upload/{modelLocator.selectedPicture.name}" />
+		
+	</panzoom:PanZoomComponent>
+	
+	<mx:VSlider id="slider" 
+				x="5" y="30" 
+				minimum="{MIN_ZOOM * 100}" maximum="{MAX_ZOOM * 100}" 
+				value="100" 
+				labels="{['30%', 'Zoom', '400%']}" 
+				liveDragging="true" 
+				change="this._onSliderChanged()" />
+	
 	
 	<s:List id="commentsList" excludeFrom="slideShowstate"
 			dataProvider="{modelLocator.selectedPicture.commentsList}"
@@ -252,6 +324,7 @@
 	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment" text="{picturesList.selectedItem.comment}"/>
 	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" click="previousPageButtonPressed(event);"/>
 	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" click="nextPageButtonPressed(event);"/>
-	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="bntSlideshow" click="(new StartSlideShowEvent(this)).dispatch();"/>
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="bntSlideshow" click="{(new StartSlideShowEvent(this)).dispatch();}"/>
+	<s:Button excludeFrom="normalState" x="0" y="430" label="Stop Slideshow" id="bntStopSlideshow" click="{(new StopSlideShowEvent(this)).dispatch();}"/>
 	
 </s:Group>

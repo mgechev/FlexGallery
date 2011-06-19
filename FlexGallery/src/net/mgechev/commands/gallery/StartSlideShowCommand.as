@@ -8,10 +8,14 @@ package net.mgechev.commands.gallery
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import mx.controls.Alert;
+	
 	import net.mgechev.events.gallery.StartSlideShowEvent;
 	import net.mgechev.events.gallery.StopSlideShowEvent;
 	import net.mgechev.model.ViewModelLocator;
 	import net.mgechev.view.gallery.Gallery;
+	
+	import org.rockholla.utils.Window;
 
 	public class StartSlideShowCommand implements ICommand
 	{
@@ -25,6 +29,17 @@ package net.mgechev.commands.gallery
 			var changePictureEvent:StartSlideShowEvent = 
 				event as StartSlideShowEvent;
 			gallery = changePictureEvent.gallery;
+			
+			ViewModelLocator.gallertHeightBackup = gallery.height;
+			ViewModelLocator.gallertWidthBackup = gallery.width;
+			ViewModelLocator.gallertXBackup = gallery.x;
+			ViewModelLocator.gallertYBackup = gallery.y;
+			
+			gallery.x = 0;
+			gallery.y = 0;
+			gallery.percentWidth = 100;
+			gallery.percentHeight = 100;
+			
 			gallery.inSlideshowState = true;
 			gallery.currentState = "slideShowstate";
 			gallery.stage.displayState = StageDisplayState.FULL_SCREEN;

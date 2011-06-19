@@ -26,8 +26,8 @@ package net.mgechev.commands.gallery
 		{
 			var stopSlideShow:StopSlideShowEvent = event as StopSlideShowEvent;
 			gallery = stopSlideShow.gallery;
-			stopSlideshow();
 			ViewModelLocator.inSlideshowState = false;
+			stopSlideshow();		
 		}
 		
 		public function stopSlideshow():void
@@ -36,6 +36,10 @@ package net.mgechev.commands.gallery
 			ViewModelLocator.changeSlideShowPicture.stop();
 			gallery.currentState = "normalState";
 			gallery.inSlideshowState = false;
+			gallery.height = ViewModelLocator.gallertHeightBackup;
+			gallery.width = ViewModelLocator.gallertWidthBackup;
+			gallery.x = ViewModelLocator.gallertXBackup;
+			gallery.y = ViewModelLocator.gallertYBackup;
 		}
 		
 	}

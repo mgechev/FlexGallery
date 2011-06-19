@@ -4,7 +4,9 @@ package net.mgechev.commands.gallery
 	import com.adobe.cairngorm.control.CairngormEvent;
 	
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.TimerEvent;
+	import flash.ui.Keyboard;
 	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
@@ -13,6 +15,7 @@ package net.mgechev.commands.gallery
 	import net.mgechev.events.gallery.GalleryInitializationEvent;
 	import net.mgechev.events.gallery.GalleryKeyPressedEvent;
 	import net.mgechev.events.gallery.LoadPicturesEvent;
+	import net.mgechev.events.gallery.StopSlideShowEvent;
 	import net.mgechev.model.ViewModelLocator;
 	
 	public class GalleryKeyPressedCommand implements ICommand
@@ -27,18 +30,22 @@ package net.mgechev.commands.gallery
 		{
 			var galleryEvent:GalleryKeyPressedEvent = 
 				event as GalleryKeyPressedEvent;
-			
-			if (galleryEvent.keyCode == 37)
+
+			var galleryKeyEvent:KeyboardEvent = 
+				event as KeyboardEvent;
+
+			if (galleryKeyEvent.keyCode == 37)
 			{
 				galleryEvent.gallery.maximizeLeftPicture();
 			}
-			if (galleryEvent.keyCode == 39)
+			if (galleryKeyEvent.keyCode == 39)
 			{
 				galleryEvent.gallery.maximizeRightPicture();
 			}
-			if (galleryEvent.keyCode == 27)
+			if (galleryKeyEvent.keyCode == Keyboard.END)
 			{
-				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(this);
+				Alert.show("asdasd");
+				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(galleryEvent.gallery);
 				stopSlideshow.dispatch();
 			}
 		}

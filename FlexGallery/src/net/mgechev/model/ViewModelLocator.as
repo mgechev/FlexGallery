@@ -90,6 +90,11 @@ package net.mgechev.model
 		public static const VIEW_USERS:uint = 5;
 		public static const SLIDESHOW_TIMEOUT:uint = 5000;
 		
+		public static var gallertWidthBackup:int;
+		public static var gallertHeightBackup:int;
+		public static var gallertXBackup:int;
+		public static var gallertYBackup:int;
+		
 		public static var changeSlideShowPicture:Timer;
 		public static var inSlideshowState:Boolean;
 		
