@@ -45,7 +45,7 @@
 	
 
 	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}" 
-					x="96" width="616" excludeFrom="slideShowstate"
+					x="96" width="616" excludeFrom="slideShowstate" useVirtualLayout="false"
 					itemRenderer="net.mgechev.view.renderers.GalleryRenderer"
 					height="75" selectionColor="#cccccc" y="376" borderVisible="false">
 		<s:layout>
