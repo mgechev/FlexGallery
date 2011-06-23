@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editpictures:EditPicturesLogic width="600" height="500"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:logic="net.mgechev.view.picturecontrol.*" xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*">
+
+	<s:List id="picturesList"
+			itemRenderer="net.mgechev.view.renderers.EditPicturesRenderer"
+			dataProvider="{modelLocator.picturesList}" x="100" y="0" width="410" height="500"/>
+	<s:Button x="0" y="0" label="Back" width="101" height="500" id="backButton"/>
+	<s:Button x="507" y="0" label="Next" width="93" height="501" id="nextButton"/>
+</editpictures:EditPicturesLogic>

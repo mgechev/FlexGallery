@@ -6,6 +6,7 @@ package net.mgechev.commands.usercontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.usercontrol.LoginDelegate;
 	import net.mgechev.events.usercontrol.LoginEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -13,17 +14,16 @@ package net.mgechev.commands.usercontrol
 	public class LoginCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var delegate:LoginDelegate;
 		
-		public function LoginCommand()
-		{
-		}
+		private var delegate:LoginDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var loginEvent:LoginEvent = event as LoginEvent;
 			delegate = new LoginDelegate(this, loginEvent.loginData);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -39,13 +39,13 @@ package net.mgechev.commands.usercontrol
 				modelLocator.email = event.result.success.email;
 				modelLocator.workflowState = ViewModelLocator.WELCOME_SCREEN;
 			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+		 horizontalAlign="center"
+		 verticalAlign="top">
+	<mx:Script>
+		<![CDATA[
+		]]>
+	</mx:Script>
+	
+	<mx:Image source="./upload/smallest/{data.name}" 
+			  width="70" 
+			  height="70" useHandCursor="true"/>
+</mx:VBox>

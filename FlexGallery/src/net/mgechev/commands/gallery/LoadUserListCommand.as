@@ -6,26 +6,25 @@ package net.mgechev.commands.gallery
 	import mx.collections.ArrayCollection;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.gallery.LoadUserListDelegate;
 	import net.mgechev.events.gallery.LoadUserListEvent;
 	import net.mgechev.model.ViewModelLocator;
 	import net.mgechev.vo.UserVO;
 
 	public class LoadUserListCommand implements ICommand, IResponder
-	{
-		
+	{		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var delegate:LoadUserListDelegate;
 		
-		public function LoadUserListCommand()
-		{
-		}
+		private var delegate:LoadUserListDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var loadUserListEvent:LoadUserListEvent = event as LoadUserListEvent;
 			delegate = new LoadUserListDelegate(this);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -42,13 +41,12 @@ package net.mgechev.commands.gallery
 			{
 				modelLocator.usersList.addItem(new UserVO(event.result.user.username, "", event.result.user.id));
 			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 	}

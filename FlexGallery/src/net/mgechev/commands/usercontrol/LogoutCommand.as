@@ -6,6 +6,7 @@ package net.mgechev.commands.usercontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.usercontrol.LogoutDelegate;
 	import net.mgechev.events.usercontrol.LogoutEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -13,17 +14,16 @@ package net.mgechev.commands.usercontrol
 	public class LogoutCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		
 		private var delegate:LogoutDelegate;
-		
-		public function LogoutCommand()
-		{
-		}
-		
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
+
 		public function execute(event:CairngormEvent):void
 		{
 			var logoutEvent:LogoutEvent = event as LogoutEvent;
 			delegate = new LogoutDelegate(this);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -31,13 +31,13 @@ package net.mgechev.commands.usercontrol
 			modelLocator.workflowState = ViewModelLocator.LOGIN_SCREEN;
 			modelLocator.username = null;
 			modelLocator.id = 0;
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

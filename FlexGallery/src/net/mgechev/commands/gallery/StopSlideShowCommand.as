@@ -12,15 +12,15 @@ package net.mgechev.commands.gallery
 	
 	import net.mgechev.events.gallery.StopSlideShowEvent;
 	import net.mgechev.model.ViewModelLocator;
-	import net.mgechev.view.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.GalleryLogic;
+	
+	import org.osmf.traits.ViewableTrait;
 	
 	public class StopSlideShowCommand implements ICommand
 	{
-		private var gallery:Gallery;
-		
-		public function StopSlideShowCommand()
-		{
-		}
+		private var gallery:GalleryLogic;
+		private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void
 		{
@@ -34,6 +34,9 @@ package net.mgechev.commands.gallery
 		{
 			gallery.stage.displayState = StageDisplayState.NORMAL;
 			ViewModelLocator.changeSlideShowPicture.stop();
+			
+			modelLocator.currentState = modelLocator.lastState;
+			
 			gallery.currentState = "normalState";
 			gallery.inSlideshowState = false;
 			gallery.height = ViewModelLocator.gallertHeightBackup;

@@ -8,24 +8,24 @@ package net.mgechev.commands.appcontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.appcontrol.LoginCheckDelegate;
 	import net.mgechev.events.appcontrol.LoginCheckEvent;
 	import net.mgechev.model.ViewModelLocator;
 
 	public class LoginCheckCommand implements ICommand, IResponder
 	{
-		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		public var delegate:LoginCheckDelegate;
 		
-		public function LoginCheckCommand()
-		{
-		}
+		private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var loginCheck:LoginCheckEvent = event as LoginCheckEvent;
 			delegate = new LoginCheckDelegate(this);
-			modelLocator.pushService(delegate);
+			
+			//delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -44,13 +44,15 @@ package net.mgechev.commands.appcontrol
 				modelLocator.id = event.result.id;
 				modelLocator.email = event.result.email;
 			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
+			//modelLocator.dequeue(delegate);
+			//modelLocator.executeService();
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

@@ -11,53 +11,29 @@ package net.mgechev.model
 	import net.mgechev.vo.PhotoVO;
 	
 	[Bindable]
-	public class ViewModelLocator implements IModelLocator {
-		
+	public class ViewModelLocator implements IModelLocator 
+	{
 		private static var instance:ViewModelLocator;
 		
-		public function ViewModelLocator(enforcer:SingletonEnforcer) {
-			if (enforcer == null) {
+		public function ViewModelLocator(enforcer:SingletonEnforcer)
+		{
+			if (enforcer == null)
+			{
 				throw new Error("You can have only one instance of ViewModelLocator!");
 			}
 		}
 		
-		public static function getInstance() : ViewModelLocator {
-			if (instance == null) {
+		public static function getInstance():ViewModelLocator
+		{
+			if (instance == null)
+			{
 				instance = new ViewModelLocator(new SingletonEnforcer);
 			}
 			return instance;
 		}
 		
-		public function pushService(service:Object):void
-		{
-			_servicesQueue.addItemAt(service, 0);
-			if (_servicesQueue.length == 1 && canExecute)
-			{
-				canExecute = false;
-				executeService();
-			}
-		}
-		
-		public function executeService():void
-		{
-			if (_servicesQueue.length > 0)
-			{
-				var executionService:Object = _servicesQueue.getItemAt(_servicesQueue.length - 1);
-				executionService.execute();
-			}
-		}
-		
-		public function dequeue(delegate:Object):void
-		{
-			if (_servicesQueue.length >= 1)
-			{
-				_servicesQueue.removeItemAt(_servicesQueue.getItemIndex(delegate));
-				canExecute = true;
-			}
-		}
-		
-		private var canExecute:Boolean = true;
-		private var _servicesQueue:ArrayCollection = new ArrayCollection();
+		public var lastState:String;
+		public var currentState:String = "gallery";
 		
 		public var usersList:ArrayCollection;
 		
@@ -123,12 +99,11 @@ package net.mgechev.model
 			pageReached = 0;
 			
 			filesUploaded = null;
-			uploadProgress = 0;		
-			
+			uploadProgress = 0;					
 		}
 		
 	}
 }
 		
-	// Utility Class to Deny Access to Constructor
-	class SingletonEnforcer {}
+// Utility Class to Deny Access to Constructor
+class SingletonEnforcer {}

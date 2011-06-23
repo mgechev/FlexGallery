@@ -7,6 +7,7 @@ package net.mgechev.commands.gallery
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.gallery.LoadPicturesDelegate;
 	import net.mgechev.business.gallery.LoadUserListDelegate;
 	import net.mgechev.events.gallery.LoadPicturesEvent;
@@ -16,20 +17,18 @@ package net.mgechev.commands.gallery
 	import net.mgechev.vo.PhotoVO;
 
 	public class LoadPicturesCommand implements ICommand, IResponder
-	{
-		
+	{		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var delegate:LoadPicturesDelegate;
 		
-		public function LoadPicturesCommand()
-		{
-		}
+		private var delegate:LoadPicturesDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var loadPictures:LoadPicturesEvent = event as LoadPicturesEvent;
 			delegate = new LoadPicturesDelegate(this, new PageUserPairVO(loadPictures.page, loadPictures.userId));
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		private function getPictureComments(comments:Object):ArrayCollection
@@ -69,13 +68,13 @@ package net.mgechev.commands.gallery
 				}
 			}
 			modelLocator.selectedPicture = modelLocator.picturesList[0];
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 	}

@@ -19,11 +19,7 @@ package net.mgechev.commands.gallery
 	public class CommentFieldControlCommand implements ICommand
 	{
 		private var commentField:TextArea;
-		
-		public function CommentFieldControlCommand()
-		{
-		}
-		
+				
 		public function execute(event:CairngormEvent):void
 		{
 			var commentFieldEnableEvent:CommentFieldControlEvent = event as CommentFieldControlEvent;

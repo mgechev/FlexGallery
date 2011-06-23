@@ -7,6 +7,7 @@ package net.mgechev.commands.picturecontrol
 	import mx.core.UIComponent;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.picturecontrol.DeletePictureDelegate;
 	import net.mgechev.events.picturecontrol.DeletePictureEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -14,28 +15,26 @@ package net.mgechev.commands.picturecontrol
 	public class DeletePictureCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var delegate:DeletePictureDelegate;
 		
-		public function DeletePictureCommand()
-		{
-		}
+		private var delegate:DeletePictureDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var deletePictureEvent:DeletePictureEvent = event as DeletePictureEvent;
 			delegate = new DeletePictureDelegate(this, deletePictureEvent.pictureName);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

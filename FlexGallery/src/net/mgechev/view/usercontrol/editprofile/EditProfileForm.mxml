@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<editprofile:EditProfileFormLogic width="400" height="300" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:logic="net.mgechev.view.usercontrol.*" xmlns:editprofile="net.mgechev.view.usercontrol.editprofile.*">
+	
+	<s:Panel title="Edit Profile" width="100%" height="100%">	
+		
+		<s:TextInput x="168" y="53" id="oldPasswordInput" displayAsPassword="true"/>
+		<s:TextInput x="168" y="88" id="passwordInput" displayAsPassword="true"/>
+		<s:TextInput x="168" y="123" id="confirmPasswordInput" displayAsPassword="true"/>
+		<s:TextInput x="168" y="157" id="emailInput" text="{email}"/>
+		<s:Label x="79" y="59" text="Old password:"/>
+		<s:Label x="99" y="94" text="Password:"/>
+		<s:Label x="40" y="129" text="Repeat the password:"/>
+		<s:Label x="122" y="163" text="Email:"/>
+		<s:Button label="Edit" id="registerButton" x="170" y="184"/>
+		
+	</s:Panel>
+	
+</editprofile:EditProfileFormLogic>

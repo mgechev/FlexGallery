@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gallery:GalleryLogic width="800" height="454" 
+		xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		xmlns:panzoom="org.rockholla.controls.panzoom.*"
+		xmlns:gallery="net.mgechev.view.gallery.gallery.*">
+	
+	<gallery:states>
+		<s:State name="normalState" />
+		<s:State name="slideShowstate" />
+	</gallery:states>
+	
+	<s:List dataProvider="{modelLocator.usersList}" excludeFrom="slideShowstate"
+			itemRenderer="net.mgechev.view.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
+			id="usersList" x="0" y="4" height="373" width="96"/>
+	
+	<panzoom:PanZoomComponent id="panzoom" backgroundColor="0x807F7A"
+							  width.slideShowstate="100%"
+							  height.slideShowstate="100%"
+							  width.normalState="482"
+							  height.normalState="372"
+							  x="96" y="4"
+							  scaleMin="{MIN_ZOOM}" scaleMax="{MAX_ZOOM}" 
+							  contentWidth="1600" contentHeight="1200"
+							  contentBackgroundColor="0x000000" contentBackgroundAlpha="1"
+							  childPreventsPan="false"
+							  zoomToCursor="true"
+							  zoomSpeed="0.6"
+							  horizontalScrollPolicy="off"
+							  verticalScrollPolicy="off">
+		
+		<mx:Image source="./upload/{modelLocator.selectedPicture.name}" width="500" height="500" />
+		
+	</panzoom:PanZoomComponent>
+	
+	<s:List id="commentsList" excludeFrom="slideShowstate"
+			dataProvider="{modelLocator.selectedPicture.commentsList}"
+			itemRenderer="net.mgechev.view.renderers.CommentsRenderer"
+			x="578" 
+			y="112" 
+			height="216" 
+			width="221"
+			borderVisible="false"/>
+	
+
+	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}" 
+					x="96" width="616" excludeFrom="slideShowstate"
+					itemRenderer="net.mgechev.view.renderers.GalleryRenderer"
+					height="75" selectionColor="#cccccc" y="376" borderVisible="false">
+		<s:layout>
+			<s:HorizontalLayout />
+		</s:layout>
+	</s:List>
+	
+	<s:TextArea x="578" y="328" width="222" height="49" id="commentField" excludeFrom="slideShowstate"
+				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+			    text="Enter comment end press Enter..." 
+				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
+				(commentField.text=''):
+				(commentField.text=commentField.text))}" 
+				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
+				(commentField.text=commentField.text))}"/>
+	
+	<s:Label x="581" y="5" excludeFrom="slideShowstate" text="Vote:"/>
+	<s:Label x="720" y="4" excludeFrom="slideShowstate" id="ratingLabel" text="{modelLocator.selectedPicture.rating}"/>
+	
+	<s:VSlider x="712" y="5" rotation="90" excludeFrom="slideShowstate"
+			   enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+			   minimum="1" maximum="5" stepSize="1" 
+			   value="3" id="voteInput" />
+
+	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment"
+			 text="{picturesList.selectedItem.comment}"/>
+	
+	<s:Button visible.normalState="false" visible.slideShowstate="true" 
+			  x="0" y="430" label="Stop Slideshow" id="btnStopSlideshow" />
+	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" id="previousButton" />
+	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" id="nextButton" />
+	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="btnSlideshow" />
+	
+</gallery:GalleryLogic>

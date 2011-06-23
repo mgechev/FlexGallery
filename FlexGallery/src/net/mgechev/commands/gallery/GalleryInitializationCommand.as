@@ -16,10 +16,6 @@ package net.mgechev.commands.gallery
 	
 	public class GalleryInitializationCommand implements ICommand
 	{
-		public function GalleryInitializationCommand()
-		{
-		}
-		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void

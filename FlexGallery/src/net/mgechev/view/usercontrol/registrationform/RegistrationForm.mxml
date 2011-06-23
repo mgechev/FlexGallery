@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<registrationform:RegistrationFormLogic width="400" height="300" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:logic="net.mgechev.view.usercontrol.*" xmlns:registrationform="net.mgechev.view.usercontrol.registrationform.*">
+	
+	<s:Panel title="Registration" horizontalCenter="true" width="450" height="350" id="registrationPanel">	
+		
+		<s:TextInput x="169" y="82" id="usernameInput"/>
+		<s:TextInput x="169" y="117" id="passwordInput" displayAsPassword="true"/>
+		<s:TextInput x="169" y="152" id="confirmPasswordInput" displayAsPassword="true"/>
+		<s:TextInput x="169" y="186" id="emailInput"/>
+		<s:Label x="100" y="88" text="Username:"/>
+		<s:Label x="100" y="123" text="Password:"/>
+		<s:Label x="41" y="158" text="Repeat the password:"/>
+		<s:Label x="123" y="192" text="Email:"/>
+		<s:Button label="Register" id="registerButton" x="171" y="213"/>
+		
+	</s:Panel>
+	
+</registrationform:RegistrationFormLogic>

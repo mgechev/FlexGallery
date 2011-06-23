@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<cairngorm:ServiceLocator
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:cairngorm="com.adobe.cairngorm.business.*">
+	
+	<!-- move the Services.mxml to a services-package -->
+	
+	<mx:HTTPService
+		id="loginService"
+		url="./scripts/index.php?page=login"
+		method="POST"
+		showBusyCursor="true">
+		
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="logoutService"
+		url="./scripts/index.php?page=login_check"
+		method="GET"
+		showBusyCursor="true">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="editProfileService"
+		url="./scripts/index.php?page=edit_profile"
+		method="POST"
+		showBusyCursor="true">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="registrationService"
+		url="./scripts/index.php?page=register"
+		method="POST"
+		showBusyCursor="true">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="getPicturesService" 
+		url="./scripts/index.php?page=picture_list"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+		
+	<mx:HTTPService 
+		id="getPictureCommentService"
+		url="./scripts/index.php?page=picture_details"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService
+		id="getUserListService" 
+		url="./scripts/index.php?page=users"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="sendCommentService" 
+		url="./scripts/index.php?page=add_comment"
+		showBusyCursor="true"
+		method="POST">
+	</mx:HTTPService>
+
+	<mx:HTTPService
+		id="getComments" 
+		url="./scripts/index.php?page=comment_list"
+		showBusyCursor="true" 
+		method="GET">
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="sendVoteService"
+		url="./scripts/index.php?page=add_vote"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="deletePictureService"
+		url="./scripts/index.php?page=delete_picture"
+		showBusyCursor="true"
+		method="GET">
+	</mx:HTTPService>
+	
+	<mx:HTTPService 
+		id="editCommentService"
+		url="./scripts/index.php?page=edit_picture"
+		showBusyCursor="true"
+		method="POST">
+	</mx:HTTPService>
+
+	<mx:HTTPService 
+		id="loginCheckService" 
+		url="./scripts/index.php?page=login_check"
+		method="GET">
+	</mx:HTTPService>
+	
+</cairngorm:ServiceLocator>

@@ -4,15 +4,16 @@ package net.mgechev.events.gallery
 	
 	import flash.events.Event;
 	
-	import net.mgechev.view.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.GalleryLogic;
 	
 	public class StartSlideShowEvent extends CairngormEvent
 	{
 		public static const START_SLIDE_SHOW_EVENT:String = "StartSlideShow";
-		public var gallery:Gallery;
+		public var gallery:GalleryLogic;
 		
 		
-		public function StartSlideShowEvent(gallery:Gallery)
+		public function StartSlideShowEvent(gallery:GalleryLogic)
 		{
 			this.gallery = gallery;
 			super(START_SLIDE_SHOW_EVENT);

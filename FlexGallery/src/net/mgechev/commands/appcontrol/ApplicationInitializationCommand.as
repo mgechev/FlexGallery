@@ -13,11 +13,7 @@ package net.mgechev.commands.appcontrol
 	import net.mgechev.model.ViewModelLocator;
 
 	public class ApplicationInitializationCommand implements ICommand
-	{
-		public function ApplicationInitializationCommand()
-		{
-		}
-		
+	{		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void

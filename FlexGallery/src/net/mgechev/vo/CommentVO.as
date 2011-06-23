@@ -1,5 +1,6 @@
 package net.mgechev.vo
 {
+	[Bindable]
 	public class CommentVO
 	{
 		public var id:uint;

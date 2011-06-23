@@ -6,15 +6,16 @@ package net.mgechev.events.gallery
 	
 	import mx.controls.Alert;
 	
-	import net.mgechev.view.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.GalleryLogic;
 	
 	public class StopSlideShowEvent extends CairngormEvent
 	{
 		public static const STOP_SLIDE_SHOW_EVENT:String = "StopSlideShow";
-		public var gallery:Gallery;
+		public var gallery:GalleryLogic;
 		
 		
-		public function StopSlideShowEvent(gallery:Gallery)
+		public function StopSlideShowEvent(gallery:GalleryLogic)
 		{
 			this.gallery = gallery;
 			super(STOP_SLIDE_SHOW_EVENT);

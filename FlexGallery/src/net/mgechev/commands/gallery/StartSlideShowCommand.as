@@ -13,16 +13,15 @@ package net.mgechev.commands.gallery
 	import net.mgechev.events.gallery.StartSlideShowEvent;
 	import net.mgechev.events.gallery.StopSlideShowEvent;
 	import net.mgechev.model.ViewModelLocator;
-	import net.mgechev.view.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.Gallery;
+	import net.mgechev.view.gallery.gallery.GalleryLogic;
 	
 	import org.rockholla.utils.Window;
 
 	public class StartSlideShowCommand implements ICommand
 	{
-		private var gallery:Gallery;
-		public function StartSlideShowCommand()
-		{
-		}
+		private var gallery:GalleryLogic;
+		private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void
 		{
@@ -49,11 +48,12 @@ package net.mgechev.commands.gallery
 			ViewModelLocator.changeSlideShowPicture.addEventListener(TimerEvent.TIMER, changePicture);
 			ViewModelLocator.changeSlideShowPicture.start();
 			
+			modelLocator.lastState = modelLocator.currentState;
+			modelLocator.currentState = "slideShow";
 		}
 		
 		private function changePicture(event:Event):void
 		{
-			gallery.hide.play();
 			if (!gallery.maximizeRightPicture())
 			{
 				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(gallery);

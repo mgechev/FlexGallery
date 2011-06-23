@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Application minWidth="955" minHeight="600" 
+<s:Application minWidth="955" minHeight="600"
 			   backgroundColor="#ffffff"
 			   creationComplete="{(new ApplicationInitializationEvent()).dispatch()}"
 			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" 
@@ -13,24 +13,38 @@
 			   xmlns:flickrSearch="com.altras.flickrSearch.*"
 			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
-			   xmlns:mx="library://ns.adobe.com/flex/mx">
+			   xmlns:mx="library://ns.adobe.com/flex/mx" 
+			   xmlns:services="net.mgechev.services.*" 
+			   xmlns:editprofile="net.mgechev.view.usercontrol.editprofile.*" 
+			   xmlns:loginform="net.mgechev.view.usercontrol.loginform.*" 
+			   xmlns:registrationform="net.mgechev.view.usercontrol.registrationform.*" 
+			   xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*" 
+			   xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*" 
+			   xmlns:uploadform="net.mgechev.view.picturecontrol.uploadform.*" 
+			   xmlns:gallery1="net.mgechev.view.gallery.gallery.*" 
+			   xmlns:menu="net.mgechev.view.appcontrol.menu.*"
+			   currentState="{modelLocator.currentState}">
+	
 	<s:states>
+		<s:State name="gallery" />
 		<s:State name="State1"/>
 		<s:State name="flickrSearching"/>
+		<s:State name="slideShow" />
+		<s:State name="editProfile" />
+		<s:State name="registration" />
+		<s:State name="uploadPictures" />
+		<s:State name="usersGallery" />
+		<s:State name="picturesControl" />
 	</s:states>
 	
-	
-	<fx:Declarations>
-		<s:Fade alphaFrom="1" alphaTo="0" duration="300" id="hidePageEffect" />
-		<s:Fade alphaFrom="0" alphaTo="1" duration="300" id="showPageEffect" />
+	<fx:Declarations>		
 		<control:Controller id="controller" />
-		<business:Services id="services" />
-<<<<<<< HEAD
+		<services:Services id="services" />
+
 		<flickrSearch:FlickrSearchContext contextView="{this}"/>		
-=======
 		<s:VerticalLayout />
 		
->>>>>>> 92543ba3334a87c9b4fc20c29e6bb1dc70be8be5
+		<business:DelegatesQueue/>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -51,65 +65,51 @@
 			[Bindable]		
 			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 
-
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
-				
-			}
-
 		]]>
 	</fx:Script>
-<<<<<<< HEAD
 	
-<mx:VBox height="100%" width="100%" horizontalAlign="center" verticalAlign="top" includeIn="State1">
-	<s:Button label="Button" click="currentState='flickrSearching'" x.flickrSearching="308" y.flickrSearching="10"/>
-=======
->>>>>>> 92543ba3334a87c9b4fc20c29e6bb1dc70be8be5
 
-	<s:Group verticalCenter="0" horizontalCenter="0">
+	<s:Group verticalCenter="0" horizontalCenter="0" width="700">
 		
-	<appcontrol:Menu x="21" y="142" logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
-					 visible="{(galleryPage.inSlideshowState || homeGalleryPage.inSlideshowState)?false:true}" />
-	
-	<usercontrol:LoginForm dropShadowVisible="false" 
-					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN &amp;&amp;
-							  ViewModelLocator.inSlideshowState == false}" />
+		<menu:Menu id="menu" x="21" y="142"
+				logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" excludeFrom="slideShow" />
 		
-	<usercontrol:WelcomeScreen username="{modelLocator.username}" 
-					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
-		
-	<usercontrol:EditProfileForm x="200" y="178" email="{modelLocator.email}"  showEffect="{showPageEffect}"
-					visible="{(modelLocator.currentPage == ViewModelLocator.EDIT_PROFILE &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
-		
-	<usercontrol:RegistrationForm x="200" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
-				    visible="{(modelLocator.currentPage == ViewModelLocator.REGISTER &amp;&amp;
-				    modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN)}" />
-	
-	<picturecontrol:UploadForm  x="200" y="178" progress="{modelLocator.uploadProgress}" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
-					visible="{(modelLocator.currentPage == ViewModelLocator.UPLOAD &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
-	
-	<gallery:Gallery x="0" y="178" isUserpanelEnabled="true" id="galleryPage"
-					hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
-					visible="{(modelLocator.currentPage == ViewModelLocator.VIEW_USERS &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}"/>
-	
-	<gallery:Gallery x="0" y="178" id="homeGalleryPage" isUserpanelEnabled="false" hideEffect="{hidePageEffect}" 
-					showEffect="{showPageEffect}" visible="{modelLocator.currentPage == ViewModelLocator.HOME}" />
-	
-	<picturecontrol:EditPictures x="100" y="178" hideEffect="{hidePageEffect}" showEffect="{showPageEffect}"
-					visible="{(modelLocator.currentPage == ViewModelLocator.PICTURES &amp;&amp;
-					modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN)}" />
+		<loginform:LoginForm id="loginForm" excludeFrom="slideShow"
+						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+			
+		<welcomescreen:WelcomeScreen id="welcomeScreen" excludeFrom="slideShow" username="{modelLocator.username}" 
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
+			
+		<s:Group y="178" height="454">
+				
+			<editprofile:EditProfileForm x="200" id="editProfileForm" email="{modelLocator.email}" 
+							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+							includeIn="editProfile" />
+				
+			<registrationform:RegistrationForm x="200" id="registrationForm"
+						    visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" 
+							includeIn="registration" />
+			
+			<uploadform:UploadForm x="200" id="uploadForm" progress="{modelLocator.uploadProgress}" 
+							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+							includeIn="uploadPictures" />
+			
+			<gallery1:Gallery isUserpanelEnabled="true" id="galleryPage"
+							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+							includeIn="usersGallery, slideShow"/>
+			
+			<gallery1:Gallery id="homeGalleryPage" isUserpanelEnabled="false"
+							includeIn="gallery, slideShow" />
+			
+			<editpictures:EditPictures x="50" id="editPicturesForm"
+							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+							includeIn="picturesControl"/>
+		</s:Group>
 	
 	</s:Group>
-<<<<<<< HEAD
-</mx:VBox>
+
 	<flickrView:FlickrSearchView id="flickrSearchView" width="100%" height="100%" includeIn="flickrSearching" x="0" y="38">
 	</flickrView:FlickrSearchView>
 	<s:Button includeIn="flickrSearching" click="currentState=''" x="923" y="6" label="X"/>
 	
-=======
-		
->>>>>>> 92543ba3334a87c9b4fc20c29e6bb1dc70be8be5
 </s:Application>

@@ -6,6 +6,7 @@ package net.mgechev.commands.usercontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.usercontrol.EditProfileDelegate;
 	import net.mgechev.business.usercontrol.RegistrationDelegate;
 	import net.mgechev.events.usercontrol.EditProfileEvent;
@@ -16,15 +17,12 @@ package net.mgechev.commands.usercontrol
 	public class RegistrationCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		private var delegate:RegistrationDelegate;
 		
-		public function RegistrationCommand()
-		{
-		}
+		private var delegate:RegistrationDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function isValidData(data:ProfileVO):Boolean
 		{
-
 			if (data.password != data.confirmPassword)
 			{
 				Alert.show("Passwords doesn't match!");
@@ -46,26 +44,29 @@ package net.mgechev.commands.usercontrol
 				delegate = new RegistrationDelegate(this, registerEvent.registerData);
 				delegate.execute();
 			}
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
-			if (event.result.error)
+			if (event.result)
 			{
-				Alert.show(event.result.error);
+				if (event.result.error)
+				{
+					Alert.show(event.result.error);
+				}
+				else			
+				{
+					Alert.show(event.result.success);
+				}
 			}
-			else			
-			{
-				Alert.show(event.result.success);
-			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

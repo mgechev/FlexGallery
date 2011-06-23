@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<welcomescreen:WelcomeScreenLogic xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:logic="net.mgechev.view.usercontrol.*" xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*">
+	
+	<s:Panel width="300" title="Hello"
+			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
+		
+		<s:Label text="Welcome, {username}" x="79" y="25" id="welcomeText"/>
+		<s:Button label="Logout"  x="114" y="54" id="logoutButton"/>
+		
+	</s:Panel>
+	
+</welcomescreen:WelcomeScreenLogic>

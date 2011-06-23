@@ -20,34 +20,12 @@ package net.mgechev.commands.gallery
 	
 	public class GalleryKeyPressedCommand implements ICommand
 	{
-		public function GalleryKeyPressedCommand()
-		{
-		}
-		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 		
 		public function execute(event:CairngormEvent):void
 		{
 			var galleryEvent:GalleryKeyPressedEvent = 
 				event as GalleryKeyPressedEvent;
-
-			var galleryKeyEvent:KeyboardEvent = 
-				event as KeyboardEvent;
-
-			if (galleryKeyEvent.keyCode == 37)
-			{
-				galleryEvent.gallery.maximizeLeftPicture();
-			}
-			if (galleryKeyEvent.keyCode == 39)
-			{
-				galleryEvent.gallery.maximizeRightPicture();
-			}
-			if (galleryKeyEvent.keyCode == Keyboard.END)
-			{
-				Alert.show("asdasd");
-				var stopSlideshow:StopSlideShowEvent = new StopSlideShowEvent(galleryEvent.gallery);
-				stopSlideshow.dispatch();
-			}
 		}
 	}
 }

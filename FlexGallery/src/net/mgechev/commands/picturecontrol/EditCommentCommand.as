@@ -7,6 +7,7 @@ package net.mgechev.commands.picturecontrol
 	import mx.core.UIComponent;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.picturecontrol.EditCommentDelegate;
 	import net.mgechev.events.picturecontrol.EditCommentEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -15,28 +16,26 @@ package net.mgechev.commands.picturecontrol
 	public class EditCommentCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		
 		private var delegate:EditCommentDelegate;
-		
-		public function EditCommentCommand()
-		{
-		}
-		
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
+				
 		public function execute(event:CairngormEvent):void
 		{
 			var editComment:EditCommentEvent = event as EditCommentEvent;
 			delegate = new EditCommentDelegate(this, new PhotoCommentPairVO(editComment.pictureId, editComment.comment));
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 	

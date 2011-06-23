@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true" 
+				width="385"
+				height="137">
+	
+	<fx:Declarations>
+		<fx:String id="pictureName">
+			{data.name}
+		</fx:String>
+		<fx:uint id="pictureId">
+			{data.id}
+		</fx:uint>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			
+			import net.mgechev.events.picturecontrol.DeletePictureEvent;
+			import net.mgechev.events.picturecontrol.EditCommentEvent;
+			import net.mgechev.model.ViewModelLocator;
+			import net.mgechev.vo.PhotoVO;
+			public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();	
+			
+			protected function deletePicture(event:MouseEvent):void
+			{
+				var stop:Boolean = false;
+				var deletedPictureName:String;
+				
+				for (var i:uint = 0; i < modelLocator.picturesList.length && !stop; i++)
+				{
+					if (modelLocator.picturesList[i].name == pictureName)
+					{
+						deletedPictureName = pictureName;
+						modelLocator.picturesList[i].name = '../../images/deleteicon.png';
+						stop = true;
+					}
+				}
+
+				var deletePictureEvent:DeletePictureEvent = new DeletePictureEvent(deletedPictureName);
+				deletePictureEvent.dispatch();
+			}
+			
+			protected function updateComment(event:KeyboardEvent):void
+			{
+				if (event.keyCode == 13 || event.keyCode == 27)
+				{
+					var editComment:EditCommentEvent = new EditCommentEvent(pictureId, txtComment.text);
+					editComment.dispatch();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<mx:Image source="./upload/bigger/{data.name}"  width="188" height="135"/>
+	<s:TextArea id="txtComment" text="{data.comment}"  x="197" y="1" height="101" keyDown="updateComment(event);"/>
+	<s:Button id="btnDelete" label="Delete"  x="196" y="106" height="29" width="188" click="deletePicture(event);"/>
+	
+	
+</s:ItemRenderer>

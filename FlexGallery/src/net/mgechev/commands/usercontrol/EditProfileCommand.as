@@ -6,6 +6,7 @@ package net.mgechev.commands.usercontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.usercontrol.EditProfileDelegate;
 	import net.mgechev.events.usercontrol.EditProfileEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -14,12 +15,10 @@ package net.mgechev.commands.usercontrol
 	public class EditProfileCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
+		
 		private var editProfileData:ProfileVO;
 		private var delegate:EditProfileDelegate;
-		
-		public function EditProfileCommand()
-		{
-		}
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function isValidData(data:ProfileVO):Boolean
 		{
@@ -43,7 +42,8 @@ package net.mgechev.commands.usercontrol
 			{
 				delegate = new EditProfileDelegate(this, editProfileEvent.editProfileData);
 				editProfileData = editProfileEvent.editProfileData;
-				modelLocator.pushService(delegate);
+				
+				delegatesQueue.registerDelegate(delegate);
 			}
 		}
 		
@@ -58,13 +58,13 @@ package net.mgechev.commands.usercontrol
 				Alert.show(event.result.success);
 				modelLocator.email = editProfileData.email;
 			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

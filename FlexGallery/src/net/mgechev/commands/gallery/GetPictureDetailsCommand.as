@@ -7,25 +7,25 @@ package net.mgechev.commands.gallery
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.gallery.GetPictureDetailsDelegate;
 	import net.mgechev.events.gallery.GetPictureDetailsEvent;
 	import net.mgechev.model.ViewModelLocator;
 	import net.mgechev.vo.CommentVO;
 
 	public class GetPictureDetailsCommand implements IResponder, ICommand
-	{
+	{		
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		public var delegate:GetPictureDetailsDelegate;
 		
-		public function GetPictureDetailsCommand()
-		{
-		}
-		
+		private var delegate:GetPictureDetailsDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
+				
 		public function execute(event:CairngormEvent):void
 		{
 			var getPictureComments:GetPictureDetailsEvent = event as GetPictureDetailsEvent;
 			delegate = new GetPictureDetailsDelegate(this, getPictureComments.pictureId);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
@@ -59,13 +59,12 @@ package net.mgechev.commands.gallery
 					modelLocator.pictureComments.addItem(singleComment);
 				}
 			}
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			Alert.show("asd");
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }

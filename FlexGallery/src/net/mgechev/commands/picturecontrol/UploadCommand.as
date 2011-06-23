@@ -10,6 +10,7 @@ package net.mgechev.commands.picturecontrol
 	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
+	import net.mgechev.business.DelegatesQueue;
 	import net.mgechev.business.picturecontrol.UploadDelegate;
 	import net.mgechev.events.picturecontrol.UploadEvent;
 	import net.mgechev.model.ViewModelLocator;
@@ -17,12 +18,10 @@ package net.mgechev.commands.picturecontrol
 	public class UploadCommand implements ICommand, IResponder
 	{
 		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-		public var currentFile:FileReference;
-		private var delegate:UploadDelegate;
 		
-		public function UploadCommand()
-		{
-		}
+		private var currentFile:FileReference;
+		private var delegate:UploadDelegate;
+		private var delegatesQueue:DelegatesQueue = DelegatesQueue.instance;
 		
 		public function execute(event:CairngormEvent):void
 		{
@@ -34,7 +33,8 @@ package net.mgechev.commands.picturecontrol
 			modelLocator.filesUploaded[uploadEvent.picture] = false;
 			currentFile = uploadEvent.picture;
 			delegate = new UploadDelegate(this, currentFile);
-			modelLocator.pushService(delegate);
+			
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		
@@ -42,13 +42,13 @@ package net.mgechev.commands.picturecontrol
 		{
 			modelLocator.filesUploaded[currentFile] = true;
 			modelLocator.uploadProgress++;
-			modelLocator.dequeue(delegate);
-			modelLocator.executeService();
+			
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
 		{
-			Alert.show("asdasd");
+			delegatesQueue.unregisterDelegate(delegate);
 		}
 	}
 }
