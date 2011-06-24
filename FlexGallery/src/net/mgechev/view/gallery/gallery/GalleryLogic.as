@@ -31,10 +31,10 @@ package net.mgechev.view.gallery.gallery
 	import spark.components.TextArea;
 	import spark.components.VSlider;
 	import spark.events.IndexChangeEvent;
-
+	
 	public class GalleryLogic extends Group
 	{
-
+		
 		[Bindable]
 		public var inSlideshowState:Boolean = false;
 		private var changeSlideshowPictureTimer:Timer;
@@ -75,7 +75,7 @@ package net.mgechev.view.gallery.gallery
 			(new GalleryKeyPressedEvent(this)).dispatch();
 		}
 		
-
+		
 		private function init(event:Event):void
 		{				
 			show = new Fade(panzoom);
@@ -158,6 +158,7 @@ package net.mgechev.view.gallery.gallery
 		protected function scalePicture(event:Event):void
 		{
 			modelLocator.selectedPicture = picturesList.selectedItem;
+			modelLocator.selectedPictureComments = modelLocator.selectedPicture.commentsList;
 			show.play();
 		}
 		
@@ -243,7 +244,7 @@ package net.mgechev.view.gallery.gallery
 		{
 			var loadPicturesEvent:LoadPicturesEvent = 
 				new LoadPicturesEvent(page,selectedUserId);
-			loadPicturesEvent.dispatch();
+			loadPicturesEvent.dispatch();			
 		}
 		
 		

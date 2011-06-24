@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
-		 horizontalAlign="center"
-		 verticalAlign="top">
-	<mx:Script>
-		<![CDATA[
-		]]>
-	</mx:Script>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
 	
-	<mx:Image source="./upload/smallest/{data.name}" 
-			  width="70" 
-			  height="70" useHandCursor="true"/>
-</mx:VBox>
+	<mx:Image source="./upload/smallest/{data.name}" width="65" 
+			  height="65" useHandCursor="true" />
+	
+</s:ItemRenderer>

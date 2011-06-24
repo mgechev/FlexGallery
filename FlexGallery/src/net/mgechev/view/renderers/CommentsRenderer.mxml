@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
-		 horizontalAlign="center"
-		 verticalAlign="top">
+<s:ItemRenderer width="221" height="50"
+				xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				autoDrawBackground="true">
 	
-	<mx:Text text="By: {data.author}, On: {data.time}" fontSize="9" />
-	<mx:Text text="{data.content}" width="200" />
+	<mx:Text text="By: {data.author}, On: {data.time}" fontSize="9"  x="0" y="0" width="210" height="25"/>
+	<mx:Text text="{data.content}" width="210"  x="0" y="25" height="26"/>
 	
-</mx:VBox>
+</s:ItemRenderer>

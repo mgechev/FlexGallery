@@ -20,24 +20,31 @@ package net.mgechev.commands.usercontrol
 		
 		public function execute(event:CairngormEvent):void
 		{
-			var loginEvent:LoginEvent = event as LoginEvent;
-			delegate = new LoginDelegate(this, loginEvent.loginData);
+			var loginEvent:LoginEvent = event as LoginEvent;			
+						
+			if (loginEvent.loginData.username == "" ||
+				loginEvent.loginData.password == "")
+				return;
 			
+			delegate = new LoginDelegate(this, loginEvent.loginData);			
 			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
-			if (event.result.error)
+			if (event.result)
 			{
-				Alert.show("Wrong username or password");
-			}
-			else			
-			{
-				modelLocator.id = event.result.success.id;
-				modelLocator.username = event.result.success.username;
-				modelLocator.email = event.result.success.email;
-				modelLocator.workflowState = ViewModelLocator.WELCOME_SCREEN;
+				if (event.result.error)
+				{
+					Alert.show("Wrong username or password");
+				}
+				else			
+				{
+					modelLocator.id = event.result.success.id;
+					modelLocator.username = event.result.success.username;
+					modelLocator.email = event.result.success.email;
+					modelLocator.workflowState = ViewModelLocator.WELCOME_SCREEN;
+				}
 			}
 			
 			delegatesQueue.unregisterDelegate(delegate);

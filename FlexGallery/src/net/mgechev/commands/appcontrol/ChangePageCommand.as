@@ -20,9 +20,16 @@ package net.mgechev.commands.appcontrol
 		{
 			var changePageEvent:ChangePageEvent = event as ChangePageEvent;
 			
-			modelLocator.currentPage = changePageEvent.nextPage;
+			if (modelLocator.currentPage == ViewModelLocator.HOME ||
+				modelLocator.currentPage == ViewModelLocator.PICTURES)
+			{
+				modelLocator.picturesList = new ArrayCollection();
+			}
 			
-			modelLocator.resetData();
+			modelLocator.currentPage = changePageEvent.nextPage;
+						
+			//modelLocator.resetData();
+			
 			if (modelLocator.currentPage == ViewModelLocator.REGISTER)
 			{
 				modelLocator.currentState = "registration";

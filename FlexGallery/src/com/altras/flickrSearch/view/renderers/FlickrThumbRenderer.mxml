@@ -4,30 +4,39 @@
 				xmlns:mx="library://ns.adobe.com/flex/mx" 
 				autoDrawBackground="true"
 				click="onClick(event)">
+	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
 	</fx:Declarations>
+	
 	<fx:Script>
 		<![CDATA[
+			
 			import com.altras.flickrSearch.controller.ThumbSelectCommand;
-			import com.altras.flickrSearch.controller.events.ThumbSelectEvent;
+			import com.altras.flickrSearch.events.ThumbSelectEvent;
 			import com.altras.flickrSearch.model.vo.FlickrThumbVO;
 			
-			override public function set data(value:Object):void {
+			override public function set data(value:Object):void
+			{
 				super.data = value;
 				var thumbVO:FlickrThumbVO = value as FlickrThumbVO;
+				
 				if (thumbVO) {
 					itemLabel.text = thumbVO.title;
 					itemImage.source = thumbVO.src;
 				}
 				
 			}
-			protected function onClick(event:MouseEvent):void {
-				
+			
+			protected function onClick(event:MouseEvent):void 
+			{
 				dispatchEvent(new ThumbSelectEvent(ThumbSelectEvent.SELECT,FlickrThumbVO(data),true));
 			}
+			
 		]]>
 	</fx:Script>
+	
 	<s:Group>
 		<s:layout>
 			<s:VerticalLayout  verticalAlign="middle"
@@ -44,4 +53,5 @@
 				 textAlign="center"/>
 		<mx:Image id="itemImage"/>
 	</s:Group>
+	
 </s:ItemRenderer>

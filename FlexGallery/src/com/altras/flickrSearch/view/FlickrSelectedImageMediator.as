@@ -8,12 +8,14 @@ package com.altras.flickrSearch.view
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
+	import mx.controls.Image;
 	import mx.events.CloseEvent;
 	import mx.managers.PopUpManager;
 	
 	import org.robotlegs.mvcs.Mediator;
 	import org.swiftsuspenders.Injector;
 	import org.swiftsuspenders.injectionresults.InjectValueResult;
+	
 	public class FlickrSelectedImageMediator extends Mediator
 	{
 		[Inject]
@@ -22,34 +24,44 @@ package com.altras.flickrSearch.view
 		public var model:FlickrSearchModel;
 		
 		private var _loaded:Boolean = false;
-		public function FlickrSelectedImageMediator()
+		
+		override public function onRegister():void
 		{
-			super();
-		}
-		override public function onRegister():void{
-			trace("FlickrSelectedImageMediator registered");
+			trace("FlickrSelectedImageMediator onRegister");
 			view.title = "Loading Image";
-			view.itemImage.source = model.selectedThumb.bigImageSrc;
 			
-			eventMap.mapListener(view.clickBtn,MouseEvent.CLICK,onLinkClick,MouseEvent);
+			view.bigImage.source = model.selectedThumb.bigImageSrc;
+	
+			eventMap.mapListener(view.clickButton,MouseEvent.CLICK,onLinkClick,MouseEvent);
 			eventMap.mapListener(view,CloseEvent.CLOSE,onClose,CloseEvent);
-			eventMap.mapListener(view.itemImage,Event.COMPLETE,onImageLoadComplete,Event);
+			eventMap.mapListener(view.bigImage,Event.COMPLETE,onImageLoadComplete,Event);
 		}
-		private function onLinkClick(event:MouseEvent):void{
+		
+		private function onLinkClick(event:MouseEvent):void
+		{
 			navigateToURL(new URLRequest(model.selectedThumb.link),'_blank');
 		}
-		private function onImageLoadComplete(event:Event):void{
+		
+		private function onImageLoadComplete(event:Event):void
+		{
 			view.title = model.selectedThumb.title;
 			view.imgLoader.includeInLayout=view.imgLoader.visible=false;
-			view.itemImage.includeInLayout=view.clickBtn.includeInLayout=false;
+			view.bigImage.includeInLayout=view.clickButton.includeInLayout=false;
+			view.bigImage.percentHeight = view.bigImage.percentWidth = 100;
 			view.percentWidth= view.percentHeight = 100;
+			
+			PopUpManager.centerPopUp(view);
 			view.showEffect.play();
-			_loaded=true
+			
+			_loaded=true;
 		}
+		
 		private function onClose(event:CloseEvent):void {
 			if(!_loaded) {
-				view.itemImage.source = null;
+				view.bigImage.source = null;
+			
 			}
+			
 			PopUpManager.removePopUp(view);
 			mediatorMap.removeMediator(this);
 		}

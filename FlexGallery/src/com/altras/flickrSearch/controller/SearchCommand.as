@@ -1,11 +1,14 @@
 package com.altras.flickrSearch.controller
 {
-	import com.altras.flickrSearch.controller.events.ImageSearchEvent;
+	import com.altras.flickrSearch.events.ImageSearchEvent;
 	import com.altras.flickrSearch.model.FlickrSearchModel;
-	import com.altras.flickrSearch.service.FlickrSearchResultParser;
-	import com.altras.flickrSearch.service.IFlickrSearchService;
-	import com.altras.flickrSearch.service.events.FlickrSearchResultEvent;
-	import mx.controls.Alert;
+	import com.altras.flickrSearch.model.parsers.IFlickrSearchResultParser;
+	import com.altras.flickrSearch.service.IFlickrService;
+	
+	import mx.collections.ArrayCollection;
+	import mx.rpc.AsyncResponder;
+	import mx.rpc.events.FaultEvent;
+	import mx.rpc.events.ResultEvent;
 	
 	import org.robotlegs.mvcs.Command;
 
@@ -16,27 +19,28 @@ package com.altras.flickrSearch.controller
 		[Inject]
 		public var imageSearchEvent:ImageSearchEvent;
 		[Inject]
-		public var service:IFlickrSearchService;
+		public var service:IFlickrService;
+		[Inject]
+		public var searchResultParser:IFlickrSearchResultParser;
 		
-		public function SearchCommand()
+		override public function execute():void
 		{
-			super();
+			trace("SearchCommand execute");
+			
+			service.searchByTag(imageSearchEvent._term, new AsyncResponder(searchByTagResult, searchByTagFault));
 		}
-		override public function execute():void{
-			trace("SearchCommand executed");
-			eventDispatcher.addEventListener(FlickrSearchResultEvent.ON_ERROR,onFlickrSearchError);
-			eventDispatcher.addEventListener(FlickrSearchResultEvent.ON_ERROR, onFlickrSearchResult);
+		
+		public function searchByTagResult(result:ResultEvent, token:Object=null):void
+		{
+			trace("SearchCommand searchByTagResult");
+			
+			model.data = searchResultParser.parseSearchResult(result.result as XML);
 		}
-		private function onFlickrSearchError(event:FlickrSearchResultEvent):void{
-			eventDispatcher.removeEventListener(FlickrSearchResultEvent.ON_ERROR, onFlickrSearchError);
-			eventDispatcher.removeEventListener(FlickrSearchResultEvent.ON_RESULT,onFlickrSearchResult);
-			Alert.show("Flickr Service Error","Error");
+		
+		public function searchByTagFault(error:FaultEvent, token:Object=null):void
+		{
+			trace("SearchCommand searchByTagFault");
 		}
-		private function onFlickrSearchResult(event:FlickrSearchResultEvent):void{
-			trace("SearchCommand FlickrSearchResult");
-			eventDispatcher.removeEventListener(FlickrSearchResultEvent.ON_ERROR, onFlickrSearchError);
-			eventDispatcher.removeEventListener(FlickrSearchResultEvent.ON_RESULT,onFlickrSearchResult);
-			model.data = event._data;
-		}
+		
 	}
 }

@@ -37,6 +37,7 @@ package net.mgechev.model
 		
 		public var usersList:ArrayCollection;
 		
+		public var selectedPictureComments:ArrayCollection;
 		public var selectedPicture:PhotoVO;
 		public var picturesList:ArrayCollection;
 		public var pictureComments:ArrayCollection;
@@ -89,7 +90,7 @@ package net.mgechev.model
 		{
 			usersList = null;
 			
-			selectedPicture = null;
+//			selectedPicture = null;
 			picturesList = null;
 			pictureComments = null;
 			picturesVoted = new ArrayCollection();

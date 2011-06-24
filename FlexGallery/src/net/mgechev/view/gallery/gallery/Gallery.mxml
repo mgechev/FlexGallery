@@ -35,23 +35,26 @@
 	</panzoom:PanZoomComponent>
 	
 	<s:List id="commentsList" excludeFrom="slideShowstate"
-			dataProvider="{modelLocator.selectedPicture.commentsList}"
+			dataProvider="{modelLocator.selectedPictureComments}"
 			itemRenderer="net.mgechev.view.renderers.CommentsRenderer"
+			useVirtualLayout="false"
 			x="578" 
 			y="112" 
 			height="216" 
 			width="221"
 			borderVisible="false"/>
 	
-
-	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}" 
-					x="96" width="616" excludeFrom="slideShowstate" useVirtualLayout="false"
-					itemRenderer="net.mgechev.view.renderers.GalleryRenderer"
-					height="75" selectionColor="#cccccc" y="376" borderVisible="false">
+	
+	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}"
+			x="96" width="616" excludeFrom="slideShowstate" useVirtualLayout="false"
+			itemRenderer="net.mgechev.view.renderers.GalleryRenderer"
+			height="75" selectionColor="#cccccc" y="376" borderVisible="false" >
 		<s:layout>
-			<s:HorizontalLayout />
+			<s:TileLayout />
 		</s:layout>
 	</s:List>
+
+
 	
 	<s:TextArea x="578" y="328" width="222" height="49" id="commentField" excludeFrom="slideShowstate"
 				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
