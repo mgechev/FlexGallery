@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application minWidth="955" minHeight="600"
-			   backgroundColor="#ffffff"
+			   backgroundColor="#222222"
 			   creationComplete="{(new ApplicationInitializationEvent()).dispatch()}"
-			   xmlns:usercontrol="net.mgechev.view.usercontrol.*" 
-			   xmlns:control="net.mgechev.control.*" 
-			   xmlns:business="net.mgechev.business.*" 
-			   xmlns:view="net.mgechev.view.*" 
-			   xmlns:gallery="net.mgechev.view.gallery.*" 
-			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*" 
+			   xmlns:usercontrol="net.mgechev.view.usercontrol.*"
+			   xmlns:control="net.mgechev.control.*"
+			   xmlns:business="net.mgechev.business.*"
+			   xmlns:view="net.mgechev.view.*"
+			   xmlns:gallery="net.mgechev.view.gallery.*"
+			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*"
 			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
 			   xmlns:flickrView="com.altras.flickrSearch.view.*"
 			   xmlns:flickrSearch="com.altras.flickrSearch.*"
-			   xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 		   
-			   xmlns:mx="library://ns.adobe.com/flex/mx" 
-			   xmlns:services="net.mgechev.services.*" 
-			   xmlns:editprofile="net.mgechev.view.usercontrol.editprofile.*" 
-			   xmlns:loginform="net.mgechev.view.usercontrol.loginform.*" 
-			   xmlns:registrationform="net.mgechev.view.usercontrol.registrationform.*" 
-			   xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*" 
-			   xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*" 
-			   xmlns:uploadform="net.mgechev.view.picturecontrol.uploadform.*" 
-			   xmlns:gallery1="net.mgechev.view.gallery.gallery.*" 
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:services="net.mgechev.services.*"
+			   xmlns:editprofile="net.mgechev.view.usercontrol.editprofile.*"
+			   xmlns:loginform="net.mgechev.view.usercontrol.loginform.*"
+			   xmlns:registrationform="net.mgechev.view.usercontrol.registrationform.*"
+			   xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*"
+			   xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*"
+			   xmlns:uploadform="net.mgechev.view.picturecontrol.uploadform.*"
+			   xmlns:gallery1="net.mgechev.view.gallery.gallery.*"
 			   xmlns:menu="net.mgechev.view.appcontrol.menu.*"
 			   currentState="{modelLocator.currentState}">
 	
@@ -37,11 +37,11 @@
 		<s:State name="picturesControl" />
 	</s:states>
 	
-	<fx:Declarations>		
+	<fx:Declarations>
 		<control:Controller id="controller" />
 		<services:Services id="services" />
-
-		<flickrSearch:FlickrSearchContext contextView="{this}"/>		
+		
+		<flickrSearch:FlickrSearchContext contextView="{this}"/>
 		<s:VerticalLayout />
 		
 		<business:DelegatesQueue/>
@@ -51,65 +51,66 @@
 		<![CDATA[
 			import com.adobe.cairngorm.model.ModelLocator;
 			import com.altras.flickrSearch.controller.SearchCommand;
-			
 			import flash.utils.flash_proxy;
-			
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
-			
 			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
 			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
-			
-			[Bindable]		
+			[Bindable]
 			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-
+			
 		]]>
 	</fx:Script>
 	
-
-	<s:Group verticalCenter="0" horizontalCenter="0" width="700">
+	
+	<s:Group verticalCenter="0" horizontalCenter="0" width="700" depth="5">
 		
 		<menu:Menu id="menu" x="21" y="142"
-				logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" excludeFrom="slideShow" />
+				   logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
+				   excludeFrom="slideShow" />
 		
 		<loginform:LoginForm id="loginForm" excludeFrom="slideShow"
-						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+		
+		<welcomescreen:WelcomeScreen id="welcomeScreen" excludeFrom="slideShow" username="{modelLocator.username}"
+					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
+		
+		<s:Group y="178" height="454" width="700">
 			
-		<welcomescreen:WelcomeScreen id="welcomeScreen" excludeFrom="slideShow" username="{modelLocator.username}" 
-						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
+			<editprofile:EditProfileForm x="200" id="editProfileForm" email="{modelLocator.email}"
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+						includeIn="editProfile" />
 			
-		<s:Group y="178" height="454">
-				
-			<editprofile:EditProfileForm x="200" id="editProfileForm" email="{modelLocator.email}" 
-							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-							includeIn="editProfile" />
-				
 			<registrationform:RegistrationForm x="200" id="registrationForm"
-						    visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" 
-							includeIn="registration" />
+						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"
+						includeIn="registration" />
 			
-			<uploadform:UploadForm x="200" id="uploadForm" progress="{modelLocator.uploadProgress}" 
-							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-							includeIn="uploadPictures" />
+			<uploadform:UploadForm x="200" id="uploadForm" progress="{modelLocator.uploadProgress}"
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+						includeIn="uploadPictures" />
 			
 			<gallery1:Gallery isUserpanelEnabled="true" id="galleryPage"
-							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-							includeIn="usersGallery, slideShow"/>
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+						includeIn="usersGallery, slideShow"/>
 			
 			<gallery1:Gallery id="homeGalleryPage" isUserpanelEnabled="false"
-							includeIn="gallery, slideShow" />
+						includeIn="gallery, slideShow" />
 			
 			<editpictures:EditPictures x="50" id="editPicturesForm"
-							visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-							includeIn="picturesControl"/>
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+						includeIn="picturesControl"/>
+			<flickrView:FlickrSearchView
+				id="flickrSearchView" width="100%" height="100%"
+				includeIn="flickrSearching" x="0" y="38"/>
 		</s:Group>
-	
+		
 	</s:Group>
-
-	<flickrView:FlickrSearchView id="flickrSearchView" width="100%" height="100%" includeIn="flickrSearching" x="0" y="38">
-	</flickrView:FlickrSearchView>
-	<s:Button includeIn="flickrSearching" click="currentState=''" x="923" y="6" label="X"/>
+	<s:Button click="modelLocator.currentState='gallery'"
+			  x="817" y="200"
+			  label="X"
+			  includeIn="flickrSearching"/>
+	
 	
 </s:Application>

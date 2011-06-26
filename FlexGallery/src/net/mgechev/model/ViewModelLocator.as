@@ -88,11 +88,11 @@ package net.mgechev.model
 		
 		public function resetData():void
 		{
-			usersList = null;
+//			usersList = null;
 			
 //			selectedPicture = null;
-			picturesList = null;
-			pictureComments = null;
+//			picturesList = null;
+//			pictureComments = null;
 			picturesVoted = new ArrayCollection();
 			pictureRating = 0;
 			pictureRatingCount = 0;

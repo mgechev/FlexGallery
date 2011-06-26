@@ -21,6 +21,8 @@ package net.mgechev.view.appcontrol.menu
 		
 		[Bindable]
 		public var logged:Boolean = false;
+		
+		public var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
 				
 		public function MenuLogic()
 		{			

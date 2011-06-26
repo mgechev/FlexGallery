@@ -67,7 +67,10 @@ package net.mgechev.commands.gallery
 					modelLocator.picturesList.addItem(photo);	
 				}
 			}
-			modelLocator.selectedPicture = modelLocator.picturesList[0];
+			if (modelLocator.picturesList.length > 0)
+			{
+				modelLocator.selectedPicture = modelLocator.picturesList[0];
+			}
 			
 			delegatesQueue.unregisterDelegate(delegate);
 		}

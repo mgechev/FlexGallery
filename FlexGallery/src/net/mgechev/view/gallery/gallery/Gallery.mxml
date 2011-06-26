@@ -15,22 +15,28 @@
 			itemRenderer="net.mgechev.view.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
 			id="usersList" x="0" y="4" height="373" width="96"/>
 	
-	<panzoom:PanZoomComponent id="panzoom" backgroundColor="0x807F7A"
+	<panzoom:PanZoomComponent id="panzoom" backgroundColor="#222222"
 							  width.slideShowstate="100%"
 							  height.slideShowstate="100%"
 							  width.normalState="482"
 							  height.normalState="372"
 							  x="96" y="4"
 							  scaleMin="{MIN_ZOOM}" scaleMax="{MAX_ZOOM}" 
-							  contentWidth="1600" contentHeight="1200"
-							  contentBackgroundColor="0x000000" contentBackgroundAlpha="1"
+							  contentWidth="462" contentHeight="352"
+							  contentBackgroundColor="#222222" contentBackgroundAlpha="1"
 							  childPreventsPan="false"
 							  zoomToCursor="true"
 							  zoomSpeed="0.6"
 							  horizontalScrollPolicy="off"
-							  verticalScrollPolicy="off">
+							  verticalScrollPolicy="off" 
+							  contentBorderThickness="0"
+							  contentBorderColor="#222222" 
+							  depth="110">
 		
-		<mx:Image source="./upload/{modelLocator.selectedPicture.name}" width="500" height="500" />
+		<mx:Image depth="110" id="imageSource" source="./upload/{modelLocator.selectedPicture.name}"
+				  width="462" height="352">
+			
+		</mx:Image>
 		
 	</panzoom:PanZoomComponent>
 	
@@ -77,7 +83,11 @@
 			 text="{picturesList.selectedItem.comment}"/>
 	
 	<s:Button visible.normalState="false" visible.slideShowstate="true" 
-			  x="0" y="430" label="Stop Slideshow" id="btnStopSlideshow" />
+			  label="Stop" id="btnStopSlideshow"
+			  width.slideShowstate="59" 
+			  x.slideShowstate="33" 
+			  y.slideShowstate="423"/>
+	
 	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" id="previousButton" />
 	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" id="nextButton" />
 	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="btnSlideshow" />

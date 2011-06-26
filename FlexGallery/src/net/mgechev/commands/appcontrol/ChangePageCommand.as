@@ -28,7 +28,7 @@ package net.mgechev.commands.appcontrol
 			
 			modelLocator.currentPage = changePageEvent.nextPage;
 						
-			//modelLocator.resetData();
+			modelLocator.resetData();
 			
 			if (modelLocator.currentPage == ViewModelLocator.REGISTER)
 			{

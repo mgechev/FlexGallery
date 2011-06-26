@@ -7,6 +7,8 @@ package net.mgechev.view.gallery.gallery
 	import flash.utils.Timer;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
+	import mx.controls.Image;
 	import mx.controls.Text;
 	import mx.effects.Fade;
 	import mx.events.DragEvent;
@@ -63,6 +65,7 @@ package net.mgechev.view.gallery.gallery
 		public var nextButton:Button;
 		public var btnSlideshow:Button;
 		public var btnStopSlideshow:Button;
+		public var imageSource:Image;
 		
 		public function GalleryLogic()
 		{
@@ -88,7 +91,7 @@ package net.mgechev.view.gallery.gallery
 			btnSlideshow.addEventListener(MouseEvent.CLICK, startSlideshow);
 			nextButton.addEventListener(MouseEvent.CLICK, nextPageButtonPressed);
 			previousButton.addEventListener(MouseEvent.CLICK, previousPageButtonPressed);
-			voteInput.addEventListener(DragEvent.DRAG_COMPLETE, sendVote);
+			voteInput.addEventListener(FlexEvent.CHANGE_END, sendVote);
 			commentField.addEventListener(KeyboardEvent.KEY_DOWN, sendComment);
 			picturesList.addEventListener(IndexChangeEvent.CHANGE, scalePicture);
 			usersList.addEventListener(IndexChangeEvent.CHANGE, loadUserPictures);
@@ -168,27 +171,34 @@ package net.mgechev.view.gallery.gallery
 			if (event.keyCode == 13)
 			{
 				btnSlideshow.setFocus();
-				commentField.enabled = false;
-				var currentDate:Date = new Date();
-				var date:String = currentDate.fullYear + "-" + 
-					(currentDate.monthUTC + 1) + "-" + 
-					currentDate.date + " "
-					+ currentDate.hours + ":" + 
-					currentDate.minutes + ":" + currentDate.seconds;
-				var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
-					date, modelLocator.selectedPicture.id);
 				
-				modelLocator.selectedPicture.commentsList.addItem(comment);
-				
-				var pictureCommentEvent:PictureCommentEvent = 
-					new PictureCommentEvent(comment);
-				pictureCommentEvent.dispatch();
-				
-				var commentFieldEvent:CommentFieldControlEvent = 
-					new CommentFieldControlEvent(commentField);
-				
-				commentFieldEvent.dispatch();
-				
+				if (commentField.text.length > 3)
+				{
+					commentField.enabled = false;
+					var currentDate:Date = new Date();
+					var date:String = currentDate.fullYear + "-" + 
+						(currentDate.monthUTC + 1) + "-" + 
+						currentDate.date + " "
+						+ currentDate.hours + ":" + 
+						currentDate.minutes + ":" + currentDate.seconds;
+					var comment:CommentVO = new CommentVO(commentField.text, modelLocator.username, 
+						date, modelLocator.selectedPicture.id);
+					
+					modelLocator.selectedPicture.commentsList.addItem(comment);
+					
+					var pictureCommentEvent:PictureCommentEvent = 
+						new PictureCommentEvent(comment);
+					pictureCommentEvent.dispatch();
+					
+					var commentFieldEvent:CommentFieldControlEvent = 
+						new CommentFieldControlEvent(commentField);
+					
+					commentFieldEvent.dispatch();
+				}
+				else
+				{
+					Alert.show("This comment is too short.");
+				}
 			}				
 		}
 		

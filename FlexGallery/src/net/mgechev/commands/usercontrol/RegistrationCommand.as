@@ -42,14 +42,13 @@ package net.mgechev.commands.usercontrol
 			if (isValidData(registerEvent.registerData))
 			{
 				delegate = new RegistrationDelegate(this, registerEvent.registerData);
-				delegate.execute();
+				delegatesQueue.registerDelegate(delegate);
 			}
-			
-			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void
 		{
+			delegatesQueue.unregisterDelegate(delegate);
 			if (event.result)
 			{
 				if (event.result.error)
@@ -61,7 +60,6 @@ package net.mgechev.commands.usercontrol
 					Alert.show(event.result.success);
 				}
 			}
-			delegatesQueue.unregisterDelegate(delegate);
 		}
 		
 		public function fault(event:Object):void
