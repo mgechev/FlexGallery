@@ -31,7 +31,7 @@ package com.altras.flickrSearch.view
 			eventMap.mapListener(view, ThumbSelectEvent.SELECT, onThumbSelect, ThumbSelectEvent);
 			eventMap.mapListener(eventDispatcher, FlickrDataEvent.DATA_UPDATED, onDataUpdated, FlickrDataEvent);
 			
-			view.searchText.text="bikini";
+			view.searchText.text="";
 		}
 		
 		private function onSearchClick(e:MouseEvent):void

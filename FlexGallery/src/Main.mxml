@@ -73,30 +73,31 @@
 	</fx:Script>
 	
 	
-	<s:Group verticalCenter="0" horizontalCenter="0" width="700" depth="5">
+	<s:Group verticalCenter="0" horizontalCenter="0" width="700" height="100%" depth="5">
 		
-		<mx:Image source="./images/tux_logo.png" 
-				  rotation="-5"
-				  width="152" height="167" y="15" x="407"/>
+			<mx:Image source="./images/tux_logo.png" 
+					  rotation="-5"
+					  width="152" height="167" y="15" x="407"/>
+			
+			<mx:Image source="./images/logo_text.png" 
+					  width="250" y="25" x="360"/>
+			
+			<menu:Menu x="21" y="142"
+					   id="menu"
+					   logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
+					   excludeFrom="slideShow" />
+			
+			<loginform:LoginForm x="0" y="15"
+						id="loginForm" excludeFrom="slideShow"
+						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"/>
+			
+			<welcomescreen:WelcomeScreen x="0" y="15" 
+						id="welcomeScreen"
+						excludeFrom="slideShow" username="{modelLocator.username}"
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
 		
-		<mx:Image source="./images/logo_text.png" 
-				  width="250" y="25" x="360"/>
-		
-		<menu:Menu x="21" y="142"
-				   id="menu"
-				   logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
-				   excludeFrom="slideShow" />
-		
-		<loginform:LoginForm x="0" y="15"
-					id="loginForm" excludeFrom="slideShow"
-					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"/>
-		
-		<welcomescreen:WelcomeScreen x="0" y="15" 
-					id="welcomeScreen"
-					excludeFrom="slideShow" username="{modelLocator.username}"
-					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
-		
-		<s:Group y="178" height="454" width="700" id="innerGroup">
+			
+		<s:Group y="178" height="100%" width="700" id="innerGroup">
 			
 			<editprofile:EditProfileForm x="200" 
 						id="editProfileForm" 
@@ -124,13 +125,9 @@
 						id="editPicturesForm"
 						includeIn="picturesControl"/>
 			
-			<flickrView:FlickrSearchView x="0" y="38" width="600" height="100%"
+			<flickrView:FlickrSearchView x="0" y="38" width="100%" height="100%"
 				id="flickrSearchView" 
 				includeIn="flickrSearching" />
-			<s:Button x="616" y="38"
-					  click="modelLocator.currentState='gallery'"			  
-					  label="X"
-					  includeIn="flickrSearching"/>
 			
 		</s:Group>
 		

@@ -28,7 +28,7 @@ package com.altras.flickrSearch.view
 		override public function onRegister():void
 		{
 			trace("FlickrSelectedImageMediator onRegister");
-			view.title = "Loading Image";
+			view.title = "";
 			
 			view.bigImage.source = model.selectedThumb.bigImageSrc;
 	
