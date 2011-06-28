@@ -74,7 +74,11 @@ switch ($page) {
 
 	case 'login_check':
 		include './pages/login_check.php';
-		break;				
+		break;
+
+	case 'add_flicker_picture':
+		include './pages/add_flicker_picture.php';
+		break;
 		
 }
 

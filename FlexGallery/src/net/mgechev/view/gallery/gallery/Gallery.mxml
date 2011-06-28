@@ -11,9 +11,12 @@
 		<s:State name="slideShowstate" />
 	</gallery:states>
 	
-	<s:List dataProvider="{modelLocator.usersList}" excludeFrom="slideShowstate"
-			itemRenderer="net.mgechev.view.renderers.UsersRenderer" visible="{isUserpanelEnabled}" 
-			id="usersList" x="0" y="4" height="373" width="96"/>
+	<s:List x="0" y="4" height="373" width="96"
+			id="usersList"
+			dataProvider="{modelLocator.usersList}"
+			itemRenderer="net.mgechev.view.renderers.UsersRenderer" 
+			visible.normalState="{isUserpanelEnabled}"
+			visible.slideShowstate="false"/>
 	
 	<panzoom:PanZoomComponent id="panzoom" backgroundColor="#222222"
 							  width.slideShowstate="100%"
@@ -33,28 +36,27 @@
 							  contentBorderColor="#222222" 
 							  depth="110">
 		
-		<mx:Image depth="110" id="imageSource" source="./upload/{modelLocator.selectedPicture.name}"
-				  width="462" height="352">
-			
-		</mx:Image>
+		<mx:Image width="462" height="352" 
+				  id="imageSource" depth="110"
+				  source="./upload/{modelLocator.selectedPicture.name}" />
 		
 	</panzoom:PanZoomComponent>
 	
-	<s:List id="commentsList" excludeFrom="slideShowstate"
+	<s:List x="578" y="112" height="216" width="221"
+			id="commentsList"
+			visible.normalState="true" visible.slideShowstate="false"
 			dataProvider="{modelLocator.selectedPictureComments}"
 			itemRenderer="net.mgechev.view.renderers.CommentsRenderer"
 			useVirtualLayout="false"
-			x="578" 
-			y="112" 
-			height="216" 
-			width="221"
 			borderVisible="false"/>
 	
 	
-	<s:List id="picturesList" dataProvider="{modelLocator.picturesList}"
-			x="96" width="616" excludeFrom="slideShowstate" useVirtualLayout="false"
+	<s:List x="96" y="376" height="75" width="616" 
+			id="picturesList" dataProvider="{modelLocator.picturesList}"
+			visible.normalState="true" visible.slideShowstate="false"
+			useVirtualLayout="false"
 			itemRenderer="net.mgechev.view.renderers.GalleryRenderer"
-			height="75" selectionColor="#cccccc" y="376" borderVisible="false" >
+			 selectionColor="#cccccc" borderVisible="false" >
 		<s:layout>
 			<s:TileLayout />
 		</s:layout>
@@ -62,24 +64,40 @@
 
 
 	
-	<s:TextArea x="578" y="328" width="222" height="49" id="commentField" excludeFrom="slideShowstate"
-				enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+	<s:TextArea x="578" y="328" width="222" height="49" 
+				id="commentField" 
+				excludeFrom="slideShowstate"
+				visible.normalState="true" visible.slideShowstate="false"
+				enabled="{modelLocator.username != null &amp;&amp;
+				modelLocator.selectedPicture != null}"
 			    text="Enter comment end press Enter..." 
 				focusIn="{((commentField.text == 'Enter comment end press Enter...')?
 				(commentField.text=''):
 				(commentField.text=commentField.text))}" 
-				focusOut="{((commentField.text == '')?(commentField.text='Enter comment end press Enter...'):
+				focusOut="{((commentField.text == '')?
+				(commentField.text='Enter comment end press Enter...'):
 				(commentField.text=commentField.text))}"/>
 	
-	<s:Label x="581" y="5" excludeFrom="slideShowstate" text="Vote:"/>
-	<s:Label x="720" y="4" excludeFrom="slideShowstate" id="ratingLabel" text="{modelLocator.selectedPicture.rating}"/>
+	<s:Label x="581" y="5"
+			 visible.normalState="true" visible.slideShowstate="false" text="Vote:"/>
 	
-	<s:VSlider x="712" y="5" rotation="90" excludeFrom="slideShowstate"
-			   enabled="{modelLocator.username != null &amp;&amp; modelLocator.selectedPicture != null}"
+	<s:Label x="720" y="4"
+			 id="ratingLabel" 
+			 visible.normalState="true" visible.slideShowstate="false"
+			 text="{modelLocator.selectedPicture.rating}"/>
+	
+	<s:VSlider x="712" y="5" 
+			   id="voteInput"
+			   rotation="90"
+			   visible.normalState="true" visible.slideShowstate="false"
+			   enabled="{modelLocator.username != null &amp;&amp; 
+			   modelLocator.selectedPicture != null}"
 			   minimum="1" maximum="5" stepSize="1" 
-			   value="3" id="voteInput" />
+			   value="3"  />
 
-	<mx:Text excludeFrom="slideShowstate"  x="578" y="25" width="223" height="88" id="pictureComment"
+	<mx:Text x="578" y="25" width="223" height="88" 
+			 id="pictureComment"
+			 visible.normalState="true" visible.slideShowstate="false"			 
 			 text="{picturesList.selectedItem.comment}"/>
 	
 	<s:Button visible.normalState="false" visible.slideShowstate="true" 
@@ -88,8 +106,20 @@
 			  x.slideShowstate="33" 
 			  y.slideShowstate="423"/>
 	
-	<s:Button excludeFrom="slideShowstate" x="0" y="376" label="Back" width="96" height="78" id="previousButton" />
-	<s:Button excludeFrom="slideShowstate" x="712" y="376" label="Next" width="88" height="76" id="nextButton" />
-	<s:Button excludeFrom="slideShowstate" x="578" y="89" label="Slideshow" id="btnSlideshow" />
+	<s:Button x="0" y="376" width="96" height="78" 
+			  id="previousButton"
+			  label="Back" 
+			  visible.normalState="true" visible.slideShowstate="false" />
+	
+	<s:Button x="712" y="376" width="88" height="76" 
+			  id="nextButton"
+			  label="Next"
+			  visible.normalState="true" visible.slideShowstate="false" />
+	
+	<s:Button x="578" y="89"  
+			  id="btnSlideshow"
+			  visible="{!inSlideshowState &amp;&amp; 
+			  !isUserpanelEnabled}"
+			  label="Slideshow" />
 	
 </gallery:GalleryLogic>

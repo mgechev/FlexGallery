@@ -25,7 +25,7 @@ package net.mgechev.commands.appcontrol
 			var loginCheck:LoginCheckEvent = event as LoginCheckEvent;
 			delegate = new LoginCheckDelegate(this);
 			
-			//delegatesQueue.registerDelegate(delegate);
+			delegatesQueue.registerDelegate(delegate);
 		}
 		
 		public function result(event:Object):void

@@ -35,17 +35,17 @@ if (isUserLogged()) {
 
 			//Uploading and resizing the image. Creating thumbs
 			$uploaded = false;
-				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], UPLOAD_DIR . $fileName, 1000, 1000);
+				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], UPLOAD_DIR . $fileName, 640, 480);
 				if (!$uploaded) {
 					break;
 				}
 				
-				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 200, 200);
+				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB1_DIR . $fileName, 240, 180);
 				if (!$uploaded) {
 					break;
 				}
 				
-				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB2_DIR . $fileName, 100, 100);
+				$uploaded = uploadAndResizeImage($_FILES['Filedata']['tmp_name'], THUMB2_DIR . $fileName, 100, 70);
 				if (!$uploaded) {
 					break;
 				}								

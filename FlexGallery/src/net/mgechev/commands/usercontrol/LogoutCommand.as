@@ -31,6 +31,7 @@ package net.mgechev.commands.usercontrol
 			modelLocator.workflowState = ViewModelLocator.LOGIN_SCREEN;
 			modelLocator.username = null;
 			modelLocator.id = 0;
+			modelLocator.currentState = "gallery";
 			
 			delegatesQueue.unregisterDelegate(delegate);
 		}

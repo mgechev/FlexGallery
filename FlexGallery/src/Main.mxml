@@ -36,6 +36,14 @@
 		<s:State name="usersGallery" />
 		<s:State name="picturesControl" />
 	</s:states>
+		
+	<s:transitions>
+		<s:Transition toState="*">
+			<s:Sequence>
+				<s:Fade target="{innerGroup}" alphaFrom="0" alphaTo="1" duration="300" />
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
 	
 	<fx:Declarations>
 		<control:Controller id="controller" />
@@ -67,50 +75,66 @@
 	
 	<s:Group verticalCenter="0" horizontalCenter="0" width="700" depth="5">
 		
-		<menu:Menu id="menu" x="21" y="142"
+		<mx:Image source="./images/tux_logo.png" 
+				  rotation="-5"
+				  width="152" height="167" y="15" x="407"/>
+		
+		<mx:Image source="./images/logo_text.png" 
+				  width="250" y="25" x="360"/>
+		
+		<menu:Menu x="21" y="142"
+				   id="menu"
 				   logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
 				   excludeFrom="slideShow" />
 		
-		<loginform:LoginForm id="loginForm" excludeFrom="slideShow"
-					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}" />
+		<loginform:LoginForm x="0" y="15"
+					id="loginForm" excludeFrom="slideShow"
+					visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"/>
 		
-		<welcomescreen:WelcomeScreen id="welcomeScreen" excludeFrom="slideShow" username="{modelLocator.username}"
-					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"/>
+		<welcomescreen:WelcomeScreen x="0" y="15" 
+					id="welcomeScreen"
+					excludeFrom="slideShow" username="{modelLocator.username}"
+					visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
 		
-		<s:Group y="178" height="454" width="700">
+		<s:Group y="178" height="454" width="700" id="innerGroup">
 			
-			<editprofile:EditProfileForm x="200" id="editProfileForm" email="{modelLocator.email}"
-						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+			<editprofile:EditProfileForm x="200" 
+						id="editProfileForm" 
+						email="{modelLocator.email}"
 						includeIn="editProfile" />
 			
-			<registrationform:RegistrationForm x="200" id="registrationForm"
-						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"
+			<registrationform:RegistrationForm x="200" 
+						id="registrationForm"
 						includeIn="registration" />
 			
-			<uploadform:UploadForm x="200" id="uploadForm" progress="{modelLocator.uploadProgress}"
-						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+			<uploadform:UploadForm x="200" 
+						id="uploadForm"
+						progress="{modelLocator.uploadProgress}"
 						includeIn="uploadPictures" />
 			
-			<gallery1:Gallery isUserpanelEnabled="true" id="galleryPage"
-						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
-						includeIn="usersGallery, slideShow"/>
+			<gallery1:Gallery id="galleryPage"
+						isUserpanelEnabled="true"
+						includeIn="usersGallery"/>
 			
-			<gallery1:Gallery id="homeGalleryPage" isUserpanelEnabled="false"
+			<gallery1:Gallery id="homeGalleryPage" 
+						isUserpanelEnabled="false"							  
 						includeIn="gallery, slideShow" />
 			
-			<editpictures:EditPictures x="50" id="editPicturesForm"
-						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}"
+			<editpictures:EditPictures x="50"
+						id="editPicturesForm"
 						includeIn="picturesControl"/>
-			<flickrView:FlickrSearchView
-				id="flickrSearchView" width="100%" height="100%"
-				includeIn="flickrSearching" x="0" y="38"/>
+			
+			<flickrView:FlickrSearchView x="0" y="38" width="600" height="100%"
+				id="flickrSearchView" 
+				includeIn="flickrSearching" />
+			<s:Button x="616" y="38"
+					  click="modelLocator.currentState='gallery'"			  
+					  label="X"
+					  includeIn="flickrSearching"/>
+			
 		</s:Group>
 		
 	</s:Group>
-	<s:Button click="modelLocator.currentState='gallery'"
-			  x="817" y="200"
-			  label="X"
-			  includeIn="flickrSearching"/>
 	
 	
 </s:Application>

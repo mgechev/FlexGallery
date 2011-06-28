@@ -44,6 +44,7 @@ package net.mgechev.commands.usercontrol
 					modelLocator.username = event.result.success.username;
 					modelLocator.email = event.result.success.email;
 					modelLocator.workflowState = ViewModelLocator.WELCOME_SCREEN;
+					modelLocator.currentState = "gallery";
 				}
 			}
 			
