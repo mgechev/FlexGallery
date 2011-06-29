@@ -47,7 +47,6 @@ package net.mgechev.commands.usercontrol
 					modelLocator.currentState = "gallery";
 				}
 			}
-			
 			delegatesQueue.unregisterDelegate(delegate);
 		}
 		

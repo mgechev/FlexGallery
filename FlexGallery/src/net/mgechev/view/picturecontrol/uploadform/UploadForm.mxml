@@ -13,7 +13,6 @@
 	<mx:DataGrid id="photosList" dataProvider="{notes}" x="49" y="69" height="150" width="300">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Photo" dataField="name" />
-			<mx:DataGridColumn headerText="Creator" dataField="creator" />
 			<mx:DataGridColumn headerText="Size" dataField="size" />
 		</mx:columns>				
 	</mx:DataGrid>

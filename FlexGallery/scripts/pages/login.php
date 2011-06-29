@@ -18,8 +18,9 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged())
 	
 		loginUser($isValidUser[0]);
 		
-		echo '<success><username>'. $isValidUser[0]['username'] .'</username><id>' . $isValidUser[0]['user_id'] .'</id><email>' . $isValidUser[0]['email'] .'</email></success>';
-	
+		echo '<success><username>'. $isValidUser[0]['username'] .'</username><id>' . $isValidUser[0]['user_id'] .'</id><email>' . $isValidUser[0]['email'] .'</email>';
+		echo '<session>' . session_id() . '</session></success>';
+		
 	} else {
 	
 		echo '<error>Wrong username or password</error>';
@@ -27,7 +28,8 @@ if (!empty($_POST['username']) && !empty($_POST['password']) && !isUserLogged())
 	}	
 } else if (isUserLogged()) {
 
-	echo '<success><username>'. $_SESSION['username'] .'</username><id>' . $_SESSION['id'] .'</id><email>' . $_SESSION['email'] .'</email></success>';
+	echo '<success><username>'. $_SESSION['username'] .'</username><id>' . $_SESSION['id'] .'</id><email>' . $_SESSION['email'] .'</email>';
+	echo '<session>' . session_id() . '</session></success>';
 	exit;
 	
 }

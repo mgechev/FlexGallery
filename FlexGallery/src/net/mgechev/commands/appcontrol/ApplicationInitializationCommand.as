@@ -8,6 +8,8 @@ package net.mgechev.commands.appcontrol
 	import flash.utils.Timer;
 	
 	import mx.controls.Alert;
+	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	
 	import net.mgechev.events.appcontrol.LoginCheckEvent;
 	import net.mgechev.model.ViewModelLocator;

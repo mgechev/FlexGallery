@@ -1,7 +1,6 @@
 <?php
 
-if (isUserLogged()) {
-
+if ($_SERVER['REMOTE_ADDR'] == $_SERVER['SERVER_ADDR']) {
 	if (!empty($_FILES['Filedata'])) {
 		//Creating upload dirs
 		if(!is_dir(UPLOAD_DIR)) {
@@ -61,7 +60,7 @@ if (isUserLogged()) {
 				$array['filename'] = $fileName;
 				
 				//Adding information to the database
-				$thumbId = dbInsert("INSERT INTO photos (title, user_id) VALUES ('$fileName', ". $_SESSION['id'] .")",  7040);
+				$thumbId = dbInsert("INSERT INTO photos (title, user_id) VALUES ('$fileName', ". (int)$_GET['id'] .")",  7040);
 				echo '<success>' . $value . 'have been successfully uploaded!' . '</error>';
 
 			} else {
