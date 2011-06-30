@@ -48,7 +48,8 @@ package net.mgechev.view.picturecontrol.editpictures
 		
 		protected function nextPage(event:Event):void
 		{
-			if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
+			if (ViewModelLocator.PICTURES_PER_PAGE * (modelLocator.pageReached + 1)
+				< modelLocator.picturesCount)
 			{
 				modelLocator.pageReached++;
 				loadPictures(modelLocator.pageReached);

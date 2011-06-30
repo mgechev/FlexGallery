@@ -5,15 +5,15 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns:logic="net.mgechev.view.appcontrol.*" xmlns:menu="net.mgechev.view.appcontrol.menu.*">
 	
-	<s:Button label="Upload" id="uploadButton" visible="{logged}" x="236" y="7" width="110"/>
-	<s:Button label="Register" id="registerButton" visible="{!logged}" x="120" y="7" width="110"/>
-	<s:Button label="Pictures" id="picturesButton" visible="{logged}" x="468" y="7" width="110"/>
-	<s:Button label="Edit Profile" id="editProfileButton" visible="{logged}" x="120" y="7" width="110"/>
-	<s:Button label="Users" id="usersButton" visible="{logged}" x="353" y="7" width="110"/>
-	<s:Button label="Home" id="homeButton" x="5" y="7" width="110"/>
-	
-	<s:Button click="modelLocator.currentState='flickrSearching'" visible="{logged}"
+	<s:Button x="585" y="7" width="110" click="modelLocator.currentState='flickrSearching'" visible="{logged}"
 			  label="Flickr Explorer"
-			  x="585" y="7" width="110" />
+			  tabIndex="10" />
+	
+	<s:Button x="236" y="7" width="110" label="Upload" id="uploadButton" visible="{logged}" tabIndex="7"/>
+	<s:Button x="120" y="7" width="110" label="Register" id="registerButton" visible="{!logged}" tabIndex="5"/>
+	<s:Button x="468" y="7" width="110" label="Pictures" id="picturesButton" visible="{logged}" tabIndex="9"/>
+	<s:Button x="120" y="7" width="110" label="Edit Profile" id="editProfileButton" visible="{logged}" tabIndex="5"/>
+	<s:Button x="353" y="7" width="110" label="Users" id="usersButton" visible="{logged}" tabIndex="8"/>
+	<s:Button x="5" y="7" width="110" label="Home" id="homeButton" tabIndex="4"/>
 
 </menu:MenuLogic>

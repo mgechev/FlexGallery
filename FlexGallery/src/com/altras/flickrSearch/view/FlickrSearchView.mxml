@@ -17,8 +17,8 @@
 		</s:DataGroup>
 	</s:Scroller>
 	
-	<s:Button id="searchButton" right="20" label="search"/>
+	<s:Button id="searchButton" right="20" label="search" tabIndex="13"/>
 	
-	<s:TextInput id="searchText" left="0" right="80"/>
+	<s:TextInput id="searchText" left="0" right="80" tabIndex="12"/>
 	
 </s:Group>

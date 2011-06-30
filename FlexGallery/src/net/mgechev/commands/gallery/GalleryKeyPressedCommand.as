@@ -17,6 +17,7 @@ package net.mgechev.commands.gallery
 	import net.mgechev.events.gallery.LoadPicturesEvent;
 	import net.mgechev.events.gallery.StopSlideShowEvent;
 	import net.mgechev.model.ViewModelLocator;
+	import net.mgechev.view.gallery.gallery.GalleryLogic;
 	
 	public class GalleryKeyPressedCommand implements ICommand
 	{
@@ -26,6 +27,20 @@ package net.mgechev.commands.gallery
 		{
 			var galleryEvent:GalleryKeyPressedEvent = 
 				event as GalleryKeyPressedEvent;
+			
+			dispachKeyPress(galleryEvent.keyCode, galleryEvent.gallery);
+		}
+		
+		private function dispachKeyPress(keyCode:uint, gallery:GalleryLogic):void
+		{
+			if (keyCode == Keyboard.LEFT)
+			{
+				gallery.maximizeLeftPicture();
+			}
+			else if (keyCode == Keyboard.RIGHT)
+			{
+				gallery.maximizeRightPicture();
+			}
 		}
 	}
 }

@@ -46,6 +46,7 @@ package net.mgechev.model
 		public var pictureRatingCount:uint;
 		public var pictureRatingSum:uint;
 		public var pageReached:uint = 0;
+		public var picturesCount:uint = 0;
 		
 		public var currentPage:uint = 0;
 		public var workflowState:uint = 0;

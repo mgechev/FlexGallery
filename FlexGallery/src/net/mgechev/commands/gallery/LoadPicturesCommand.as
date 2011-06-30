@@ -4,7 +4,6 @@ package net.mgechev.commands.gallery
 	import com.adobe.cairngorm.control.CairngormEvent;
 	
 	import mx.collections.ArrayCollection;
-	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
 	import net.mgechev.business.DelegatesQueue;
@@ -52,6 +51,8 @@ package net.mgechev.commands.gallery
 		public function result(event:Object):void
 		{
 			modelLocator.picturesList = new ArrayCollection();
+			modelLocator.picturesCount = event.result.picturesCount;
+			
 			if (event.result.picture != 0)
 			{
 				for (var i:uint = 0; i < event.result.picture.length; i++)
@@ -64,7 +65,8 @@ package net.mgechev.commands.gallery
 					photo.rating = event.result.picture[i].rating;
 					photo.ratingSum = event.result.picture[i].ratingSum;
 					photo.commentsList = getPictureComments(event.result.picture[i].comment);
-					modelLocator.picturesList.addItem(photo);	
+					
+					modelLocator.picturesList.addItem(photo);
 				}
 			}
 			if (modelLocator.picturesList.length > 0)

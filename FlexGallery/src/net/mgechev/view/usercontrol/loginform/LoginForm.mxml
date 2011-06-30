@@ -7,11 +7,11 @@
 	<s:Panel width="300" title="Login"
 			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
 		
-		<s:TextInput id="usernameInput" visible="true" x="84" y="10"/>
-		<s:TextInput id="passwordInput" displayAsPassword="true" visible="true" x="84" y="51"/>
+		<s:TextInput x="84" y="10" id="usernameInput" tabIndex="1"/>
+		<s:TextInput x="84" y="51" id="passwordInput" displayAsPassword="true" tabIndex="2"/>
 		<s:Label text="Username:" visible="true" x="10" y="18"/>
 		<s:Label text="Password:" visible="true" x="11" y="56"/>
-		<s:Button label="Login" id="loginButton" visible="true" x="220" y="11"/>
+		<s:Button x="220" y="11" label="Login" id="loginButton" tabIndex="3"/>
 		
 	</s:Panel>
 	

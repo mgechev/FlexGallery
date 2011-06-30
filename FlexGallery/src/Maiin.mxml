@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application minWidth="955" minHeight="600"
+			   backgroundColor="#222222"
+			   creationComplete="{(new ApplicationInitializationEvent()).dispatch()}"
+			   xmlns:usercontrol="net.mgechev.view.usercontrol.*"
+			   xmlns:control="net.mgechev.control.*"
+			   xmlns:business="net.mgechev.business.*"
+			   xmlns:view="net.mgechev.view.*"
+			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*"
+			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
+			   xmlns:flickrView="com.altras.flickrSearch.view.*"
+			   xmlns:flickrSearch="com.altras.flickrSearch.*"
+			   xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:services="net.mgechev.services.*"
+			   xmlns:editprofile="net.mgechev.view.usercontrol.editprofile.*"
+			   xmlns:loginform="net.mgechev.view.usercontrol.loginform.*"
+			   xmlns:registrationform="net.mgechev.view.usercontrol.registrationform.*"
+			   xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*"
+			   xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*"
+			   xmlns:uploadform="net.mgechev.view.picturecontrol.uploadform.*"
+			   xmlns:gallery="net.mgechev.view.gallery.gallery.*"
+			   xmlns:menu="net.mgechev.view.appcontrol.menu.*"
+			   currentState="{modelLocator.currentState}">
+	
+	<s:states>
+		<s:State name="gallery" />
+		<s:State name="State1"/>
+		<s:State name="flickrSearching"/>
+		<s:State name="slideShow" />
+		<s:State name="editProfile" />
+		<s:State name="registration" />
+		<s:State name="uploadPictures" />
+		<s:State name="usersGallery" />
+		<s:State name="picturesControl" />
+	</s:states>
+		
+	<s:transitions>
+		<s:Transition toState="*">
+			<s:Sequence>
+				<s:Fade target="{innerGroup}" alphaFrom="0" alphaTo="1" duration="300" />
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+	<fx:Declarations>
+		<control:Controller id="controller" />
+		<services:Services id="services" />
+		
+		<flickrSearch:FlickrSearchContext contextView="{this}"/>
+		<s:VerticalLayout />
+		
+		<business:DelegatesQueue/>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import com.adobe.cairngorm.model.ModelLocator;
+			import com.altras.flickrSearch.controller.SearchCommand;
+			
+			import flash.utils.flash_proxy;
+			
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.FlexEvent;
+			
+			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
+			import net.mgechev.events.appcontrol.LoginCheckEvent;
+			import net.mgechev.model.ViewModelLocator;
+			[Bindable]
+			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();			
+		]]>
+	</fx:Script>
+	
+	
+	<s:Group verticalCenter="0" horizontalCenter="0" width="700" height="100%" depth="5">
+		
+			<mx:Image source="./images/tux_logo.png" 
+					  rotation="-5"
+					  width="152" height="167" y="15" x="407"/>
+			
+			<mx:Image source="./images/logo_text.png" 
+					  width="250" y="25" x="360"/>
+			
+			<menu:Menu x="21" y="142"
+					   id="menu"
+					   logged="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" 
+					   excludeFrom="slideShow" />
+			
+			<loginform:LoginForm x="0" y="15"
+						id="loginForm" excludeFrom="slideShow"
+						visible="{modelLocator.workflowState == ViewModelLocator.LOGIN_SCREEN}"/>
+			
+			<welcomescreen:WelcomeScreen x="0" y="15" 
+						id="welcomeScreen"
+						excludeFrom="slideShow" username="{modelLocator.username}"
+						visible="{modelLocator.workflowState == ViewModelLocator.WELCOME_SCREEN}" />
+		
+			
+		<s:Group y="178" height="100%" width="700" id="innerGroup">
+			
+			<editprofile:EditProfileForm x="200" 
+						id="editProfileForm" 
+						email="{modelLocator.email}"
+						includeIn="editProfile" />
+			
+			<registrationform:RegistrationForm x="200" 
+						id="registrationForm"
+						includeIn="registration" />
+			
+			<uploadform:UploadForm x="200" 
+						id="uploadForm"
+						progress="{modelLocator.uploadProgress}"
+						includeIn="uploadPictures" />
+			
+			<gallery:Gallery id="galleryPage"
+						isUserpanelEnabled="true"
+						focusEnabled.usersGallery="true"
+						includeIn="usersGallery"/>
+			
+			<gallery:Gallery id="homeGalleryPage" 
+						isUserpanelEnabled="false"
+						focusEnabled.gallery="true"
+						includeIn="gallery, slideShow" />
+			
+			<editpictures:EditPictures x="50"
+						id="editPicturesForm"
+						includeIn="picturesControl"/>
+			
+			<flickrView:FlickrSearchView x="0" y="38" width="100%" height="100%"
+				id="flickrSearchView" 
+				includeIn="flickrSearching" />
+			
+		</s:Group>
+		
+	</s:Group>
+	
+	
+</s:Application>

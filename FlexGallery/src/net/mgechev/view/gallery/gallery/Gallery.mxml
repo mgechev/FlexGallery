@@ -76,7 +76,7 @@
 				(commentField.text=commentField.text))}" 
 				focusOut="{((commentField.text == '')?
 				(commentField.text='Enter comment end press Enter...'):
-				(commentField.text=commentField.text))}"/>
+				(commentField.text=commentField.text))}" tabIndex="14"/>
 	
 	<s:Label x="581" y="5"
 			 visible.normalState="true" visible.slideShowstate="false" text="Vote:"/>
@@ -93,7 +93,7 @@
 			   enabled="{modelLocator.username != null &amp;&amp; 
 			   modelLocator.selectedPicture != null}"
 			   minimum="1" maximum="5" stepSize="1" 
-			   value="3"  />
+			   value="3" />
 
 	<mx:Text x="578" y="25" width="223" height="88" 
 			 id="pictureComment"
@@ -109,17 +109,17 @@
 	<s:Button x="0" y="376" width="96" height="78" 
 			  id="previousButton"
 			  label="Back" 
-			  visible.normalState="true" visible.slideShowstate="false" />
+			  visible.normalState="true" visible.slideShowstate="false" tabIndex="15" />
 	
 	<s:Button x="712" y="376" width="88" height="76" 
 			  id="nextButton"
 			  label="Next"
-			  visible.normalState="true" visible.slideShowstate="false" />
+			  visible.normalState="true" visible.slideShowstate="false" tabIndex="16" />
 	
 	<s:Button x="578" y="89"  
 			  id="btnSlideshow"
 			  visible="{!inSlideshowState &amp;&amp; 
 			  !isUserpanelEnabled}"
-			  label="Slideshow" />
+			  label="Slideshow" tabIndex="13" />
 	
 </gallery:GalleryLogic>

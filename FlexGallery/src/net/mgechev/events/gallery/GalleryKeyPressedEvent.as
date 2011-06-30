@@ -11,9 +11,11 @@ package net.mgechev.events.gallery
 	{
 		public static const GALLERY_KEY_PRESSED_EVENT:String = "GalleryKeyPressed";	
 		public var gallery:GalleryLogic;
+		public var keyCode:uint;
 		
-		public function GalleryKeyPressedEvent(gallery:GalleryLogic)
+		public function GalleryKeyPressedEvent(gallery:GalleryLogic, keyCode:uint)
 		{
+			this.keyCode = keyCode;
 			this.gallery = gallery;
 			super(GALLERY_KEY_PRESSED_EVENT);
 		}

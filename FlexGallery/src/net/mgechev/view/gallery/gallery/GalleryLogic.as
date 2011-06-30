@@ -73,9 +73,9 @@ package net.mgechev.view.gallery.gallery
 			this.addEventListener(KeyboardEvent.KEY_DOWN, keyPressed);
 		}
 		
-		private function keyPressed(event:Event):void
+		private function keyPressed(event:KeyboardEvent):void
 		{
-			(new GalleryKeyPressedEvent(this)).dispatch();
+			(new GalleryKeyPressedEvent(this, event.keyCode)).dispatch();
 		}
 		
 		
@@ -126,11 +126,24 @@ package net.mgechev.view.gallery.gallery
 			{
 				if (previousPage())
 				{
-					modelLocator.selectedPicture = modelLocator.picturesList[modelLocator.picturesList.length - 1];
+					changeSelectedPicture();			
 					return true;
 				}					
 			}
 			return false;
+		}
+		
+		private function changeSelectedPicture(event:Event = null):void
+		{	
+			if ((modelLocator.picturesList.length < ViewModelLocator.PICTURES_PER_PAGE) ||
+				(event == null))
+			{
+				var timer:Timer = new Timer(50, 1);
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, changeSelectedPicture);
+				timer.start();
+				return;
+			}
+			modelLocator.selectedPicture = modelLocator.picturesList[ViewModelLocator.PICTURES_PER_PAGE - 1];
 		}
 		
 		public function maximizeRightPicture():Boolean
@@ -229,7 +242,8 @@ package net.mgechev.view.gallery.gallery
 		
 		protected function nextPage():Boolean
 		{
-			if (modelLocator.picturesList.length > ViewModelLocator.PICTURES_PER_PAGE - 1)
+			if (ViewModelLocator.PICTURES_PER_PAGE * (modelLocator.pageReached + 1)
+				< modelLocator.picturesCount)
 			{
 				modelLocator.pageReached = modelLocator.pageReached + 1;
 				getPictures(modelLocator.pageReached);

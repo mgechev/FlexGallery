@@ -19,13 +19,7 @@ package net.mgechev.commands.appcontrol
 		public function execute(event:CairngormEvent):void
 		{
 			var changePageEvent:ChangePageEvent = event as ChangePageEvent;
-			
-			if (modelLocator.currentPage == ViewModelLocator.HOME ||
-				modelLocator.currentPage == ViewModelLocator.PICTURES)
-			{
-				modelLocator.picturesList = new ArrayCollection();
-			}
-			
+								
 			modelLocator.currentPage = changePageEvent.nextPage;
 						
 			modelLocator.resetData();

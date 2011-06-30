@@ -7,8 +7,8 @@
 	<s:Panel width="300" title="Hello"
 			 id="loginPanel" x="0" y="0" height="118" dropShadowVisible="false">
 		
-		<s:Label text="Welcome, {username}" x="79" y="25" id="welcomeText"/>
-		<s:Button label="Logout"  x="114" y="54" id="logoutButton"/>
+		<s:Label x="79" y="25" text="Welcome, {username}" id="welcomeText"/>
+		<s:Button x="114" y="54" label="Logout" id="logoutButton" tabIndex="1"/>
 		
 	</s:Panel>
 	
