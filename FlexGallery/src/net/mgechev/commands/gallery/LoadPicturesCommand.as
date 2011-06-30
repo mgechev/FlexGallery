@@ -4,6 +4,7 @@ package net.mgechev.commands.gallery
 	import com.adobe.cairngorm.control.CairngormEvent;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.rpc.IResponder;
 	
 	import net.mgechev.business.DelegatesQueue;
@@ -30,22 +31,79 @@ package net.mgechev.commands.gallery
 			delegatesQueue.registerDelegate(delegate);
 		}
 		
+		private function loadCommentList(comments:Object):ArrayCollection
+		{
+			var pictureComments:ArrayCollection = new ArrayCollection();
+			for (var j:uint = 0; j < comments.length; j++)
+			{
+				var comment:CommentVO = new CommentVO(
+					comments[j].content,
+					comments[j].username,
+					comments[j].date,
+					comments[j].id);
+				pictureComments.addItem(comment);
+			}
+			return pictureComments;
+		}
+		
+		private function loadSingleComment(comments:Object):ArrayCollection
+		{
+			var pictureComments:ArrayCollection = new ArrayCollection();
+			var singleComment:CommentVO = new CommentVO(
+				comments.content,
+				comments.username,
+				comments.date,
+				comments.id);
+			pictureComments.addItem(singleComment);
+			return pictureComments;
+		}
+		
 		private function getPictureComments(comments:Object):ArrayCollection
 		{
 			var pictureComments:ArrayCollection = new ArrayCollection();
-			if (comments != 0 && comments.length > 1)
+			if (comments != 0)
 			{
-				for (var j:uint = 0; j < comments.length; j++)
+				if (comments.length > 1)
 				{
-					var comment:CommentVO = new CommentVO(
-						comments[j].content,
-						comments[j].username,
-						comments[j].date,
-						comments[j].id);
-					pictureComments.addItem(comment);
+					return loadCommentList(comments);
+				}
+				else
+				{
+					return loadSingleComment(comments);						
 				}
 			}
 			return pictureComments;
+		}
+		
+		private function loadPictureList(pictureList:Object):void
+		{
+			for (var i:uint = 0; i < pictureList.length; i++)
+			{					
+				var photo:PhotoVO = new PhotoVO();
+				photo.id = pictureList[i].id;
+				photo.name = pictureList[i].title;
+				photo.comment = pictureList[i].description;
+				photo.votesCount = pictureList[i].count;
+				photo.rating = pictureList[i].rating;
+				photo.ratingSum = pictureList[i].ratingSum;
+				photo.commentsList = getPictureComments(pictureList[i].comment);
+				
+				modelLocator.picturesList.addItem(photo);
+			}
+		}
+		
+		private function loadSinglePicture(picture:Object):void
+		{
+			var photo:PhotoVO = new PhotoVO();
+			photo.id = picture.id;
+			photo.name = picture.title;
+			photo.comment = picture.description;
+			photo.votesCount = picture.count;
+			photo.rating = picture.rating;
+			photo.ratingSum = picture.ratingSum;
+			photo.commentsList = getPictureComments(picture.comment);
+			
+			modelLocator.picturesList.addItem(photo);
 		}
 		
 		public function result(event:Object):void
@@ -55,18 +113,13 @@ package net.mgechev.commands.gallery
 			
 			if (event.result.picture != 0)
 			{
-				for (var i:uint = 0; i < event.result.picture.length; i++)
-				{					
-					var photo:PhotoVO = new PhotoVO();
-					photo.id = event.result.picture[i].id;
-					photo.name = event.result.picture[i].title;
-					photo.comment = event.result.picture[i].description;
-					photo.votesCount = event.result.picture[i].count;
-					photo.rating = event.result.picture[i].rating;
-					photo.ratingSum = event.result.picture[i].ratingSum;
-					photo.commentsList = getPictureComments(event.result.picture[i].comment);
-					
-					modelLocator.picturesList.addItem(photo);
+				if (event.result.picture.length > 1)
+				{
+					loadPictureList(event.result.picture);
+				}
+				else
+				{
+					loadSinglePicture(event.result.picture);
 				}
 			}
 			if (modelLocator.picturesList.length > 0)

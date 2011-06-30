@@ -81,7 +81,7 @@
 					  width="152" height="167" y="15" x="407"/>
 			
 			<mx:Image source="./images/logo_text.png" 
-					  width="250" y="25" x="360"/>
+					  width="250" y="15" x="360" />
 			
 			<menu:Menu x="21" y="142"
 					   id="menu"

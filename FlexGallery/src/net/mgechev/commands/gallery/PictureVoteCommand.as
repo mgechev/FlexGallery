@@ -36,8 +36,10 @@ package net.mgechev.commands.gallery
 		{			
 			modelLocator.selectedPicture.votesCount++;
 			modelLocator.selectedPicture.ratingSum += lastVote;
-			modelLocator.selectedPicture.rating = 
-				modelLocator.selectedPicture.ratingSum / modelLocator.selectedPicture.votesCount;
+			
+			modelLocator.selectedPicture.rating =
+				Math.round(modelLocator.selectedPicture.ratingSum / 
+					modelLocator.selectedPicture.votesCount * 1000)/1000;
 			
 			delegatesQueue.unregisterDelegate(delegate);
 		}

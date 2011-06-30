@@ -93,7 +93,7 @@ package net.mgechev.model
 			
 //			selectedPicture = null;
 //			picturesList = null;
-//			pictureComments = null;
+			pictureComments = null;
 			picturesVoted = new ArrayCollection();
 			pictureRating = 0;
 			pictureRatingCount = 0;

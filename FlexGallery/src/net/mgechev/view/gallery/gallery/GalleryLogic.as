@@ -222,11 +222,14 @@ package net.mgechev.view.gallery.gallery
 		
 		protected function sendVote(event:Event):void
 		{
-			if (!modelLocator.picturesVoted.contains(picturesList.selectedItem.id))
+			if (modelLocator.selectedPicture != null)
 			{
-				var pictureVoteEvent:PictureVoteEvent = 
-					new PictureVoteEvent(picturesList.selectedItem.id, voteInput.value);
-				pictureVoteEvent.dispatch();
+				if (!modelLocator.picturesVoted.contains(modelLocator.selectedPicture.id))
+				{
+					var pictureVoteEvent:PictureVoteEvent = 
+						new PictureVoteEvent(modelLocator.selectedPicture.id, voteInput.value);
+					pictureVoteEvent.dispatch();
+				}
 			}
 		}
 		
