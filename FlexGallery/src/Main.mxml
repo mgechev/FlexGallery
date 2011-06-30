@@ -6,7 +6,6 @@
 			   xmlns:control="net.mgechev.control.*"
 			   xmlns:business="net.mgechev.business.*"
 			   xmlns:view="net.mgechev.view.*"
-			   xmlns:gallery="net.mgechev.view.gallery.*"
 			   xmlns:picturecontrol="net.mgechev.view.picturecontrol.*"
 			   xmlns:appcontrol="net.mgechev.view.appcontrol.*"
 			   xmlns:flickrView="com.altras.flickrSearch.view.*"
@@ -21,7 +20,7 @@
 			   xmlns:welcomescreen="net.mgechev.view.usercontrol.welcomescreen.*"
 			   xmlns:editpictures="net.mgechev.view.picturecontrol.editpictures.*"
 			   xmlns:uploadform="net.mgechev.view.picturecontrol.uploadform.*"
-			   xmlns:gallery1="net.mgechev.view.gallery.gallery.*"
+			   xmlns:gallery="net.mgechev.view.gallery.gallery.*"
 			   xmlns:menu="net.mgechev.view.appcontrol.menu.*"
 			   currentState="{modelLocator.currentState}">
 	
@@ -59,16 +58,18 @@
 		<![CDATA[
 			import com.adobe.cairngorm.model.ModelLocator;
 			import com.altras.flickrSearch.controller.SearchCommand;
+			
 			import flash.utils.flash_proxy;
+			
 			import mx.controls.Alert;
 			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
+			
 			import net.mgechev.events.appcontrol.ApplicationInitializationEvent;
 			import net.mgechev.events.appcontrol.LoginCheckEvent;
 			import net.mgechev.model.ViewModelLocator;
 			[Bindable]
-			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();
-			
+			private var modelLocator:ViewModelLocator = ViewModelLocator.getInstance();			
 		]]>
 	</fx:Script>
 	
@@ -113,12 +114,14 @@
 						progress="{modelLocator.uploadProgress}"
 						includeIn="uploadPictures" />
 			
-			<gallery1:Gallery id="galleryPage"
+			<gallery:Gallery id="galleryPage"
 						isUserpanelEnabled="true"
+						focusEnabled.usersGallery="true"
 						includeIn="usersGallery"/>
 			
-			<gallery1:Gallery id="homeGalleryPage" 
-						isUserpanelEnabled="false"							  
+			<gallery:Gallery id="homeGalleryPage" 
+						isUserpanelEnabled="false"
+						focusEnabled.gallery="true"
 						includeIn="gallery, slideShow" />
 			
 			<editpictures:EditPictures x="50"

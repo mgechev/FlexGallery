@@ -20,6 +20,10 @@
 		dbGetArray('SELECT photos.title, photos.photo_id, photos.comment
 							FROM photos
 							LIMIT '. $page * PAGE_SIZE . ', '. PAGE_SIZE .'', 35);	
+
+		$getPicturesCount = 
+		dbGetNumRows('SELECT 1
+									FROM photos', 330);
 		
 	} else {
 	
@@ -29,11 +33,18 @@
 		FROM photos
 		WHERE user_id = '. $userId .'
 		LIMIT '. $page * PAGE_SIZE . ', '. PAGE_SIZE .'', 35);
+
+		$getPicturesCount = 
+		dbGetNumRows('SELECT 1
+							FROM photos
+							WHERE user_id = ' . $userId . '', 330);
 		
 	}
 	
 	//Printing this list into xml format
 	echo '<?xml version="1.0" encoding="utf-8"?>';
+	
+	echo "\n\n<picturesCount>$getPicturesCount</picturesCount>\n";
 	
 	foreach ($getPicturesByUserId as $key => $value) {
 	
@@ -48,7 +59,7 @@
 													FROM comments AS c
 													LEFT JOIN users as u ON c.user_id = u.user_id
 													WHERE c.photo_id = ' . $id . '', 85);
-
+													
 		$rating = dbGetRow('SELECT AVG(rate) AS rate, COUNT(rate) AS count, SUM(rate) AS ratingSum
 									  FROM vote
 									  WHERE photo_id=' . $id . '', 105);
@@ -56,7 +67,7 @@
 		if (!$rating['rate']) {	
 			$rating['rate'] = 0;
 		}
-		
+				
 		echo '<rating>' . $rating['rate'] . '</rating>';
 		echo '<count>' . $rating['count'] . '</count>';
 		echo '<ratingSum>' . $rating['ratingSum'] . '</ratingSum>';
